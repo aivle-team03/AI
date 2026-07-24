@@ -1,4 +1,4 @@
-from typing import Any, NotRequired, TypedDict
+from typing import Any, TypedDict
 
 
 class AgentState(TypedDict):
@@ -6,11 +6,12 @@ class AgentState(TypedDict):
     role: str
     user_message: str
 
-    context: NotRequired[dict[str, Any]]
-    next_step: NotRequired[str]
+    context: dict[str, Any]
+    next_step: str
 
-    tool_results: NotRequired[dict[str, Any]]
-    agent_results: NotRequired[dict[str, Any]]
+    inspection_action_result: dict[str, Any]
+    education_result: dict[str, Any]
+    history_result: dict[str, Any]
 
-    final_answer: NotRequired[str]
-    error_message: NotRequired[str]
+    final_answer: str
+    error_message: str
