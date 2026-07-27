@@ -1,5 +1,7 @@
 from typing import Any, TypedDict
 
+from app.schemas import EducationResult, HistoryResult, InspectionActionResult
+
 
 class AgentState(TypedDict):
     company_code: str
@@ -9,9 +11,9 @@ class AgentState(TypedDict):
     context: dict[str, Any]
     next_step: str
 
-    inspection_action_result: dict[str, Any]
-    education_result: dict[str, Any]
-    history_result: dict[str, Any]
+    inspection_action_result: InspectionActionResult
+    education_result: EducationResult
+    history_result: HistoryResult
 
     final_answer: str
     error_message: str

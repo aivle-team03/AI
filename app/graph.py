@@ -13,7 +13,7 @@ from app.state import AgentState
 def select_next_step(state: AgentState) -> str:
     return state.get("next_step", "answer_agent")
 
-def agent_graph():
+def build_agent_graph():
     graph = StateGraph(AgentState)
 
     graph.add_node("auth", auth_node)
@@ -40,4 +40,4 @@ def agent_graph():
     return graph.compile()
 
 
-compiled_graph = agent_graph()
+agent_graph = build_agent_graph()
