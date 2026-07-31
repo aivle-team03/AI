@@ -4,11 +4,7 @@ import math
 import cv2
 from ultralytics import YOLO
 
-
-# =========================
 # 경로 설정
-# =========================
-
 BASE_DIR = Path(__file__).resolve().parent
 
 MODEL_PATH = BASE_DIR / "person-forklift2-best.pt"
@@ -16,18 +12,12 @@ VIDEO_PATH = BASE_DIR / "test.mp4"
 OUTPUT_PATH = BASE_DIR / "distance_result.mp4"
 
 
-# =========================
 # 모델 클래스
-# =========================
-
 FORKLIFT_CLASS_ID = 0
 PERSON_CLASS_ID = 1
 
 
-# =========================
 # 탐지 및 거리 설정
-# =========================
-
 CONF_THRESHOLD = 0.4
 
 # 영상이 작으므로 거리 기준 축소
@@ -40,9 +30,6 @@ LINE_THICKNESS = 1
 
 
 def get_center(box):
-    """
-    바운딩박스의 정중앙 좌표를 반환합니다.
-    """
 
     x1, y1, x2, y2 = box
 
@@ -53,17 +40,12 @@ def get_center(box):
 
 
 def calculate_distance(point1, point2):
-    """
-    두 중심점 사이의 픽셀 거리를 계산합니다.
-    """
 
     return math.dist(point1, point2)
 
 
 def get_distance_status(distance):
-    """
-    거리에 따라 위험 단계를 반환합니다.
-    """
+
 
     if distance <= DANGER_DISTANCE_PX:
         return "DANGER", (0, 0, 255)
@@ -75,9 +57,6 @@ def get_distance_status(distance):
 
 
 def draw_object_center(frame, object_data, label, color):
-    """
-    바운딩박스 없이 객체 중심점과 클래스 이름만 표시합니다.
-    """
 
     center = object_data["point"]
     confidence = object_data["confidence"]
