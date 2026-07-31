@@ -8,7 +8,7 @@ from ultralytics import YOLO
 BASE_DIR = Path(__file__).resolve().parent
 
 MODEL_PATH = BASE_DIR / "person-forklift2-best.pt"
-VIDEO_PATH = BASE_DIR / "test.mp4"
+VIDEO_PATH = BASE_DIR / "test.mov"
 OUTPUT_PATH = BASE_DIR / "distance_result.mp4"
 
 
