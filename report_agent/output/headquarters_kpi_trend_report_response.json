@@ -1,0 +1,710 @@
+{
+  "status": "COMPLETED",
+  "retry_count": 0,
+  "aggregated_data": {
+    "company": {
+      "company_id": 1,
+      "company_name": "A 물류센터",
+      "created_at": "2026-01-10T09:00:00"
+    },
+    "period": {
+      "start_date": "2026-07-01",
+      "end_date": "2026-07-20"
+    },
+    "kpi": {
+      "total_events": 20,
+      "high_risk_events": 13,
+      "medium_risk_events": 7,
+      "low_risk_events": 0,
+      "action_total": 20,
+      "action_completed": 18,
+      "action_waiting": 2,
+      "action_completion_rate": 90.0,
+      "approval_completed": 18,
+      "approval_waiting": 2,
+      "approval_rejected": 0,
+      "average_action_minutes": 24.3,
+      "education_target_count": 4,
+      "education_completed_count": 2,
+      "education_completion_rate": 50.0,
+      "high_risk_ratio": 65.0,
+      "pending_action_rate": 10.0,
+      "approval_completion_rate": 90.0
+    },
+    "trend": {
+      "daily_event_counts": {
+        "2026-07-01": 1,
+        "2026-07-02": 1,
+        "2026-07-03": 1,
+        "2026-07-04": 1,
+        "2026-07-05": 1,
+        "2026-07-06": 1,
+        "2026-07-07": 1,
+        "2026-07-08": 1,
+        "2026-07-09": 1,
+        "2026-07-10": 1,
+        "2026-07-11": 1,
+        "2026-07-12": 1,
+        "2026-07-13": 1,
+        "2026-07-14": 1,
+        "2026-07-15": 1,
+        "2026-07-16": 1,
+        "2026-07-17": 1,
+        "2026-07-18": 1,
+        "2026-07-19": 1,
+        "2026-07-20": 1
+      },
+      "weekly_event_counts": {
+        "2026-W27": 5,
+        "2026-W28": 7,
+        "2026-W29": 7,
+        "2026-W30": 1
+      },
+      "daily_high_risk_counts": {
+        "2026-07-01": 1,
+        "2026-07-03": 1,
+        "2026-07-04": 1,
+        "2026-07-06": 1,
+        "2026-07-08": 1,
+        "2026-07-09": 1,
+        "2026-07-11": 1,
+        "2026-07-13": 1,
+        "2026-07-14": 1,
+        "2026-07-16": 1,
+        "2026-07-18": 1,
+        "2026-07-19": 1,
+        "2026-07-20": 1
+      },
+      "event_trend_delta": {
+        "first_value": 1,
+        "last_value": 1,
+        "delta": 0,
+        "delta_rate": 0.0,
+        "direction": "FLAT"
+      },
+      "weekly_trend_delta": {
+        "first_value": 5,
+        "last_value": 1,
+        "delta": -4,
+        "delta_rate": -80.0,
+        "direction": "DOWN"
+      },
+      "high_risk_trend_delta": {
+        "first_value": 1,
+        "last_value": 1,
+        "delta": 0,
+        "delta_rate": 0.0,
+        "direction": "FLAT"
+      },
+      "category_daily_counts": {
+        "피난통로 적치": {
+          "2026-07-01": 1,
+          "2026-07-06": 1,
+          "2026-07-09": 1,
+          "2026-07-14": 1,
+          "2026-07-19": 1
+        },
+        "안전모 미착용": {
+          "2026-07-02": 1,
+          "2026-07-07": 1,
+          "2026-07-12": 1,
+          "2026-07-17": 1
+        },
+        "지게차 동선 침범": {
+          "2026-07-03": 1,
+          "2026-07-08": 1,
+          "2026-07-13": 1,
+          "2026-07-18": 1
+        },
+        "전기함 주변 적치": {
+          "2026-07-04": 1,
+          "2026-07-11": 1,
+          "2026-07-16": 1,
+          "2026-07-20": 1
+        },
+        "바닥 장애물 방치": {
+          "2026-07-05": 1,
+          "2026-07-10": 1,
+          "2026-07-15": 1
+        }
+      },
+      "location_daily_counts": {
+        "2층 A구역": {
+          "2026-07-01": 1,
+          "2026-07-06": 1,
+          "2026-07-09": 1,
+          "2026-07-14": 1,
+          "2026-07-19": 1
+        },
+        "1층 상하차장": {
+          "2026-07-02": 1,
+          "2026-07-07": 1,
+          "2026-07-12": 1,
+          "2026-07-15": 1,
+          "2026-07-17": 1
+        },
+        "3층 포장라인": {
+          "2026-07-03": 1,
+          "2026-07-05": 1,
+          "2026-07-08": 1,
+          "2026-07-10": 1,
+          "2026-07-13": 1,
+          "2026-07-18": 1
+        },
+        "지하 전기실": {
+          "2026-07-04": 1,
+          "2026-07-11": 1,
+          "2026-07-16": 1,
+          "2026-07-20": 1
+        }
+      }
+    },
+    "status_distribution": {
+      "action_status_counts": {
+        "조치 완료": 18,
+        "조치 대기": 2
+      },
+      "approval_status_counts": {
+        "승인 완료": 18,
+        "승인 대기": 2
+      },
+      "education_status_counts": {
+        "이수": 2,
+        "진행중": 1,
+        "미이수": 1
+      },
+      "checklist_status_counts": {
+        "완료": 15,
+        "조치 대기": 5
+      }
+    },
+    "rankings": {
+      "top_categories": [
+        {
+          "name": "피난통로 적치",
+          "count": 5
+        },
+        {
+          "name": "안전모 미착용",
+          "count": 4
+        },
+        {
+          "name": "지게차 동선 침범",
+          "count": 4
+        },
+        {
+          "name": "전기함 주변 적치",
+          "count": 4
+        },
+        {
+          "name": "바닥 장애물 방치",
+          "count": 3
+        }
+      ],
+      "top_locations": [
+        {
+          "name": "3층 포장라인",
+          "count": 6
+        },
+        {
+          "name": "2층 A구역",
+          "count": 5
+        },
+        {
+          "name": "1층 상하차장",
+          "count": 5
+        },
+        {
+          "name": "지하 전기실",
+          "count": 4
+        }
+      ],
+      "top_delayed_actions": [
+        {
+          "action_history_id": 619,
+          "event_id": "EVT-019",
+          "action_name": "피난통로 반복 적치 담당 부서 확인",
+          "handler_name": "김안전",
+          "minutes": 30.0
+        },
+        {
+          "action_history_id": 601,
+          "event_id": "EVT-001",
+          "action_name": "피난통로 적치물 제거",
+          "handler_name": "김안전",
+          "minutes": 28.0
+        },
+        {
+          "action_history_id": 604,
+          "event_id": "EVT-004",
+          "action_name": "전기함 주변 적치물 제거",
+          "handler_name": "김안전",
+          "minutes": 25.0
+        },
+        {
+          "action_history_id": 605,
+          "event_id": "EVT-005",
+          "action_name": "바닥 장애물 정리",
+          "handler_name": "이관리",
+          "minutes": 25.0
+        },
+        {
+          "action_history_id": 608,
+          "event_id": "EVT-008",
+          "action_name": "보행자 동선 분리",
+          "handler_name": "김안전",
+          "minutes": 25.0
+        }
+      ]
+    },
+    "risk_flags": {
+      "repeated_risks": [
+        {
+          "location": "2층 A구역",
+          "category_name": "피난통로 적치",
+          "count": 5,
+          "event_ids": [
+            "EVT-001",
+            "EVT-006",
+            "EVT-009",
+            "EVT-014",
+            "EVT-019"
+          ]
+        },
+        {
+          "location": "1층 상하차장",
+          "category_name": "안전모 미착용",
+          "count": 4,
+          "event_ids": [
+            "EVT-002",
+            "EVT-007",
+            "EVT-012",
+            "EVT-017"
+          ]
+        },
+        {
+          "location": "3층 포장라인",
+          "category_name": "지게차 동선 침범",
+          "count": 4,
+          "event_ids": [
+            "EVT-003",
+            "EVT-008",
+            "EVT-013",
+            "EVT-018"
+          ]
+        },
+        {
+          "location": "지하 전기실",
+          "category_name": "전기함 주변 적치",
+          "count": 4,
+          "event_ids": [
+            "EVT-004",
+            "EVT-011",
+            "EVT-016",
+            "EVT-020"
+          ]
+        },
+        {
+          "location": "3층 포장라인",
+          "category_name": "바닥 장애물 방치",
+          "count": 2,
+          "event_ids": [
+            "EVT-005",
+            "EVT-010"
+          ]
+        }
+      ],
+      "unresolved_high_risk_event_ids": [
+        "EVT-006",
+        "EVT-009"
+      ],
+      "pending_action_ids": [
+        606,
+        609
+      ]
+    },
+    "source_ids": {
+      "event_ids": [
+        "EVT-001",
+        "EVT-002",
+        "EVT-003",
+        "EVT-004",
+        "EVT-005",
+        "EVT-006",
+        "EVT-007",
+        "EVT-008",
+        "EVT-009",
+        "EVT-010",
+        "EVT-011",
+        "EVT-012",
+        "EVT-013",
+        "EVT-014",
+        "EVT-015",
+        "EVT-016",
+        "EVT-017",
+        "EVT-018",
+        "EVT-019",
+        "EVT-020"
+      ],
+      "action_history_ids": [
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609,
+        610,
+        611,
+        612,
+        613,
+        614,
+        615,
+        616,
+        617,
+        618,
+        619,
+        620
+      ],
+      "checklist_ids": [
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320
+      ]
+    },
+    "source_samples": {
+      "high_risk_events": [
+        {
+          "event_id": "EVT-001",
+          "date": "2026-07-01T09:10:00",
+          "category_name": "피난통로 적치",
+          "level": 9,
+          "location": "2층 A구역",
+          "image_url": "https://example.com/evidence/evt-001.jpg"
+        },
+        {
+          "event_id": "EVT-003",
+          "date": "2026-07-03T10:05:00",
+          "category_name": "지게차 동선 침범",
+          "level": 8,
+          "location": "3층 포장라인",
+          "image_url": "https://example.com/evidence/evt-003.jpg"
+        },
+        {
+          "event_id": "EVT-004",
+          "date": "2026-07-04T15:40:00",
+          "category_name": "전기함 주변 적치",
+          "level": 10,
+          "location": "지하 전기실",
+          "image_url": "https://example.com/evidence/evt-004.jpg"
+        },
+        {
+          "event_id": "EVT-006",
+          "date": "2026-07-06T16:00:00",
+          "category_name": "피난통로 적치",
+          "level": 9,
+          "location": "2층 A구역",
+          "image_url": "https://example.com/evidence/evt-006.jpg"
+        },
+        {
+          "event_id": "EVT-008",
+          "date": "2026-07-08T14:25:00",
+          "category_name": "지게차 동선 침범",
+          "level": 8,
+          "location": "3층 포장라인",
+          "image_url": "https://example.com/evidence/evt-008.jpg"
+        },
+        {
+          "event_id": "EVT-009",
+          "date": "2026-07-09T09:35:00",
+          "category_name": "피난통로 적치",
+          "level": 9,
+          "location": "2층 A구역",
+          "image_url": "https://example.com/evidence/evt-009.jpg"
+        },
+        {
+          "event_id": "EVT-011",
+          "date": "2026-07-11T12:05:00",
+          "category_name": "전기함 주변 적치",
+          "level": 10,
+          "location": "지하 전기실",
+          "image_url": "https://example.com/evidence/evt-011.jpg"
+        },
+        {
+          "event_id": "EVT-013",
+          "date": "2026-07-13T15:15:00",
+          "category_name": "지게차 동선 침범",
+          "level": 8,
+          "location": "3층 포장라인",
+          "image_url": "https://example.com/evidence/evt-013.jpg"
+        },
+        {
+          "event_id": "EVT-014",
+          "date": "2026-07-14T09:00:00",
+          "category_name": "피난통로 적치",
+          "level": 9,
+          "location": "2층 A구역",
+          "image_url": "https://example.com/evidence/evt-014.jpg"
+        },
+        {
+          "event_id": "EVT-016",
+          "date": "2026-07-16T11:25:00",
+          "category_name": "전기함 주변 적치",
+          "level": 10,
+          "location": "지하 전기실",
+          "image_url": "https://example.com/evidence/evt-016.jpg"
+        }
+      ],
+      "pending_actions": [
+        {
+          "action_history_id": 606,
+          "company_id": 1,
+          "board_id": 701,
+          "event_id": "EVT-006",
+          "inspection_history_id": null,
+          "category_id": 201,
+          "handler_uid": 101,
+          "handler_name": "김안전",
+          "approver_uid": 201,
+          "approver_name": "박승인",
+          "action_name": "반복 적치 구역 개선",
+          "type": "이벤트",
+          "location": "2층 A구역",
+          "created_at": "2026-07-06T16:05:00",
+          "completed_at": null,
+          "action_status": "조치 대기",
+          "image_url": null,
+          "content": "보관 구역 재배치 및 적치 금지 표시선 보강 예정",
+          "approval_status": "승인 대기",
+          "approval_date": null,
+          "rejection_reason": null
+        },
+        {
+          "action_history_id": 609,
+          "company_id": 1,
+          "board_id": 701,
+          "event_id": "EVT-009",
+          "inspection_history_id": null,
+          "category_id": 201,
+          "handler_uid": 101,
+          "handler_name": "김안전",
+          "approver_uid": 201,
+          "approver_name": "박승인",
+          "action_name": "피난통로 반복 적치 개선",
+          "type": "이벤트",
+          "location": "2층 A구역",
+          "created_at": "2026-07-09T09:40:00",
+          "completed_at": null,
+          "action_status": "조치 대기",
+          "image_url": null,
+          "content": "반복 적치 원인 확인 및 보관 위치 변경 필요",
+          "approval_status": "승인 대기",
+          "approval_date": null,
+          "rejection_reason": null
+        }
+      ]
+    }
+  },
+  "analysis_result": {
+    "executive_insights": [
+      "전체 20건 중 65%가 고위험 사건으로 고위험 비율이 매우 높음.",
+      "조치 완료율은 90%로 양호하나, 2건의 고위험 사건(EVT-006, EVT-009)에 대한 조치가 아직 미완료이며 승인도 대기 중임.",
+      "7월 초부터 중순까지 주간 사건 수는 감소 추세이나, 고위험 사건 수는 일별로 꾸준히 1건씩 발생하여 고위험 사건 추세는 평탄함.",
+      "피난통로 적치(5건, 2층 A구역)와 안전모 미착용(4건, 1층 상하차장), 지게차 동선 침범(4건, 3층 포장라인), 전기함 주변 적치(4건, 지하 전기실)가 반복 위험 구역 및 유형으로 확인됨.",
+      "교육 이수율은 50%로 낮아 안전 교육 강화가 필요함."
+    ],
+    "findings": [
+      {
+        "finding_type": "KPI",
+        "title": "고위험 사건 비율 및 조치 완료율",
+        "description": "전체 20건 중 13건(65%)이 고위험 사건이며, 조치 완료율은 90%로 양호하나 2건의 고위험 사건(EVT-006, EVT-009)은 미조치 상태임.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009"
+        ],
+        "evidence_ids": [
+          "606",
+          "609"
+        ],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "TREND",
+        "title": "주간 사건 수 감소 및 고위험 사건 추세 평탄",
+        "description": "주간 사건 수는 2026-W27 5건에서 2026-W30 1건으로 80% 감소하였으나, 고위험 사건은 일별 1건씩 꾸준히 발생하여 고위험 사건 추세는 변동이 없음.",
+        "related_event_ids": [],
+        "evidence_ids": [],
+        "severity": "MEDIUM"
+      },
+      {
+        "finding_type": "REPEATED_RISK",
+        "title": "반복 위험 구역 및 유형 집중",
+        "description": "피난통로 적치(2층 A구역, 5건), 안전모 미착용(1층 상하차장, 4건), 지게차 동선 침범(3층 포장라인, 4건), 전기함 주변 적치(지하 전기실, 4건) 등 특정 구역과 유형에서 반복 위험이 집중됨.",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019",
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018",
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020"
+        ],
+        "evidence_ids": [],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "UNRESOLVED",
+        "title": "고위험 사건 미조치 및 승인 대기",
+        "description": "고위험 사건 EVT-006, EVT-009에 대한 조치가 아직 완료되지 않았으며, 관련 조치 606, 609는 승인 대기 상태임.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009"
+        ],
+        "evidence_ids": [
+          "606",
+          "609"
+        ],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "KPI",
+        "title": "교육 이수율 저조",
+        "description": "교육 대상 4명 중 2명만 이수하여 교육 이수율이 50%에 불과함.",
+        "related_event_ids": [],
+        "evidence_ids": [],
+        "severity": "MEDIUM"
+      }
+    ],
+    "recommended_actions": [
+      "고위험 사건 EVT-006, EVT-009에 대한 조치 및 승인 절차를 신속히 완료하도록 담당 부서에 지시할 것.",
+      "피난통로 적치, 안전모 미착용, 지게차 동선 침범, 전기함 주변 적치 등 반복 위험 구역에 대한 집중 점검 및 개선 대책 마련을 권고함.",
+      "교육 이수율 향상을 위해 대상자 교육 이수 독려 및 교육 프로그램 강화 필요.",
+      "주간 사건 수 감소 추세를 유지하면서도 고위험 사건 발생을 줄이기 위한 예방 활동 강화가 요구됨."
+    ],
+    "data_limitations": [
+      "사고 원인 및 책임 부서에 대한 구체적 데이터가 없어 원인 분석 및 책임 소재 판단이 불가함.",
+      "조치 지연 원인 및 승인 대기 사유에 대한 상세 정보가 없어 추가 분석에 한계가 있음.",
+      "교육 이수 미완료 사유 및 교육 내용에 대한 정보가 없어 교육 효과성 평가에 제한이 있음."
+    ]
+  },
+  "report": {
+    "title": "A 물류센터 2026년 7월 1일~7월 20일 안전 KPI 및 위험 추세 종합 보고서",
+    "audience": "HEADQUARTERS",
+    "period": "2026-07-01 to 2026-07-20",
+    "summary": "7월 1일부터 20일까지 총 20건의 안전 사건 중 65%가 고위험 사건으로 고위험 비율이 매우 높게 나타났습니다. 조치 완료율은 90%로 양호하나, 고위험 사건 EVT-006과 EVT-009에 대한 조치 및 승인이 아직 완료되지 않아 주의가 필요합니다. 주간 사건 수는 감소 추세이나 고위험 사건은 일별 1건씩 꾸준히 발생하여 추세는 평탄합니다. 피난통로 적치, 안전모 미착용, 지게차 동선 침범, 전기함 주변 적치 등 특정 구역과 유형에서 반복 위험이 집중되고 있습니다. 교육 이수율은 50%로 낮아 안전 교육 강화가 요구됩니다.",
+    "sections": [
+      {
+        "section_code": "KPI",
+        "heading": "KPI 요약",
+        "content": "총 사건 20건 중 고위험 사건은 13건(65%)이며, 중위험 사건은 7건, 저위험 사건은 없습니다. 조치 총 20건 중 18건(90%)이 완료되었고, 2건은 대기 중입니다. 승인 완료율도 90%이며, 평균 조치 소요 시간은 24.3분입니다. 교육 대상 4명 중 2명이 이수하여 교육 이수율은 50%입니다.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009"
+        ],
+        "evidence_ids": [
+          "606",
+          "609"
+        ]
+      },
+      {
+        "section_code": "TREND_ANALYSIS",
+        "heading": "발생 추세 분석",
+        "content": "일별 사건 수는 매일 1건씩 꾸준히 발생하여 전체 사건 추세는 평탄합니다. 주간 사건 수는 2026-W27 5건에서 2026-W30 1건으로 80% 감소하였으나, 고위험 사건은 일별 1건씩 꾸준히 발생하여 고위험 사건 추세는 변동이 없습니다.",
+        "related_event_ids": [],
+        "evidence_ids": []
+      },
+      {
+        "section_code": "RISK_DISTRIBUTION",
+        "heading": "주요 위험 구역 및 유형",
+        "content": "반복 위험 구역 및 유형은 피난통로 적치(2층 A구역, 5건), 안전모 미착용(1층 상하차장, 4건), 지게차 동선 침범(3층 포장라인, 4건), 전기함 주변 적치(지하 전기실, 4건)로 확인됩니다. 바닥 장애물 방치도 3건 발생하였습니다. 특히 2층 A구역의 피난통로 적치 사건은 5건으로 가장 빈번합니다.",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019",
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018",
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020"
+        ],
+        "evidence_ids": []
+      },
+      {
+        "section_code": "ACTION_HISTORY",
+        "heading": "조치 및 승인 현황",
+        "content": "총 20건의 조치 중 18건이 완료되었으며 2건(EVT-006, EVT-009)은 조치 대기 및 승인 대기 상태입니다. 미완료 조치 606과 609는 모두 2층 A구역 피난통로 적치 관련이며, 각각 '반복 적치 구역 개선'과 '피난통로 반복 적치 개선' 조치명으로 김안전 담당자가 처리 중입니다. 교육은 대상 4명 중 2명이 이수하였고 1명은 진행 중, 1명은 미이수 상태입니다.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009"
+        ],
+        "evidence_ids": [
+          "606",
+          "609"
+        ]
+      },
+      {
+        "section_code": "PRIORITY_ACTIONS",
+        "heading": "본사 후속 의사결정 사항",
+        "content": "고위험 사건 EVT-006, EVT-009에 대한 조치 및 승인 절차를 신속히 완료하도록 담당 부서에 지시할 것을 권고합니다. 피난통로 적치, 안전모 미착용, 지게차 동선 침범, 전기함 주변 적치 등 반복 위험 구역에 대한 집중 점검 및 개선 대책 마련이 필요합니다. 교육 이수율 향상을 위해 대상자 교육 이수 독려 및 교육 프로그램 강화가 요구되며, 주간 사건 수 감소 추세를 유지하면서도 고위험 사건 발생을 줄이기 위한 예방 활동 강화가 필요합니다.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009"
+        ],
+        "evidence_ids": [
+          "606",
+          "609"
+        ]
+      }
+    ],
+    "conclusion": "본 기간 동안 고위험 사건 비율이 높고 일부 고위험 사건에 대한 조치가 미완료 상태임에 따라 신속한 조치 및 승인 완료가 필요합니다. 반복 위험 구역과 유형에 대한 집중 관리와 교육 이수율 제고를 통해 안전 수준 향상을 도모해야 합니다. 주간 사건 수 감소 추세를 유지하며 고위험 사건 예방에 더욱 주력할 것을 권고합니다.",
+    "limitations": [
+      "사고 원인 및 책임 부서에 대한 구체적 데이터가 없어 원인 분석 및 책임 소재 판단이 불가함.",
+      "조치 지연 원인 및 승인 대기 사유에 대한 상세 정보가 없어 추가 분석에 한계가 있음.",
+      "교육 이수 미완료 사유 및 교육 내용에 대한 정보가 없어 교육 효과성 평가에 제한이 있음."
+    ]
+  },
+  "review": {
+    "passed": true,
+    "score": 100,
+    "issues": [],
+    "revision_instructions": []
+  }
+}

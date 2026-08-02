@@ -1,0 +1,970 @@
+{
+  "status": "COMPLETED",
+  "retry_count": 0,
+  "aggregated_data": {
+    "site_context": {
+      "company": {
+        "company_id": 1,
+        "company_name": "A 물류센터",
+        "created_at": "2026-01-10T09:00:00"
+      },
+      "period": {
+        "start_date": "2026-07-01",
+        "end_date": "2026-07-20"
+      },
+      "audience": "SITE_MANAGER",
+      "report_type": "ANOMALY_IMPROVEMENT_RECOMMENDATION"
+    },
+    "summary_counts": {
+      "total_events": 20,
+      "high_risk_events": 13,
+      "pending_actions": 2,
+      "repeated_risk_groups": 5,
+      "checklist_items": 20
+    },
+    "anomaly_candidates": [
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "2층 A구역",
+        "risk_type": "피난통로 적치",
+        "count": 5,
+        "severity": "HIGH",
+        "max_risk_level": 9,
+        "event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019"
+        ],
+        "latest_event_date": "2026-07-19T14:05:00",
+        "pending_action_ids": [
+          606,
+          609
+        ],
+        "related_checklist_ids": [
+          301,
+          306,
+          309,
+          314,
+          319
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "동일 구역/동일 위험유형이 5회 반복; 고위험 등급(level 9) 포함; 미완료 또는 승인 대기 조치 2건 존재",
+        "field_check_points": [
+          "동일 위치에 위험요인이 남아 있는지 현장 확인",
+          "기존 조치가 실제 재발 방지로 이어졌는지 확인",
+          "미완료/승인 대기 조치의 처리 지연 사유 확인"
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "지하 전기실",
+        "risk_type": "전기함 주변 적치",
+        "count": 4,
+        "severity": "HIGH",
+        "max_risk_level": 10,
+        "event_ids": [
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020"
+        ],
+        "latest_event_date": "2026-07-20T09:30:00",
+        "pending_action_ids": [],
+        "related_checklist_ids": [
+          304,
+          311,
+          316,
+          320
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "동일 구역/동일 위험유형이 4회 반복; 고위험 등급(level 10) 포함",
+        "field_check_points": [
+          "동일 위치에 위험요인이 남아 있는지 현장 확인",
+          "기존 조치가 실제 재발 방지로 이어졌는지 확인",
+          "미완료/승인 대기 조치의 처리 지연 사유 확인"
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "3층 포장라인",
+        "risk_type": "지게차 동선 침범",
+        "count": 4,
+        "severity": "HIGH",
+        "max_risk_level": 8,
+        "event_ids": [
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018"
+        ],
+        "latest_event_date": "2026-07-18T10:55:00",
+        "pending_action_ids": [],
+        "related_checklist_ids": [
+          303,
+          308,
+          313,
+          318
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "동일 구역/동일 위험유형이 4회 반복; 고위험 등급(level 8) 포함",
+        "field_check_points": [
+          "동일 위치에 위험요인이 남아 있는지 현장 확인",
+          "기존 조치가 실제 재발 방지로 이어졌는지 확인",
+          "미완료/승인 대기 조치의 처리 지연 사유 확인"
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "1층 상하차장",
+        "risk_type": "안전모 미착용",
+        "count": 4,
+        "severity": "MEDIUM",
+        "max_risk_level": 6,
+        "event_ids": [
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017"
+        ],
+        "latest_event_date": "2026-07-17T16:35:00",
+        "pending_action_ids": [],
+        "related_checklist_ids": [
+          302,
+          307,
+          312,
+          317
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "동일 구역/동일 위험유형이 4회 반복",
+        "field_check_points": [
+          "동일 위치에 위험요인이 남아 있는지 현장 확인",
+          "기존 조치가 실제 재발 방지로 이어졌는지 확인",
+          "미완료/승인 대기 조치의 처리 지연 사유 확인"
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "3층 포장라인",
+        "risk_type": "바닥 장애물 방치",
+        "count": 2,
+        "severity": "LOW",
+        "max_risk_level": 5,
+        "event_ids": [
+          "EVT-005",
+          "EVT-010"
+        ],
+        "latest_event_date": "2026-07-10T17:10:00",
+        "pending_action_ids": [],
+        "related_checklist_ids": [
+          305,
+          310
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "동일 구역/동일 위험유형이 2회 반복",
+        "field_check_points": [
+          "동일 위치에 위험요인이 남아 있는지 현장 확인",
+          "기존 조치가 실제 재발 방지로 이어졌는지 확인",
+          "미완료/승인 대기 조치의 처리 지연 사유 확인"
+        ]
+      }
+    ],
+    "action_context": [
+      {
+        "action_history_id": 606,
+        "event_id": "EVT-006",
+        "action_name": "반복 적치 구역 개선",
+        "action_status": "조치 대기",
+        "approval_status": "승인 대기",
+        "handler_name": "김안전",
+        "approver_name": "박승인",
+        "created_at": "2026-07-06T16:05:00",
+        "completed_at": "-",
+        "approval_date": "-",
+        "content": "보관 구역 재배치 및 적치 금지 표시선 보강 예정",
+        "image_url": null
+      },
+      {
+        "action_history_id": 609,
+        "event_id": "EVT-009",
+        "action_name": "피난통로 반복 적치 개선",
+        "action_status": "조치 대기",
+        "approval_status": "승인 대기",
+        "handler_name": "김안전",
+        "approver_name": "박승인",
+        "created_at": "2026-07-09T09:40:00",
+        "completed_at": "-",
+        "approval_date": "-",
+        "content": "반복 적치 원인 확인 및 보관 위치 변경 필요",
+        "image_url": null
+      }
+    ],
+    "recent_events": [
+      {
+        "event_id": "EVT-020",
+        "date": "2026-07-20T09:30:00",
+        "location": "지하 전기실",
+        "cctv_name": "지하 전기실 CCTV",
+        "risk_type": "전기함 주변 적치",
+        "risk_category": "화재/전기",
+        "risk_level": 10,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-020.jpg"
+      },
+      {
+        "event_id": "EVT-019",
+        "date": "2026-07-19T14:05:00",
+        "location": "2층 A구역",
+        "cctv_name": "2층 A구역 피난통로 CCTV",
+        "risk_type": "피난통로 적치",
+        "risk_category": "통로/피난",
+        "risk_level": 9,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-019.jpg"
+      },
+      {
+        "event_id": "EVT-018",
+        "date": "2026-07-18T10:55:00",
+        "location": "3층 포장라인",
+        "cctv_name": "3층 포장라인 CCTV",
+        "risk_type": "지게차 동선 침범",
+        "risk_category": "설비",
+        "risk_level": 8,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-018.jpg"
+      },
+      {
+        "event_id": "EVT-017",
+        "date": "2026-07-17T16:35:00",
+        "location": "1층 상하차장",
+        "cctv_name": "1층 상하차장 CCTV",
+        "risk_type": "안전모 미착용",
+        "risk_category": "보호구",
+        "risk_level": 6,
+        "risk_band": "MEDIUM",
+        "image_url": "https://example.com/evidence/evt-017.jpg"
+      },
+      {
+        "event_id": "EVT-016",
+        "date": "2026-07-16T11:25:00",
+        "location": "지하 전기실",
+        "cctv_name": "지하 전기실 CCTV",
+        "risk_type": "전기함 주변 적치",
+        "risk_category": "화재/전기",
+        "risk_level": 10,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-016.jpg"
+      },
+      {
+        "event_id": "EVT-015",
+        "date": "2026-07-15T13:45:00",
+        "location": "1층 상하차장",
+        "cctv_name": "1층 상하차장 CCTV",
+        "risk_type": "바닥 장애물 방치",
+        "risk_category": "정리정돈",
+        "risk_level": 5,
+        "risk_band": "MEDIUM",
+        "image_url": "https://example.com/evidence/evt-015.jpg"
+      },
+      {
+        "event_id": "EVT-014",
+        "date": "2026-07-14T09:00:00",
+        "location": "2층 A구역",
+        "cctv_name": "2층 A구역 피난통로 CCTV",
+        "risk_type": "피난통로 적치",
+        "risk_category": "통로/피난",
+        "risk_level": 9,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-014.jpg"
+      },
+      {
+        "event_id": "EVT-013",
+        "date": "2026-07-13T15:15:00",
+        "location": "3층 포장라인",
+        "cctv_name": "3층 포장라인 CCTV",
+        "risk_type": "지게차 동선 침범",
+        "risk_category": "설비",
+        "risk_level": 8,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-013.jpg"
+      },
+      {
+        "event_id": "EVT-012",
+        "date": "2026-07-12T10:40:00",
+        "location": "1층 상하차장",
+        "cctv_name": "1층 상하차장 CCTV",
+        "risk_type": "안전모 미착용",
+        "risk_category": "보호구",
+        "risk_level": 6,
+        "risk_band": "MEDIUM",
+        "image_url": "https://example.com/evidence/evt-012.jpg"
+      },
+      {
+        "event_id": "EVT-011",
+        "date": "2026-07-11T12:05:00",
+        "location": "지하 전기실",
+        "cctv_name": "지하 전기실 CCTV",
+        "risk_type": "전기함 주변 적치",
+        "risk_category": "화재/전기",
+        "risk_level": 10,
+        "risk_band": "HIGH",
+        "image_url": "https://example.com/evidence/evt-011.jpg"
+      }
+    ],
+    "checklist_context": [
+      {
+        "checklist_id": 301,
+        "event_id": "EVT-001",
+        "date": "2026-07-01T09:40:00",
+        "status": "완료",
+        "content": "피난통로 적치물 제거 확인",
+        "type": "이벤트 조치 확인",
+        "image_url": "https://example.com/evidence/checklist-301.jpg"
+      },
+      {
+        "checklist_id": 302,
+        "event_id": "EVT-002",
+        "date": "2026-07-02T13:45:00",
+        "status": "완료",
+        "content": "안전모 착용 확인 및 보호구 안내",
+        "type": "현장 교육 확인",
+        "image_url": "https://example.com/evidence/checklist-302.jpg"
+      },
+      {
+        "checklist_id": 303,
+        "event_id": "EVT-003",
+        "date": "2026-07-03T10:30:00",
+        "status": "완료",
+        "content": "지게차 동선 표시선 확인",
+        "type": "동선 점검",
+        "image_url": "https://example.com/evidence/checklist-303.jpg"
+      },
+      {
+        "checklist_id": 304,
+        "event_id": "EVT-004",
+        "date": "2026-07-04T16:10:00",
+        "status": "완료",
+        "content": "전기함 주변 적치물 제거 확인",
+        "type": "화재 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-304.jpg"
+      },
+      {
+        "checklist_id": 305,
+        "event_id": "EVT-005",
+        "date": "2026-07-05T11:45:00",
+        "status": "완료",
+        "content": "바닥 장애물 정리 확인",
+        "type": "정리정돈 확인",
+        "image_url": "https://example.com/evidence/checklist-305.jpg"
+      },
+      {
+        "checklist_id": 306,
+        "event_id": "EVT-006",
+        "date": "2026-07-06T16:30:00",
+        "status": "조치 대기",
+        "content": "반복 적치 구역 재점검 필요",
+        "type": "반복 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-306.jpg"
+      },
+      {
+        "checklist_id": 307,
+        "event_id": "EVT-007",
+        "date": "2026-07-07T09:15:00",
+        "status": "완료",
+        "content": "보호구 착용 재확인",
+        "type": "현장 교육 확인",
+        "image_url": "https://example.com/evidence/checklist-307.jpg"
+      },
+      {
+        "checklist_id": 308,
+        "event_id": "EVT-008",
+        "date": "2026-07-08T14:55:00",
+        "status": "완료",
+        "content": "보행자 동선 분리 조치 확인",
+        "type": "동선 점검",
+        "image_url": "https://example.com/evidence/checklist-308.jpg"
+      },
+      {
+        "checklist_id": 309,
+        "event_id": "EVT-009",
+        "date": "2026-07-09T10:05:00",
+        "status": "조치 대기",
+        "content": "피난통로 반복 적치 개선 필요",
+        "type": "반복 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-309.jpg"
+      },
+      {
+        "checklist_id": 310,
+        "event_id": "EVT-010",
+        "date": "2026-07-10T17:35:00",
+        "status": "완료",
+        "content": "바닥 장애물 제거 확인",
+        "type": "정리정돈 확인",
+        "image_url": "https://example.com/evidence/checklist-310.jpg"
+      },
+      {
+        "checklist_id": 311,
+        "event_id": "EVT-011",
+        "date": "2026-07-11T12:30:00",
+        "status": "완료",
+        "content": "전기함 접근 공간 확보 확인",
+        "type": "화재 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-311.jpg"
+      },
+      {
+        "checklist_id": 312,
+        "event_id": "EVT-012",
+        "date": "2026-07-12T11:10:00",
+        "status": "완료",
+        "content": "안전모 착용 안내 완료",
+        "type": "현장 교육 확인",
+        "image_url": "https://example.com/evidence/checklist-312.jpg"
+      },
+      {
+        "checklist_id": 313,
+        "event_id": "EVT-013",
+        "date": "2026-07-13T15:45:00",
+        "status": "조치 대기",
+        "content": "지게차 동선 재교육 필요",
+        "type": "동선 점검",
+        "image_url": "https://example.com/evidence/checklist-313.jpg"
+      },
+      {
+        "checklist_id": 314,
+        "event_id": "EVT-014",
+        "date": "2026-07-14T09:30:00",
+        "status": "완료",
+        "content": "피난통로 적치물 제거 확인",
+        "type": "이벤트 조치 확인",
+        "image_url": "https://example.com/evidence/checklist-314.jpg"
+      },
+      {
+        "checklist_id": 315,
+        "event_id": "EVT-015",
+        "date": "2026-07-15T14:15:00",
+        "status": "완료",
+        "content": "상하차장 장애물 정리 확인",
+        "type": "정리정돈 확인",
+        "image_url": "https://example.com/evidence/checklist-315.jpg"
+      },
+      {
+        "checklist_id": 316,
+        "event_id": "EVT-016",
+        "date": "2026-07-16T11:55:00",
+        "status": "조치 대기",
+        "content": "전기실 적치 금지 표시 필요",
+        "type": "화재 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-316.jpg"
+      },
+      {
+        "checklist_id": 317,
+        "event_id": "EVT-017",
+        "date": "2026-07-17T17:05:00",
+        "status": "완료",
+        "content": "보호구 착용 현장 확인",
+        "type": "현장 교육 확인",
+        "image_url": "https://example.com/evidence/checklist-317.jpg"
+      },
+      {
+        "checklist_id": 318,
+        "event_id": "EVT-018",
+        "date": "2026-07-18T11:25:00",
+        "status": "완료",
+        "content": "지게차 동선 분리 확인",
+        "type": "동선 점검",
+        "image_url": "https://example.com/evidence/checklist-318.jpg"
+      },
+      {
+        "checklist_id": 319,
+        "event_id": "EVT-019",
+        "date": "2026-07-19T14:40:00",
+        "status": "조치 대기",
+        "content": "피난통로 반복 적치 담당 부서 확인 필요",
+        "type": "반복 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-319.jpg"
+      },
+      {
+        "checklist_id": 320,
+        "event_id": "EVT-020",
+        "date": "2026-07-20T10:00:00",
+        "status": "완료",
+        "content": "전기함 주변 정리 확인",
+        "type": "화재 위험 확인",
+        "image_url": "https://example.com/evidence/checklist-320.jpg"
+      }
+    ],
+    "distributions": {
+      "event_counts_by_day": {
+        "2026-07-01": 1,
+        "2026-07-02": 1,
+        "2026-07-03": 1,
+        "2026-07-04": 1,
+        "2026-07-05": 1,
+        "2026-07-06": 1,
+        "2026-07-07": 1,
+        "2026-07-08": 1,
+        "2026-07-09": 1,
+        "2026-07-10": 1,
+        "2026-07-11": 1,
+        "2026-07-12": 1,
+        "2026-07-13": 1,
+        "2026-07-14": 1,
+        "2026-07-15": 1,
+        "2026-07-16": 1,
+        "2026-07-17": 1,
+        "2026-07-18": 1,
+        "2026-07-19": 1,
+        "2026-07-20": 1
+      },
+      "top_risk_types": [
+        {
+          "name": "피난통로 적치",
+          "count": 5
+        },
+        {
+          "name": "안전모 미착용",
+          "count": 4
+        },
+        {
+          "name": "지게차 동선 침범",
+          "count": 4
+        },
+        {
+          "name": "전기함 주변 적치",
+          "count": 4
+        },
+        {
+          "name": "바닥 장애물 방치",
+          "count": 3
+        }
+      ],
+      "top_locations": [
+        {
+          "name": "3층 포장라인",
+          "count": 6
+        },
+        {
+          "name": "2층 A구역",
+          "count": 5
+        },
+        {
+          "name": "1층 상하차장",
+          "count": 5
+        },
+        {
+          "name": "지하 전기실",
+          "count": 4
+        }
+      ]
+    },
+    "source_ids": {
+      "event_ids": [
+        "EVT-001",
+        "EVT-002",
+        "EVT-003",
+        "EVT-004",
+        "EVT-005",
+        "EVT-006",
+        "EVT-007",
+        "EVT-008",
+        "EVT-009",
+        "EVT-010",
+        "EVT-011",
+        "EVT-012",
+        "EVT-013",
+        "EVT-014",
+        "EVT-015",
+        "EVT-016",
+        "EVT-017",
+        "EVT-018",
+        "EVT-019",
+        "EVT-020"
+      ],
+      "action_history_ids": [
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609,
+        610,
+        611,
+        612,
+        613,
+        614,
+        615,
+        616,
+        617,
+        618,
+        619,
+        620
+      ],
+      "checklist_ids": [
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320
+      ]
+    },
+    "constraints": {
+      "do_not_infer_root_cause": true,
+      "recommend_only_site_level_actions": true,
+      "require_event_id_basis": true
+    }
+  },
+  "analysis_result": {
+    "executive_insights": [
+      "2층 A구역 피난통로 적치 위험이 5회 반복 발생하며 최고 위험 등급 9를 기록, 미완료 및 승인 대기 중인 조치 2건이 존재하여 즉시 확인 필요.",
+      "지하 전기실 전기함 주변 적치 위험 4회 반복, 최고 위험 등급 10으로 매우 높으며, 최근 사건 EVT-020까지 지속 발생 중.",
+      "3층 포장라인 지게차 동선 침범 위험 4회 반복, 최고 위험 등급 8로 고위험 구간임이 확인됨.",
+      "1층 상하차장 안전모 미착용 위험 4회 반복 발생하였으나 위험 등급은 중간 수준(6)으로 관리 필요.",
+      "피난통로 적치 관련 조치 대기 및 승인 대기 상태인 EVT-006, EVT-009 관련 조치 지연이 재발 방지에 장애가 될 수 있음.",
+      "피난통로 적치 관련 체크리스트(306, 309, 319) 중 2건이 조치 대기 상태로 현장 점검 및 조치 진행이 시급함."
+    ],
+    "findings": [
+      {
+        "finding_type": "REPEATED_RISK",
+        "title": "2층 A구역 피난통로 적치 위험 반복 발생",
+        "description": "EVT-001, EVT-006, EVT-009, EVT-014, EVT-019에서 동일 위치와 위험 유형이 5회 반복 발생. 최고 위험 등급 9 포함. EVT-006, EVT-009 관련 조치 대기 및 승인 대기 상태(조치 ID 606, 609)로 미완료 조치 존재.",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "301",
+          "306",
+          "309",
+          "314",
+          "319"
+        ],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "REPEATED_RISK",
+        "title": "지하 전기실 전기함 주변 적치 위험 반복 발생",
+        "description": "EVT-004, EVT-011, EVT-016, EVT-020에서 동일 위치와 위험 유형이 4회 반복 발생. 최고 위험 등급 10 포함. 최근 EVT-020까지 지속 발생 중이며, 관련 체크리스트 316은 조치 대기 상태.",
+        "related_event_ids": [
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020"
+        ],
+        "evidence_ids": [
+          "316",
+          "304",
+          "311",
+          "320"
+        ],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "REPEATED_RISK",
+        "title": "3층 포장라인 지게차 동선 침범 위험 반복 발생",
+        "description": "EVT-003, EVT-008, EVT-013, EVT-018에서 동일 위치와 위험 유형이 4회 반복 발생. 최고 위험 등급 8 포함. 체크리스트 313은 조치 대기 상태로 재교육 필요.",
+        "related_event_ids": [
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018"
+        ],
+        "evidence_ids": [
+          "313",
+          "303",
+          "308",
+          "313",
+          "318"
+        ],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "REPEATED_RISK",
+        "title": "1층 상하차장 안전모 미착용 위험 반복 발생",
+        "description": "EVT-002, EVT-007, EVT-012, EVT-017에서 동일 위치와 위험 유형이 4회 반복 발생. 위험 등급은 6으로 중간 수준이며, 관련 조치 및 체크리스트는 모두 완료 상태.",
+        "related_event_ids": [
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017"
+        ],
+        "evidence_ids": [
+          "302",
+          "307",
+          "312",
+          "317"
+        ],
+        "severity": "MEDIUM"
+      },
+      {
+        "finding_type": "UNRESOLVED",
+        "title": "피난통로 적치 관련 미완료 및 승인 대기 조치 존재",
+        "description": "EVT-006, EVT-009 관련 조치(606, 609)가 승인 대기 및 조치 대기 상태로 미완료. 이로 인해 동일 위험 유형의 재발 가능성이 높음.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "306",
+          "309",
+          "319"
+        ],
+        "severity": "HIGH"
+      },
+      {
+        "finding_type": "PRIORITY",
+        "title": "즉시 현장 확인 및 조치가 필요한 고위험 반복 위험군",
+        "description": "2층 A구역 피난통로 적치(최고 위험 9), 지하 전기실 전기함 주변 적치(최고 위험 10), 3층 포장라인 지게차 동선 침범(최고 위험 8) 위험군은 반복 발생과 고위험 등급 포함으로 우선 점검 및 조치 필요.",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019",
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "316",
+          "313",
+          "306",
+          "309",
+          "319"
+        ],
+        "severity": "HIGH"
+      }
+    ],
+    "recommended_actions": [
+      "2층 A구역 피난통로 적치 관련 미완료 조치(조치 ID 606, 609) 승인 절차를 신속히 완료하고, 현장 재점검을 통해 위험요인 제거 여부 확인.",
+      "지하 전기실 전기함 주변 적치 위험에 대해 체크리스트 316의 조치 대기 상태를 해소하고, 정기적인 현장 점검 및 적치 금지 표시 보강을 실시.",
+      "3층 포장라인 지게차 동선 침범 관련 조치 대기 중인 재교육(체크리스트 313)을 조속히 완료하고, 동선 분리 상태를 현장 확인.",
+      "피난통로 적치 위험 관련 체크리스트 306, 309, 319의 조치 대기 항목을 우선 처리하여 재발 방지 기반을 강화.",
+      "1층 상하차장 안전모 미착용 위험은 현재 조치 완료 상태이나, 지속적인 현장 교육과 착용 확인을 유지하여 재발 방지에 힘쓸 것.",
+      "고위험 반복 위험군(피난통로 적치, 전기함 주변 적치, 지게차 동선 침범)에 대해 주기적 모니터링과 현장 점검을 강화하여 재발 가능성을 최소화."
+    ],
+    "data_limitations": [
+      "사고 원인 및 작업자 과실에 대한 정보는 제공되지 않아 원인 분석은 제한됨.",
+      "법적 판단이나 책임 부서 지정은 데이터에 포함되어 있지 않음.",
+      "조치 완료 후 재발 가능성은 조치 대기 상태 및 반복 발생 현황으로만 추정 가능."
+    ]
+  },
+  "report": {
+    "title": "현장관리자 확인용 이상패턴 및 개선권고안",
+    "audience": "SITE_MANAGER",
+    "period": "2026-07-01 ~ 2026-07-20",
+    "summary": "2층 A구역 피난통로 적치 위험 5회 반복 및 미조치 2건, 지하 전기실 전기함 주변 적치 4회 반복 고위험, 3층 포장라인 지게차 동선 침범 4회 반복 고위험, 미조치 및 승인 대기 항목 즉시 확인 필요",
+    "sections": [
+      {
+        "section_code": "ANOMALY_PATTERNS",
+        "heading": "이상패턴 요약",
+        "content": "- 2층 A구역에서 피난통로 적치 위험이 5회 반복 발생하며 최고 위험 등급 9를 기록함. EVT-006, EVT-009 관련 조치 2건이 미완료 및 승인 대기 상태임.\n- 지하 전기실 전기함 주변 적치 위험이 4회 반복 발생, 최고 위험 등급 10으로 매우 높으며 최근 EVT-020까지 지속 발생 중임.\n- 3층 포장라인 지게차 동선 침범 위험 4회 반복, 최고 위험 등급 8로 고위험 구간임.\n- 1층 상하차장 안전모 미착용 위험 4회 반복 발생하였으나 위험 등급은 중간 수준(6)임.\n- 피난통로 적치 관련 조치 대기 및 승인 대기 상태인 EVT-006, EVT-009 관련 조치 지연이 재발 방지에 장애가 될 수 있음.",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019",
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018",
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "301",
+          "306",
+          "309",
+          "314",
+          "319",
+          "316",
+          "304",
+          "311",
+          "320",
+          "313",
+          "303",
+          "308",
+          "318",
+          "302",
+          "307",
+          "312",
+          "317"
+        ]
+      },
+      {
+        "section_code": "PRIORITY_ACTIONS",
+        "heading": "우선 확인 대상",
+        "content": "- 2층 A구역 피난통로 적치 위험 (EVT-001, EVT-006, EVT-009, EVT-014, EVT-019): 최고 위험 등급 9, 미완료 및 승인 대기 조치 606, 609 포함\n- 지하 전기실 전기함 주변 적치 위험 (EVT-004, EVT-011, EVT-016, EVT-020): 최고 위험 등급 10, 체크리스트 316 조치 대기\n- 3층 포장라인 지게차 동선 침범 위험 (EVT-003, EVT-008, EVT-013, EVT-018): 최고 위험 등급 8, 체크리스트 313 조치 대기\n- 1층 상하차장 안전모 미착용 위험 (EVT-002, EVT-007, EVT-012, EVT-017): 위험 등급 6, 조치 완료 상태",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019",
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018",
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "316",
+          "313",
+          "302",
+          "307",
+          "312",
+          "317"
+        ]
+      },
+      {
+        "section_code": "UNRESOLVED_ITEMS",
+        "heading": "미조치 및 승인 대기 항목",
+        "content": "- EVT-006 관련 조치: '반복 적치 구역 개선' (조치 ID 606), 승인 대기 및 조치 대기 상태\n- EVT-009 관련 조치: '피난통로 반복 적치 개선' (조치 ID 609), 승인 대기 및 조치 대기 상태\n- 관련 체크리스트 306, 309, 319도 조치 대기 상태로 현장 점검 및 조치 진행 필요\n- 지하 전기실 관련 체크리스트 316도 조치 대기 상태임\n- 3층 포장라인 지게차 동선 침범 관련 체크리스트 313 조치 대기 상태",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009",
+          "EVT-016",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "306",
+          "309",
+          "319",
+          "316",
+          "313"
+        ]
+      },
+      {
+        "section_code": "EVENT_HISTORY",
+        "heading": "현장 확인 체크포인트",
+        "content": "- 2층 A구역 피난통로 적치 위험: 동일 위치에 위험요인이 남아 있는지 확인, 기존 조치가 재발 방지로 이어졌는지 점검, 미완료/승인 대기 조치 처리 지연 사유 확인\n- 지하 전기실 전기함 주변 적치 위험: 위험요인 현장 잔존 여부 확인, 적치 금지 표시 보강 상태 점검, 조치 대기 항목 처리 상황 확인\n- 3층 포장라인 지게차 동선 침범 위험: 동선 분리 상태 확인, 재교육 진행 여부 점검, 조치 대기 항목 신속 처리\n- 1층 상하차장 안전모 미착용 위험: 착용 상태 지속 점검 및 현장 교육 유지",
+        "related_event_ids": [
+          "EVT-001",
+          "EVT-006",
+          "EVT-009",
+          "EVT-014",
+          "EVT-019",
+          "EVT-004",
+          "EVT-011",
+          "EVT-016",
+          "EVT-020",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-018",
+          "EVT-002",
+          "EVT-007",
+          "EVT-012",
+          "EVT-017"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "316",
+          "313",
+          "302",
+          "307",
+          "312",
+          "317"
+        ]
+      },
+      {
+        "section_code": "RECOMMENDATIONS",
+        "heading": "개선 권고안",
+        "content": "1. 2층 A구역 피난통로 적치 관련 미완료 조치(조치 ID 606, 609) 승인 절차를 신속히 완료하고, 현장 재점검을 통해 위험요인 제거 여부 확인할 것.\n2. 지하 전기실 전기함 주변 적치 위험에 대해 체크리스트 316의 조치 대기 상태를 해소하고, 정기적인 현장 점검 및 적치 금지 표시 보강을 실시할 것.\n3. 3층 포장라인 지게차 동선 침범 관련 조치 대기 중인 재교육(체크리스트 313)을 조속히 완료하고, 동선 분리 상태를 현장 확인할 것.\n4. 피난통로 적치 위험 관련 체크리스트 306, 309, 319의 조치 대기 항목을 우선 처리하여 재발 방지 기반을 강화할 것.\n5. 1층 상하차장 안전모 미착용 위험은 현재 조치 완료 상태이나, 지속적인 현장 교육과 착용 확인을 유지하여 재발 방지에 힘쓸 것.\n6. 고위험 반복 위험군(피난통로 적치, 전기함 주변 적치, 지게차 동선 침범)에 대해 주기적 모니터링과 현장 점검을 강화하여 재발 가능성을 최소화할 것.",
+        "related_event_ids": [
+          "EVT-006",
+          "EVT-009",
+          "EVT-016",
+          "EVT-003",
+          "EVT-008",
+          "EVT-013",
+          "EVT-001",
+          "EVT-004",
+          "EVT-011",
+          "EVT-014",
+          "EVT-019"
+        ],
+        "evidence_ids": [
+          "606",
+          "609",
+          "316",
+          "313",
+          "306",
+          "309",
+          "319",
+          "302",
+          "307",
+          "312",
+          "317"
+        ]
+      }
+    ],
+    "conclusion": "2층 A구역 피난통로 적치 위험과 관련된 미완료 및 승인 대기 조치 2건을 최우선으로 처리하고, 지하 전기실 및 3층 포장라인의 고위험 반복 위험군에 대한 현장 점검과 조치 완료를 신속히 진행해야 합니다. 1층 상하차장 안전모 미착용 위험은 현재 조치 완료 상태이나 지속적인 관리가 필요합니다. 모든 미조치 및 승인 대기 항목에 대해 즉시 확인 및 조치하여 재발 방지에 집중하시기 바랍니다.",
+    "limitations": [
+      "사고 원인 및 작업자 과실에 대한 정보는 제공되지 않아 원인 분석은 제한됨.",
+      "법적 판단이나 책임 부서 지정은 데이터에 포함되어 있지 않음.",
+      "조치 완료 후 재발 가능성은 조치 대기 상태 및 반복 발생 현황으로만 추정 가능."
+    ]
+  },
+  "review": {
+    "passed": true,
+    "score": 100,
+    "issues": [],
+    "revision_instructions": []
+  }
+}

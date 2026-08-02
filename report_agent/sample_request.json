@@ -1,0 +1,1374 @@
+{
+    "company":  {
+                    "company_id":  1,
+                    "company_name":  "A 물류센터",
+                    "created_at":  "2026-01-10T09:00:00"
+                },
+    "user":  [
+                 {
+                     "uid":  101,
+                     "user_id":  "safety.manager",
+                     "name":  "김안전",
+                     "password":  "hashed_password_101",
+                     "refresh_token":  "refresh_token_101",
+                     "role":  "안전관리자",
+                     "category":  "안전관리",
+                     "company_code":  "ACENTER",
+                     "company_id":  1,
+                     "created_at":  "2026-01-12T10:00:00"
+                 },
+                 {
+                     "uid":  102,
+                     "user_id":  "site.manager",
+                     "name":  "이관리",
+                     "password":  "hashed_password_102",
+                     "refresh_token":  "refresh_token_102",
+                     "role":  "현장관리자",
+                     "category":  "현장관리",
+                     "company_code":  "ACENTER",
+                     "company_id":  1,
+                     "created_at":  "2026-01-12T10:30:00"
+                 },
+                 {
+                     "uid":  201,
+                     "user_id":  "approver",
+                     "name":  "박승인",
+                     "password":  "hashed_password_201",
+                     "refresh_token":  "refresh_token_201",
+                     "role":  "안전관리자",
+                     "category":  "승인",
+                     "company_code":  "ACENTER",
+                     "company_id":  1,
+                     "created_at":  "2026-01-12T11:00:00"
+                 }
+             ],
+    "cctv":  [
+                 {
+                     "cctv_id":  11,
+                     "company_id":  1,
+                     "cctv_name":  "2층 A구역 피난통로 CCTV",
+                     "location":  "2층 A구역",
+                     "stream_url":  "rtsp://example.local/cctv/11",
+                     "status":  "ACTIVE"
+                 },
+                 {
+                     "cctv_id":  12,
+                     "company_id":  1,
+                     "cctv_name":  "1층 상하차장 CCTV",
+                     "location":  "1층 상하차장",
+                     "stream_url":  "rtsp://example.local/cctv/12",
+                     "status":  "ACTIVE"
+                 },
+                 {
+                     "cctv_id":  13,
+                     "company_id":  1,
+                     "cctv_name":  "3층 포장라인 CCTV",
+                     "location":  "3층 포장라인",
+                     "stream_url":  "rtsp://example.local/cctv/13",
+                     "status":  "ACTIVE"
+                 },
+                 {
+                     "cctv_id":  14,
+                     "company_id":  1,
+                     "cctv_name":  "지하 전기실 CCTV",
+                     "location":  "지하 전기실",
+                     "stream_url":  "rtsp://example.local/cctv/14",
+                     "status":  "ACTIVE"
+                 }
+             ],
+    "event_category":  [
+                           {
+                               "category_id":  201,
+                               "company_id":  1,
+                               "category":  "통로/피난",
+                               "category_name":  "피난통로 적치",
+                               "level":  9
+                           },
+                           {
+                               "category_id":  202,
+                               "company_id":  1,
+                               "category":  "보호구",
+                               "category_name":  "안전모 미착용",
+                               "level":  6
+                           },
+                           {
+                               "category_id":  203,
+                               "company_id":  1,
+                               "category":  "설비",
+                               "category_name":  "지게차 동선 침범",
+                               "level":  8
+                           },
+                           {
+                               "category_id":  204,
+                               "company_id":  1,
+                               "category":  "화재/전기",
+                               "category_name":  "전기함 주변 적치",
+                               "level":  10
+                           },
+                           {
+                               "category_id":  205,
+                               "company_id":  1,
+                               "category":  "정리정돈",
+                               "category_name":  "바닥 장애물 방치",
+                               "level":  5
+                           }
+                       ],
+    "event":  [
+                  {
+                      "event_id":  "EVT-001",
+                      "company_id":  1,
+                      "category_id":  201,
+                      "cctv_id":  11,
+                      "date":  "2026-07-01T09:10:00",
+                      "image_url":  "https://example.com/evidence/evt-001.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-002",
+                      "company_id":  1,
+                      "category_id":  202,
+                      "cctv_id":  12,
+                      "date":  "2026-07-02T13:20:00",
+                      "image_url":  "https://example.com/evidence/evt-002.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-003",
+                      "company_id":  1,
+                      "category_id":  203,
+                      "cctv_id":  13,
+                      "date":  "2026-07-03T10:05:00",
+                      "image_url":  "https://example.com/evidence/evt-003.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-004",
+                      "company_id":  1,
+                      "category_id":  204,
+                      "cctv_id":  14,
+                      "date":  "2026-07-04T15:40:00",
+                      "image_url":  "https://example.com/evidence/evt-004.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-005",
+                      "company_id":  1,
+                      "category_id":  205,
+                      "cctv_id":  13,
+                      "date":  "2026-07-05T11:15:00",
+                      "image_url":  "https://example.com/evidence/evt-005.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-006",
+                      "company_id":  1,
+                      "category_id":  201,
+                      "cctv_id":  11,
+                      "date":  "2026-07-06T16:00:00",
+                      "image_url":  "https://example.com/evidence/evt-006.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-007",
+                      "company_id":  1,
+                      "category_id":  202,
+                      "cctv_id":  12,
+                      "date":  "2026-07-07T08:50:00",
+                      "image_url":  "https://example.com/evidence/evt-007.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-008",
+                      "company_id":  1,
+                      "category_id":  203,
+                      "cctv_id":  13,
+                      "date":  "2026-07-08T14:25:00",
+                      "image_url":  "https://example.com/evidence/evt-008.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-009",
+                      "company_id":  1,
+                      "category_id":  201,
+                      "cctv_id":  11,
+                      "date":  "2026-07-09T09:35:00",
+                      "image_url":  "https://example.com/evidence/evt-009.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-010",
+                      "company_id":  1,
+                      "category_id":  205,
+                      "cctv_id":  13,
+                      "date":  "2026-07-10T17:10:00",
+                      "image_url":  "https://example.com/evidence/evt-010.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-011",
+                      "company_id":  1,
+                      "category_id":  204,
+                      "cctv_id":  14,
+                      "date":  "2026-07-11T12:05:00",
+                      "image_url":  "https://example.com/evidence/evt-011.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-012",
+                      "company_id":  1,
+                      "category_id":  202,
+                      "cctv_id":  12,
+                      "date":  "2026-07-12T10:40:00",
+                      "image_url":  "https://example.com/evidence/evt-012.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-013",
+                      "company_id":  1,
+                      "category_id":  203,
+                      "cctv_id":  13,
+                      "date":  "2026-07-13T15:15:00",
+                      "image_url":  "https://example.com/evidence/evt-013.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-014",
+                      "company_id":  1,
+                      "category_id":  201,
+                      "cctv_id":  11,
+                      "date":  "2026-07-14T09:00:00",
+                      "image_url":  "https://example.com/evidence/evt-014.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-015",
+                      "company_id":  1,
+                      "category_id":  205,
+                      "cctv_id":  12,
+                      "date":  "2026-07-15T13:45:00",
+                      "image_url":  "https://example.com/evidence/evt-015.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-016",
+                      "company_id":  1,
+                      "category_id":  204,
+                      "cctv_id":  14,
+                      "date":  "2026-07-16T11:25:00",
+                      "image_url":  "https://example.com/evidence/evt-016.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-017",
+                      "company_id":  1,
+                      "category_id":  202,
+                      "cctv_id":  12,
+                      "date":  "2026-07-17T16:35:00",
+                      "image_url":  "https://example.com/evidence/evt-017.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-018",
+                      "company_id":  1,
+                      "category_id":  203,
+                      "cctv_id":  13,
+                      "date":  "2026-07-18T10:55:00",
+                      "image_url":  "https://example.com/evidence/evt-018.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-019",
+                      "company_id":  1,
+                      "category_id":  201,
+                      "cctv_id":  11,
+                      "date":  "2026-07-19T14:05:00",
+                      "image_url":  "https://example.com/evidence/evt-019.jpg"
+                  },
+                  {
+                      "event_id":  "EVT-020",
+                      "company_id":  1,
+                      "category_id":  204,
+                      "cctv_id":  14,
+                      "date":  "2026-07-20T09:30:00",
+                      "image_url":  "https://example.com/evidence/evt-020.jpg"
+                  }
+              ],
+    "checklist":  [
+                      {
+                          "checklist_id":  301,
+                          "company_id":  1,
+                          "event_id":  "EVT-001",
+                          "date":  "2026-07-01T09:40:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  11,
+                          "content":  "피난통로 적치물 제거 확인",
+                          "image_url":  "https://example.com/evidence/checklist-301.jpg",
+                          "type":  "이벤트 조치 확인"
+                      },
+                      {
+                          "checklist_id":  302,
+                          "company_id":  1,
+                          "event_id":  "EVT-002",
+                          "date":  "2026-07-02T13:45:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  12,
+                          "content":  "안전모 착용 확인 및 보호구 안내",
+                          "image_url":  "https://example.com/evidence/checklist-302.jpg",
+                          "type":  "현장 교육 확인"
+                      },
+                      {
+                          "checklist_id":  303,
+                          "company_id":  1,
+                          "event_id":  "EVT-003",
+                          "date":  "2026-07-03T10:30:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  13,
+                          "content":  "지게차 동선 표시선 확인",
+                          "image_url":  "https://example.com/evidence/checklist-303.jpg",
+                          "type":  "동선 점검"
+                      },
+                      {
+                          "checklist_id":  304,
+                          "company_id":  1,
+                          "event_id":  "EVT-004",
+                          "date":  "2026-07-04T16:10:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  14,
+                          "content":  "전기함 주변 적치물 제거 확인",
+                          "image_url":  "https://example.com/evidence/checklist-304.jpg",
+                          "type":  "화재 위험 확인"
+                      },
+                      {
+                          "checklist_id":  305,
+                          "company_id":  1,
+                          "event_id":  "EVT-005",
+                          "date":  "2026-07-05T11:45:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  13,
+                          "content":  "바닥 장애물 정리 확인",
+                          "image_url":  "https://example.com/evidence/checklist-305.jpg",
+                          "type":  "정리정돈 확인"
+                      },
+                      {
+                          "checklist_id":  306,
+                          "company_id":  1,
+                          "event_id":  "EVT-006",
+                          "date":  "2026-07-06T16:30:00",
+                          "status":  "조치 대기",
+                          "uid":  101,
+                          "camera_id":  11,
+                          "content":  "반복 적치 구역 재점검 필요",
+                          "image_url":  "https://example.com/evidence/checklist-306.jpg",
+                          "type":  "반복 위험 확인"
+                      },
+                      {
+                          "checklist_id":  307,
+                          "company_id":  1,
+                          "event_id":  "EVT-007",
+                          "date":  "2026-07-07T09:15:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  12,
+                          "content":  "보호구 착용 재확인",
+                          "image_url":  "https://example.com/evidence/checklist-307.jpg",
+                          "type":  "현장 교육 확인"
+                      },
+                      {
+                          "checklist_id":  308,
+                          "company_id":  1,
+                          "event_id":  "EVT-008",
+                          "date":  "2026-07-08T14:55:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  13,
+                          "content":  "보행자 동선 분리 조치 확인",
+                          "image_url":  "https://example.com/evidence/checklist-308.jpg",
+                          "type":  "동선 점검"
+                      },
+                      {
+                          "checklist_id":  309,
+                          "company_id":  1,
+                          "event_id":  "EVT-009",
+                          "date":  "2026-07-09T10:05:00",
+                          "status":  "조치 대기",
+                          "uid":  101,
+                          "camera_id":  11,
+                          "content":  "피난통로 반복 적치 개선 필요",
+                          "image_url":  "https://example.com/evidence/checklist-309.jpg",
+                          "type":  "반복 위험 확인"
+                      },
+                      {
+                          "checklist_id":  310,
+                          "company_id":  1,
+                          "event_id":  "EVT-010",
+                          "date":  "2026-07-10T17:35:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  13,
+                          "content":  "바닥 장애물 제거 확인",
+                          "image_url":  "https://example.com/evidence/checklist-310.jpg",
+                          "type":  "정리정돈 확인"
+                      },
+                      {
+                          "checklist_id":  311,
+                          "company_id":  1,
+                          "event_id":  "EVT-011",
+                          "date":  "2026-07-11T12:30:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  14,
+                          "content":  "전기함 접근 공간 확보 확인",
+                          "image_url":  "https://example.com/evidence/checklist-311.jpg",
+                          "type":  "화재 위험 확인"
+                      },
+                      {
+                          "checklist_id":  312,
+                          "company_id":  1,
+                          "event_id":  "EVT-012",
+                          "date":  "2026-07-12T11:10:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  12,
+                          "content":  "안전모 착용 안내 완료",
+                          "image_url":  "https://example.com/evidence/checklist-312.jpg",
+                          "type":  "현장 교육 확인"
+                      },
+                      {
+                          "checklist_id":  313,
+                          "company_id":  1,
+                          "event_id":  "EVT-013",
+                          "date":  "2026-07-13T15:45:00",
+                          "status":  "조치 대기",
+                          "uid":  101,
+                          "camera_id":  13,
+                          "content":  "지게차 동선 재교육 필요",
+                          "image_url":  "https://example.com/evidence/checklist-313.jpg",
+                          "type":  "동선 점검"
+                      },
+                      {
+                          "checklist_id":  314,
+                          "company_id":  1,
+                          "event_id":  "EVT-014",
+                          "date":  "2026-07-14T09:30:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  11,
+                          "content":  "피난통로 적치물 제거 확인",
+                          "image_url":  "https://example.com/evidence/checklist-314.jpg",
+                          "type":  "이벤트 조치 확인"
+                      },
+                      {
+                          "checklist_id":  315,
+                          "company_id":  1,
+                          "event_id":  "EVT-015",
+                          "date":  "2026-07-15T14:15:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  12,
+                          "content":  "상하차장 장애물 정리 확인",
+                          "image_url":  "https://example.com/evidence/checklist-315.jpg",
+                          "type":  "정리정돈 확인"
+                      },
+                      {
+                          "checklist_id":  316,
+                          "company_id":  1,
+                          "event_id":  "EVT-016",
+                          "date":  "2026-07-16T11:55:00",
+                          "status":  "조치 대기",
+                          "uid":  101,
+                          "camera_id":  14,
+                          "content":  "전기실 적치 금지 표시 필요",
+                          "image_url":  "https://example.com/evidence/checklist-316.jpg",
+                          "type":  "화재 위험 확인"
+                      },
+                      {
+                          "checklist_id":  317,
+                          "company_id":  1,
+                          "event_id":  "EVT-017",
+                          "date":  "2026-07-17T17:05:00",
+                          "status":  "완료",
+                          "uid":  102,
+                          "camera_id":  12,
+                          "content":  "보호구 착용 현장 확인",
+                          "image_url":  "https://example.com/evidence/checklist-317.jpg",
+                          "type":  "현장 교육 확인"
+                      },
+                      {
+                          "checklist_id":  318,
+                          "company_id":  1,
+                          "event_id":  "EVT-018",
+                          "date":  "2026-07-18T11:25:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  13,
+                          "content":  "지게차 동선 분리 확인",
+                          "image_url":  "https://example.com/evidence/checklist-318.jpg",
+                          "type":  "동선 점검"
+                      },
+                      {
+                          "checklist_id":  319,
+                          "company_id":  1,
+                          "event_id":  "EVT-019",
+                          "date":  "2026-07-19T14:40:00",
+                          "status":  "조치 대기",
+                          "uid":  101,
+                          "camera_id":  11,
+                          "content":  "피난통로 반복 적치 담당 부서 확인 필요",
+                          "image_url":  "https://example.com/evidence/checklist-319.jpg",
+                          "type":  "반복 위험 확인"
+                      },
+                      {
+                          "checklist_id":  320,
+                          "company_id":  1,
+                          "event_id":  "EVT-020",
+                          "date":  "2026-07-20T10:00:00",
+                          "status":  "완료",
+                          "uid":  101,
+                          "camera_id":  14,
+                          "content":  "전기함 주변 정리 확인",
+                          "image_url":  "https://example.com/evidence/checklist-320.jpg",
+                          "type":  "화재 위험 확인"
+                      }
+                  ],
+    "action_history":  [
+                           {
+                               "action_history_id":  601,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-001",
+                               "inspection_history_id":  501,
+                               "category_id":  201,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "피난통로 적치물 제거",
+                               "type":  "이벤트",
+                               "location":  "2층 A구역",
+                               "created_at":  "2026-07-01T09:12:00",
+                               "completed_at":  "2026-07-01T09:40:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-601.jpg",
+                               "content":  "적치물을 지정 보관 구역으로 이동하고 피난통로를 확보함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-01T10:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  602,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-002",
+                               "inspection_history_id":  502,
+                               "category_id":  202,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "보호구 착용 재교육",
+                               "type":  "이벤트",
+                               "location":  "1층 상하차장",
+                               "created_at":  "2026-07-02T13:22:00",
+                               "completed_at":  "2026-07-02T13:45:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-602.jpg",
+                               "content":  "작업자에게 안전모 착용 지침을 안내하고 착용 상태를 재확인함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-02T14:20:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  603,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-003",
+                               "inspection_history_id":  null,
+                               "category_id":  203,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "지게차 동선 분리",
+                               "type":  "이벤트",
+                               "location":  "3층 포장라인",
+                               "created_at":  "2026-07-03T10:08:00",
+                               "completed_at":  "2026-07-03T10:30:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-603.jpg",
+                               "content":  "보행자 통로와 지게차 동선을 임시 라바콘으로 분리함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-03T11:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  604,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-004",
+                               "inspection_history_id":  null,
+                               "category_id":  204,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "전기함 주변 적치물 제거",
+                               "type":  "이벤트",
+                               "location":  "지하 전기실",
+                               "created_at":  "2026-07-04T15:45:00",
+                               "completed_at":  "2026-07-04T16:10:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-604.jpg",
+                               "content":  "전기함 전면 적치물을 제거하고 접근 공간을 확보함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-04T16:40:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  605,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-005",
+                               "inspection_history_id":  null,
+                               "category_id":  205,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "바닥 장애물 정리",
+                               "type":  "이벤트",
+                               "location":  "3층 포장라인",
+                               "created_at":  "2026-07-05T11:20:00",
+                               "completed_at":  "2026-07-05T11:45:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-605.jpg",
+                               "content":  "작업 통로의 포장재와 공박스를 정리함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-05T12:20:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  606,
+                               "company_id":  1,
+                               "board_id":  701,
+                               "event_id":  "EVT-006",
+                               "inspection_history_id":  null,
+                               "category_id":  201,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "반복 적치 구역 개선",
+                               "type":  "이벤트",
+                               "location":  "2층 A구역",
+                               "created_at":  "2026-07-06T16:05:00",
+                               "completed_at":  null,
+                               "action_status":  "조치 대기",
+                               "image_url":  null,
+                               "content":  "보관 구역 재배치 및 적치 금지 표시선 보강 예정",
+                               "approval_status":  "승인 대기",
+                               "approval_date":  null,
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  607,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-007",
+                               "inspection_history_id":  null,
+                               "category_id":  202,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "보호구 착용 확인",
+                               "type":  "이벤트",
+                               "location":  "1층 상하차장",
+                               "created_at":  "2026-07-07T08:55:00",
+                               "completed_at":  "2026-07-07T09:15:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-607.jpg",
+                               "content":  "현장 작업자 보호구 착용 상태를 재확인함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-07T10:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  608,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-008",
+                               "inspection_history_id":  null,
+                               "category_id":  203,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "보행자 동선 분리",
+                               "type":  "이벤트",
+                               "location":  "3층 포장라인",
+                               "created_at":  "2026-07-08T14:30:00",
+                               "completed_at":  "2026-07-08T14:55:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-608.jpg",
+                               "content":  "보행자 대기 구역과 지게차 이동 구역을 분리함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-08T15:30:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  609,
+                               "company_id":  1,
+                               "board_id":  701,
+                               "event_id":  "EVT-009",
+                               "inspection_history_id":  null,
+                               "category_id":  201,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "피난통로 반복 적치 개선",
+                               "type":  "이벤트",
+                               "location":  "2층 A구역",
+                               "created_at":  "2026-07-09T09:40:00",
+                               "completed_at":  null,
+                               "action_status":  "조치 대기",
+                               "image_url":  null,
+                               "content":  "반복 적치 원인 확인 및 보관 위치 변경 필요",
+                               "approval_status":  "승인 대기",
+                               "approval_date":  null,
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  610,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-010",
+                               "inspection_history_id":  null,
+                               "category_id":  205,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "장애물 제거",
+                               "type":  "이벤트",
+                               "location":  "3층 포장라인",
+                               "created_at":  "2026-07-10T17:15:00",
+                               "completed_at":  "2026-07-10T17:35:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-610.jpg",
+                               "content":  "작업장 바닥 장애물을 즉시 제거함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-10T18:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  611,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-011",
+                               "inspection_history_id":  null,
+                               "category_id":  204,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "전기함 접근 공간 확보",
+                               "type":  "이벤트",
+                               "location":  "지하 전기실",
+                               "created_at":  "2026-07-11T12:10:00",
+                               "completed_at":  "2026-07-11T12:30:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-611.jpg",
+                               "content":  "전기함 주변 적치물을 제거하고 접근 금지 안내를 부착함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-11T13:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  612,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-012",
+                               "inspection_history_id":  null,
+                               "category_id":  202,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "안전모 착용 안내",
+                               "type":  "이벤트",
+                               "location":  "1층 상하차장",
+                               "created_at":  "2026-07-12T10:45:00",
+                               "completed_at":  "2026-07-12T11:10:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-612.jpg",
+                               "content":  "작업자 안전모 착용을 확인하고 보호구 착용 기준을 재안내함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-12T11:40:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  613,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-013",
+                               "inspection_history_id":  null,
+                               "category_id":  203,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "지게차 동선 재교육",
+                               "type":  "이벤트",
+                               "location":  "3층 포장라인",
+                               "created_at":  "2026-07-13T15:20:00",
+                               "completed_at":  "2026-07-13T15:45:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-613.jpg",
+                               "content":  "지게차 이동 동선과 보행자 대기 위치를 작업자에게 재교육함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-13T16:20:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  614,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-014",
+                               "inspection_history_id":  null,
+                               "category_id":  201,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "피난통로 적치물 제거",
+                               "type":  "이벤트",
+                               "location":  "2층 A구역",
+                               "created_at":  "2026-07-14T09:05:00",
+                               "completed_at":  "2026-07-14T09:30:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-614.jpg",
+                               "content":  "피난통로 적치물을 제거하고 통로 확보 상태를 확인함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-14T10:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  615,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-015",
+                               "inspection_history_id":  null,
+                               "category_id":  205,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "상하차장 장애물 정리",
+                               "type":  "이벤트",
+                               "location":  "1층 상하차장",
+                               "created_at":  "2026-07-15T13:50:00",
+                               "completed_at":  "2026-07-15T14:15:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-615.jpg",
+                               "content":  "상하차장 바닥 장애물을 제거하고 작업 동선을 확보함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-15T14:45:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  616,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-016",
+                               "inspection_history_id":  null,
+                               "category_id":  204,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "전기실 적치 금지 표시",
+                               "type":  "이벤트",
+                               "location":  "지하 전기실",
+                               "created_at":  "2026-07-16T11:30:00",
+                               "completed_at":  "2026-07-16T11:55:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-616.jpg",
+                               "content":  "전기실 적치 금지 표시를 보강하고 주변 적치물을 제거함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-16T12:30:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  617,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-017",
+                               "inspection_history_id":  null,
+                               "category_id":  202,
+                               "handler_uid":  102,
+                               "handler_name":  "이관리",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "보호구 착용 현장 확인",
+                               "type":  "이벤트",
+                               "location":  "1층 상하차장",
+                               "created_at":  "2026-07-17T16:40:00",
+                               "completed_at":  "2026-07-17T17:05:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-617.jpg",
+                               "content":  "작업자 보호구 착용 상태를 확인하고 미착용자에게 즉시 착용 조치함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-17T17:40:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  618,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-018",
+                               "inspection_history_id":  null,
+                               "category_id":  203,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "지게차 동선 분리 확인",
+                               "type":  "이벤트",
+                               "location":  "3층 포장라인",
+                               "created_at":  "2026-07-18T11:00:00",
+                               "completed_at":  "2026-07-18T11:25:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-618.jpg",
+                               "content":  "지게차 동선과 작업자 이동 구역을 분리하고 표지물을 정비함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-18T12:00:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  619,
+                               "company_id":  1,
+                               "board_id":  701,
+                               "event_id":  "EVT-019",
+                               "inspection_history_id":  null,
+                               "category_id":  201,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "피난통로 반복 적치 담당 부서 확인",
+                               "type":  "이벤트",
+                               "location":  "2층 A구역",
+                               "created_at":  "2026-07-19T14:10:00",
+                               "completed_at":  "2026-07-19T14:40:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-619.jpg",
+                               "content":  "담당 부서에 반복 적치 원인을 확인하고 보관 위치 변경을 안내함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-19T15:20:00",
+                               "rejection_reason":  null
+                           },
+                           {
+                               "action_history_id":  620,
+                               "company_id":  1,
+                               "board_id":  null,
+                               "event_id":  "EVT-020",
+                               "inspection_history_id":  null,
+                               "category_id":  204,
+                               "handler_uid":  101,
+                               "handler_name":  "김안전",
+                               "approver_uid":  201,
+                               "approver_name":  "박승인",
+                               "action_name":  "전기함 주변 정리",
+                               "type":  "이벤트",
+                               "location":  "지하 전기실",
+                               "created_at":  "2026-07-20T09:35:00",
+                               "completed_at":  "2026-07-20T10:00:00",
+                               "action_status":  "조치 완료",
+                               "image_url":  "https://example.com/evidence/action-620.jpg",
+                               "content":  "전기함 주변 물품을 제거하고 접근 공간을 확보함",
+                               "approval_status":  "승인 완료",
+                               "approval_date":  "2026-07-20T10:30:00",
+                               "rejection_reason":  null
+                           }
+                       ],
+    "inspection":  [
+                       {
+                           "inspection_id":  401,
+                           "company_id":  1,
+                           "category_id":  201,
+                           "uid":  101,
+                           "name":  "피난통로 주간 점검",
+                           "location":  "2층 A구역",
+                           "cycle":  "WEEKLY",
+                           "content":  "피난통로 적치 여부와 비상구 접근성을 확인한다."
+                       },
+                       {
+                           "inspection_id":  402,
+                           "company_id":  1,
+                           "category_id":  202,
+                           "uid":  102,
+                           "name":  "상하차장 보호구 착용 점검",
+                           "location":  "1층 상하차장",
+                           "cycle":  "DAILY",
+                           "content":  "상하차 작업자의 안전모 및 안전화 착용 여부를 확인한다."
+                       },
+                       {
+                           "inspection_id":  403,
+                           "company_id":  1,
+                           "category_id":  204,
+                           "uid":  101,
+                           "name":  "전기실 화재 위험 점검",
+                           "location":  "지하 전기실",
+                           "cycle":  "WEEKLY",
+                           "content":  "전기함 주변 적치 및 접근 공간을 확인한다."
+                       }
+                   ],
+    "inspection_history":  [
+
+                           ],
+    "education":  [
+                      {
+                          "education_id":  801,
+                          "company_id":  1,
+                          "title":  "피난통로 확보 및 적치 금지 교육",
+                          "video_url":  "https://example.com/education/evacuation-path.mp4",
+                          "category":  "통로/피난",
+                          "type":  "필수"
+                      },
+                      {
+                          "education_id":  802,
+                          "company_id":  1,
+                          "title":  "보호구 착용 기준 교육",
+                          "video_url":  "https://example.com/education/ppe.mp4",
+                          "category":  "보호구",
+                          "type":  "정기"
+                      }
+                  ],
+    "education_status":  [
+                             {
+                                 "status_id":  901,
+                                 "uid":  101,
+                                 "user_name":  "김안전",
+                                 "education_id":  801,
+                                 "status":  "이수",
+                                 "completed_date":  "2026-07-02T17:00:00"
+                             },
+                             {
+                                 "status_id":  902,
+                                 "uid":  102,
+                                 "user_name":  "이관리",
+                                 "education_id":  802,
+                                 "status":  "이수",
+                                 "completed_date":  "2026-07-05T12:30:00"
+                             },
+                             {
+                                 "status_id":  903,
+                                 "uid":  103,
+                                 "user_name":  "최작업",
+                                 "education_id":  802,
+                                 "status":  "진행중",
+                                 "completed_date":  null
+                             },
+                             {
+                                 "status_id":  904,
+                                 "uid":  104,
+                                 "user_name":  "정작업",
+                                 "education_id":  801,
+                                 "status":  "미이수",
+                                 "completed_date":  null
+                             }
+                         ],
+    "board":  [
+                  {
+                      "board_id":  701,
+                      "company_id":  1,
+                      "uid":  101,
+                      "event_category_id":  201,
+                      "title":  "2층 A구역 반복 적치 재발 방지 요청",
+                      "board_contents":  "동일 위치에서 피난통로 적치 이벤트가 반복되어 보관 구역 재배치와 표시선 보강이 필요합니다.",
+                      "status":  "처리중",
+                      "location":  "2층 A구역",
+                      "image_url":  "https://example.com/board/701.jpg",
+                      "created_at":  "2026-07-06T16:30:00",
+                      "updated_at":  "2026-07-09T17:00:00"
+                  }
+              ],
+    "report":  {
+                   "report_id":  1001,
+                   "company_id":  1,
+                   "uid":  101,
+                   "writer":  "김안전",
+                   "content":  "",
+                   "summary":  "",
+                   "created_at":  "2026-07-31T18:00:00"
+               },
+    "report_event_map":  [
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-001"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-002"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-003"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-004"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-005"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-006"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-007"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-008"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-009"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-010"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-011"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-012"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-013"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-014"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-015"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-016"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-017"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-018"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-019"
+                             },
+                             {
+                                 "report_id":  1001,
+                                 "event_id":  "EVT-020"
+                             }
+                         ],
+    "report_checklist_map":  [
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  301
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  302
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  303
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  304
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  305
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  306
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  307
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  308
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  309
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  310
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  311
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  312
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  313
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  314
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  315
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  316
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  317
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  318
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  319
+                                 },
+                                 {
+                                     "report_id":  1001,
+                                     "checklist_id":  320
+                                 }
+                             ],
+    "report_inspection_map":  [
+
+                              ],
+    "report_action_map":  [
+                              {
+                                  "id":  1,
+                                  "report_id":  1001,
+                                  "action_history_id":  601
+                              },
+                              {
+                                  "id":  2,
+                                  "report_id":  1001,
+                                  "action_history_id":  602
+                              },
+                              {
+                                  "id":  3,
+                                  "report_id":  1001,
+                                  "action_history_id":  603
+                              },
+                              {
+                                  "id":  4,
+                                  "report_id":  1001,
+                                  "action_history_id":  604
+                              },
+                              {
+                                  "id":  5,
+                                  "report_id":  1001,
+                                  "action_history_id":  605
+                              },
+                              {
+                                  "id":  6,
+                                  "report_id":  1001,
+                                  "action_history_id":  606
+                              },
+                              {
+                                  "id":  7,
+                                  "report_id":  1001,
+                                  "action_history_id":  607
+                              },
+                              {
+                                  "id":  8,
+                                  "report_id":  1001,
+                                  "action_history_id":  608
+                              },
+                              {
+                                  "id":  9,
+                                  "report_id":  1001,
+                                  "action_history_id":  609
+                              },
+                              {
+                                  "id":  10,
+                                  "report_id":  1001,
+                                  "action_history_id":  610
+                              },
+                              {
+                                  "id":  11,
+                                  "report_id":  1001,
+                                  "action_history_id":  611
+                              },
+                              {
+                                  "id":  12,
+                                  "report_id":  1001,
+                                  "action_history_id":  612
+                              },
+                              {
+                                  "id":  13,
+                                  "report_id":  1001,
+                                  "action_history_id":  613
+                              },
+                              {
+                                  "id":  14,
+                                  "report_id":  1001,
+                                  "action_history_id":  614
+                              },
+                              {
+                                  "id":  15,
+                                  "report_id":  1001,
+                                  "action_history_id":  615
+                              },
+                              {
+                                  "id":  16,
+                                  "report_id":  1001,
+                                  "action_history_id":  616
+                              },
+                              {
+                                  "id":  17,
+                                  "report_id":  1001,
+                                  "action_history_id":  617
+                              },
+                              {
+                                  "id":  18,
+                                  "report_id":  1001,
+                                  "action_history_id":  618
+                              },
+                              {
+                                  "id":  19,
+                                  "report_id":  1001,
+                                  "action_history_id":  619
+                              },
+                              {
+                                  "id":  20,
+                                  "report_id":  1001,
+                                  "action_history_id":  620
+                              }
+                          ],
+    "signup_code":  [
+                        {
+                            "id":  1,
+                            "company_id":  1,
+                            "code":  "ACENTER-SAFE-2026",
+                            "role":  "안전관리자",
+                            "category":  "안전관리",
+                            "is_used":  true,
+                            "used_by_uid":  101,
+                            "created_at":  "2026-01-11T09:00:00"
+                        }
+                    ]
+}
