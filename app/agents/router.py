@@ -5,7 +5,7 @@ from openai import OpenAI
 from app.config import OPENAI_API_KEY, OPENAI_MODEL
 from app.roles import is_admin
 from app.state import AgentState
-from app.tools.backend_client import BackendClientError, get_agent_session
+from app.tools.backend_client import BackendClientError, get_current_user_profile
 
 
 ROUTER_NEXT_STEPS = {
@@ -31,7 +31,7 @@ def auth_node(state: AgentState) -> AgentState:
         }
 
     try:
-        session = get_agent_session(state["access_token"])
+        session = get_current_user_profile(state["access_token"])
     except BackendClientError as exc:
         return {
             **state,
@@ -41,16 +41,22 @@ def auth_node(state: AgentState) -> AgentState:
 
     role = str(session.get("role", "")).strip()
     uid = session.get("uid")
-    if not is_admin(role) or not isinstance(uid, int):
+    company_id = session.get("company_id")
+    if (
+        not is_admin(role)
+        or not isinstance(uid, int)
+        or not isinstance(company_id, int)
+    ):
         return {
             **state,
-            "error_message": "안전관리자 권한을 확인할 수 없습니다.",
+            "error_message": "안전관리자 권한과 회사 범위를 확인할 수 없습니다.",
             "next_step": "answer_agent",
         }
 
     return {
         **state,
         "uid": uid,
+        "company_id": company_id,
         "role": role,
         "context": {
             **state["context"],

@@ -47,8 +47,8 @@ def get_backend_json(
     return payload
 
 
-def get_agent_session(access_token: str) -> dict[str, Any]:
+def get_current_user_profile(access_token: str) -> dict[str, Any]:
     return get_backend_json(
-        "/api/agent-data/inspection-action/session",
+        "/api/users/me",
         access_token=access_token,
     )

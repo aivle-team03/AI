@@ -1,5 +1,7 @@
 import unittest
-from unittest.mock import patch
+from contextlib import contextmanager
+from datetime import date, datetime, time
+from unittest.mock import MagicMock, patch
 
 from fastapi.testclient import TestClient
 
@@ -8,6 +10,7 @@ from app.agents.inspection_action_management import (
     inspection_action_management_agent_node,
 )
 from app.agents.router import auth_node
+from app.db.read_db import AgentReadDatabaseError
 from app.schemas.inspection_action import InspectionActionQuery
 from app.server import app
 from app.tools.inspection_action_tools import execute_inspection_action_query
@@ -45,21 +48,47 @@ class AgentApiTest(unittest.TestCase):
 
 
 class AgentAuthAndToolTest(unittest.TestCase):
-    @patch("app.agents.router.get_agent_session")
-    def test_auth_uses_trusted_backend_session(self, get_agent_session):
-        get_agent_session.return_value = {"uid": 9, "role": "안전관리자"}
+    @patch("app.agents.router.get_current_user_profile")
+    def test_auth_uses_trusted_backend_profile(self, get_current_user_profile):
+        get_current_user_profile.return_value = {
+            "uid": 9,
+            "company_id": 41,
+            "role": "안전관리자",
+        }
         state = create_initial_state("signed-token", "조치 대기 내역")
 
         result = auth_node(state)
 
         self.assertEqual(result["next_step"], "router")
         self.assertEqual(result["uid"], 9)
+        self.assertEqual(result["company_id"], 41)
         self.assertEqual(result["role"], "안전관리자")
         self.assertNotIn("access_token", result["context"])
 
-    @patch("app.tools.inspection_action_tools.get_backend_json")
-    def test_tool_uses_allowlisted_path_and_parameters(self, get_backend_json):
-        get_backend_json.return_value = {"items": [], "total_items": 0}
+    @patch("app.agents.router.get_current_user_profile")
+    def test_auth_rejects_profile_without_company_id(self, get_current_user_profile):
+        get_current_user_profile.return_value = {
+            "uid": 9,
+            "role": "안전관리자",
+        }
+
+        result = auth_node(create_initial_state("signed-token", "점검 내역"))
+
+        self.assertEqual(result["next_step"], "answer_agent")
+        self.assertIn("회사", result["error_message"])
+
+    @patch("app.tools.inspection_action_tools.repository.get_action_histories")
+    @patch("app.tools.inspection_action_tools.get_read_session")
+    def test_tool_forces_company_scope_and_allowlisted_filters(
+        self,
+        get_read_session,
+        get_action_histories,
+    ):
+        session = object()
+        context = MagicMock()
+        context.__enter__.return_value = session
+        get_read_session.return_value = context
+        get_action_histories.return_value = {"items": [], "total_items": 0}
         query = InspectionActionQuery(
             operation="list_action_histories",
             source_type="점검이력",
@@ -67,21 +96,57 @@ class AgentAuthAndToolTest(unittest.TestCase):
             limit=10,
         )
 
-        execute_inspection_action_query(query, access_token="signed-token")
+        execute_inspection_action_query(query, company_id=41)
 
-        self.assertEqual(
-            get_backend_json.call_args.args[0],
-            "/api/agent-data/inspection-action/action-histories",
+        self.assertIs(get_action_histories.call_args.args[0], session)
+        kwargs = get_action_histories.call_args.kwargs
+        self.assertEqual(kwargs["company_id"], 41)
+        self.assertEqual(kwargs["source_type"], "점검이력")
+        self.assertEqual(kwargs["action_status"], "조치 대기")
+        self.assertEqual(kwargs["offset"], 0)
+        self.assertEqual(kwargs["limit"], 10)
+
+    @patch("app.tools.inspection_action_tools.repository.get_inspection_histories")
+    @patch("app.tools.inspection_action_tools.get_read_session")
+    def test_detail_query_preserves_item_shape_and_full_day_filter(
+        self,
+        get_read_session,
+        get_inspection_histories,
+    ):
+        context = MagicMock()
+        context.__enter__.return_value = object()
+        get_read_session.return_value = context
+        item = {"inspection_history_id": 11, "status": "점검 완료"}
+        get_inspection_histories.return_value = {
+            "items": [item],
+            "total_items": 1,
+        }
+        query = InspectionActionQuery(
+            operation="get_inspection_history",
+            inspection_history_id=11,
+            date_from=date(2026, 8, 3),
+            date_to=date(2026, 8, 3),
         )
-        self.assertEqual(
-            get_backend_json.call_args.kwargs["params"],
-            {
-                "source_type": "점검이력",
-                "action_status": "조치 대기",
-                "offset": 0,
-                "limit": 10,
-            },
-        )
+
+        result = execute_inspection_action_query(query, company_id=41)
+
+        self.assertEqual(result, item)
+        kwargs = get_inspection_histories.call_args.kwargs
+        self.assertEqual(kwargs["date_from"], datetime.combine(query.date_from, time.min))
+        self.assertEqual(kwargs["date_to"], datetime.combine(query.date_to, time.max))
+
+    @patch("app.tools.inspection_action_tools.get_read_session")
+    def test_tool_fails_closed_without_read_database(self, get_read_session):
+        @contextmanager
+        def unavailable_session():
+            raise AgentReadDatabaseError("설정되지 않았습니다.")
+            yield
+
+        get_read_session.side_effect = unavailable_session
+        query = InspectionActionQuery(operation="list_inspections")
+
+        with self.assertRaises(AgentReadDatabaseError):
+            execute_inspection_action_query(query, company_id=41)
 
     @patch(
         "app.agents.inspection_action_management.execute_inspection_action_query"
@@ -121,6 +186,7 @@ class AgentAuthAndToolTest(unittest.TestCase):
         }
         state = create_initial_state("signed-token", "완료된 점검 이력을 보여줘")
         state["uid"] = 9
+        state["company_id"] = 41
         state["role"] = "안전관리자"
 
         result = inspection_action_management_agent_node(state)
@@ -130,6 +196,7 @@ class AgentAuthAndToolTest(unittest.TestCase):
         planned_query = execute_query.call_args.args[0]
         self.assertEqual(planned_query.operation, "list_inspection_histories")
         self.assertEqual(planned_query.status_filter, "점검 완료")
+        self.assertEqual(execute_query.call_args.kwargs["company_id"], 41)
 
 
 if __name__ == "__main__":

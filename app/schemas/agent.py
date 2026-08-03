@@ -12,6 +12,7 @@ RouteStep = Literal[
 class AgentState(TypedDict):
     access_token: str
     uid: Optional[int]
+    company_id: Optional[int]
     role: str
     user_message: str
 

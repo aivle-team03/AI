@@ -16,6 +16,7 @@ def create_initial_state(
     return {
         "access_token": access_token.strip(),
         "uid": None,
+        "company_id": None,
         "role": "",
         "user_message": normalized_user_message,
         "context": {},

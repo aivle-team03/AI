@@ -1,91 +1,119 @@
-from datetime import date
-from typing import Any
+from datetime import date, datetime, time
+from typing import Any, Optional
 
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.db.read_db import AgentReadDatabaseError, get_read_session
+from app.repositories import inspection_action as repository
 from app.schemas.inspection_action import InspectionActionQuery
-from app.tools.backend_client import get_backend_json
 
 
-LIST_PATHS = {
-    "list_inspections": "/api/agent-data/inspection-action/inspections",
-    "list_inspection_histories": (
-        "/api/agent-data/inspection-action/inspection-histories"
-    ),
-    "list_action_histories": (
-        "/api/agent-data/inspection-action/action-histories"
-    ),
-}
+def _start_of_day(value: Optional[date]) -> Optional[datetime]:
+    return datetime.combine(value, time.min) if value else None
 
 
-def _query_params(query: InspectionActionQuery) -> dict[str, Any]:
-    allowed_fields = {
-        "list_inspections": {
-            "keyword",
-            "category_id",
-            "uid",
-            "offset",
-            "limit",
-        },
-        "list_inspection_histories": {
-            "inspection_id",
-            "keyword",
-            "status_filter",
-            "is_action_required",
-            "date_from",
-            "date_to",
-            "offset",
-            "limit",
-        },
-        "list_action_histories": {
-            "keyword",
-            "source_type",
-            "category_id",
-            "action_status",
-            "approval_status",
-            "handler_uid",
-            "unassigned",
-            "created_from",
-            "created_to",
-            "completed_from",
-            "completed_to",
-            "offset",
-            "limit",
-        },
-    }
-    fields = allowed_fields[query.operation]
-    params = query.model_dump(exclude_none=True, include=fields)
-    return {
-        key: value.isoformat() if isinstance(value, date) else value
-        for key, value in params.items()
-    }
+def _end_of_day(value: Optional[date]) -> Optional[datetime]:
+    return datetime.combine(value, time.max) if value else None
+
+
+def _first_or_error(result: dict[str, Any]) -> dict[str, Any]:
+    if not result["items"]:
+        raise AgentReadDatabaseError("요청한 데이터를 찾을 수 없습니다.")
+    return result["items"][0]
 
 
 def execute_inspection_action_query(
     query: InspectionActionQuery,
     *,
-    access_token: str,
+    company_id: int,
 ) -> dict[str, Any]:
-    if query.operation in LIST_PATHS:
-        return get_backend_json(
-            LIST_PATHS[query.operation],
-            access_token=access_token,
-            params=_query_params(query),
-        )
+    if company_id <= 0:
+        raise AgentReadDatabaseError("인증된 회사 정보를 확인할 수 없습니다.")
 
-    detail_paths = {
-        "get_inspection": (
-            "/api/agent-data/inspection-action/inspections/"
-            f"{query.inspection_id}"
-        ),
-        "get_inspection_history": (
-            "/api/agent-data/inspection-action/inspection-histories/"
-            f"{query.inspection_history_id}"
-        ),
-        "get_action_history": (
-            "/api/agent-data/inspection-action/action-histories/"
-            f"{query.action_history_id}"
-        ),
-    }
-    return get_backend_json(
-        detail_paths[query.operation],
-        access_token=access_token,
-    )
+    try:
+        with get_read_session() as db:
+            if query.operation in {"list_inspections", "get_inspection"}:
+                result = repository.get_inspections(
+                    db,
+                    company_id=company_id,
+                    inspection_id=(
+                        query.inspection_id
+                        if query.operation == "get_inspection"
+                        else None
+                    ),
+                    keyword=query.keyword,
+                    category_id=query.category_id,
+                    uid=query.uid,
+                    offset=query.offset,
+                    limit=1 if query.operation == "get_inspection" else query.limit,
+                )
+                return (
+                    _first_or_error(result)
+                    if query.operation == "get_inspection"
+                    else result
+                )
+
+            if query.operation in {
+                "list_inspection_histories",
+                "get_inspection_history",
+            }:
+                result = repository.get_inspection_histories(
+                    db,
+                    company_id=company_id,
+                    inspection_history_id=(
+                        query.inspection_history_id
+                        if query.operation == "get_inspection_history"
+                        else None
+                    ),
+                    inspection_id=query.inspection_id,
+                    keyword=query.keyword,
+                    status=query.status_filter,
+                    is_action_required=query.is_action_required,
+                    date_from=_start_of_day(query.date_from),
+                    date_to=_end_of_day(query.date_to),
+                    offset=query.offset,
+                    limit=(
+                        1
+                        if query.operation == "get_inspection_history"
+                        else query.limit
+                    ),
+                )
+                return (
+                    _first_or_error(result)
+                    if query.operation == "get_inspection_history"
+                    else result
+                )
+
+            result = repository.get_action_histories(
+                db,
+                company_id=company_id,
+                action_history_id=(
+                    query.action_history_id
+                    if query.operation == "get_action_history"
+                    else None
+                ),
+                keyword=query.keyword,
+                source_type=query.source_type,
+                category_id=query.category_id,
+                action_status=query.action_status,
+                approval_status=query.approval_status,
+                handler_uid=query.handler_uid,
+                unassigned=query.unassigned,
+                created_from=_start_of_day(query.created_from),
+                created_to=_end_of_day(query.created_to),
+                completed_from=_start_of_day(query.completed_from),
+                completed_to=_end_of_day(query.completed_to),
+                offset=query.offset,
+                limit=1 if query.operation == "get_action_history" else query.limit,
+            )
+            return (
+                _first_or_error(result)
+                if query.operation == "get_action_history"
+                else result
+            )
+    except AgentReadDatabaseError:
+        raise
+    except SQLAlchemyError as exc:
+        raise AgentReadDatabaseError(
+            "점검·조치 읽기 전용 데이터베이스 조회에 실패했습니다."
+        ) from exc
