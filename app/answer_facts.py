@@ -76,6 +76,7 @@ def _format_action_item(index: int, item: dict[str, Any]) -> list[str]:
         f"{index}. {_value(item.get('action_name'))}",
         f"   - 위치: {_value(item.get('location'))}",
         f"   - 분류: {_category(item)}",
+        f"   - 위험도: {_value(item.get('category_level'))}",
         f"   - 조치 상태: {_value(item.get('action_status'))}",
         f"   - 승인 상태: {_value(item.get('approval_status'))}",
         f"   - 담당자: {_value(item.get('handler_name'), '미할당')}",
@@ -99,6 +100,22 @@ def _format_inspection_action_execution(
 
     if operation in {"list_inspection_histories", "get_inspection_history"}:
         summary = result.get("summary", {}) if not is_detail else {}
+        if summary and query.get("response_mode") == "ratio":
+            total_count = int(summary.get("total_count") or 0)
+            action_required_count = int(
+                summary.get("action_required_count") or 0
+            )
+            ratio = (
+                round(action_required_count / total_count * 100, 1)
+                if total_count
+                else 0.0
+            )
+            return [
+                "점검 완료 건 중 조치 필요 비율입니다.",
+                f"- 점검 완료: {total_count}건",
+                f"- 조치 필요: {action_required_count}건",
+                f"- 비율: {ratio}%",
+            ]
         if summary and query.get("response_mode") == "summary":
             total_count = _value(summary.get("total_count"), "0")
             status_filter = query.get("status_filter")
@@ -202,9 +219,10 @@ def _format_inspection_action_execution(
             else:
                 lines.append(f"- 조치 대기: {_value(summary.get('waiting_count'), '0')}건")
                 lines.append(f"- 조치 완료: {_value(summary.get('completed_count'), '0')}건")
-            lines.append(
-                f"- 승인 대기: {_value(summary.get('pending_approval_count'), '0')}건"
-            )
+            if approval_status != "승인 대기":
+                lines.append(
+                    f"- 승인 대기: {_value(summary.get('pending_approval_count'), '0')}건"
+                )
             lines.append(f"- 미할당: {_value(summary.get('unassigned_count'), '0')}건")
             lines.append("")
         lines.append("조치 내역")
@@ -339,16 +357,54 @@ def _format_education_execution(
             return lines
         return _format_user_status(result)
 
+    if (
+        operation == "list_education_summaries"
+        and query.get("response_mode") == "summary"
+    ):
+        summary = result.get("summary", {})
+        category = query.get("category")
+        heading = (
+            f"{category} 교육 과정 집계입니다."
+            if category
+            else "교육 과정 집계입니다."
+        )
+        return [
+            heading,
+            f"- 교육 과정: {_value(summary.get('course_count'), '0')}개",
+            f"- 대상 배정: {_value(summary.get('target_assignment_count'), '0')}건",
+            f"- 미이수: {_value(summary.get('incomplete_count'), '0')}건",
+            f"- 진행중: {_value(summary.get('in_progress_count'), '0')}건",
+            f"- 이수: {_value(summary.get('completed_count'), '0')}건",
+            f"- 대상 배정 기준 통합 이수율: {_value(summary.get('completion_rate'), '0')}%",
+        ]
+
     is_detail = operation == "get_education_course"
     items = [result] if is_detail else result.get("items", [])
     lines = []
     if not is_detail:
-        lines.extend(
-            [
-                f"- 조회된 교육 과정: {_value(result.get('total_items'), '0')}개",
-                "",
-            ]
-        )
+        if query.get("order_by") in {
+            "completion_rate_asc",
+            "completion_rate_desc",
+        }:
+            criterion = (
+                "이수율이 가장 낮은 과정"
+                if query.get("order_by") == "completion_rate_asc"
+                else "이수율이 가장 높은 과정"
+            )
+            lines.extend(
+                [
+                    f"- 비교 대상 교육 과정: {_value(result.get('total_items'), '0')}개",
+                    f"- 표시 기준: {criterion}",
+                    "",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    f"- 조회된 교육 과정: {_value(result.get('total_items'), '0')}개",
+                    "",
+                ]
+            )
     lines.extend(_numbered_items(items, _format_course_item))
     return lines
 
@@ -378,6 +434,7 @@ def build_authoritative_answer(
         if len(executions) == 1 and query.get("response_mode") in {
             "summary",
             "reason",
+            "ratio",
         }:
             sections.append("\n".join(lines).strip())
         else:

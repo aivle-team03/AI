@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Literal, Optional
+from typing import Any, List, Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -26,8 +26,44 @@ class EducationQuery(BaseModel):
     due_state: Optional[Literal["this_week", "overdue", "no_due_date"]] = None
     due_from: Optional[date] = None
     due_to: Optional[date] = None
+    target_state: Optional[Literal["with_targets", "without_targets"]] = None
+    order_by: Optional[
+        Literal["completion_rate_asc", "completion_rate_desc"]
+    ] = None
+    response_mode: Literal["list", "summary"] = "list"
     offset: int = Field(default=0, ge=0)
     limit: int = Field(default=20, ge=1, le=50)
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_planner_values(cls, value: Any):
+        if not isinstance(value, dict):
+            return value
+        data = dict(value)
+        status_aliases = {
+            "incomplete": "미이수",
+            "not_completed": "미이수",
+            "in_progress": "진행중",
+            "progress": "진행중",
+            "completed": "이수",
+            "complete": "이수",
+        }
+        status = data.get("status_filter")
+        if isinstance(status, str):
+            data["status_filter"] = status_aliases.get(
+                status.strip().lower(),
+                status.strip(),
+            )
+
+        uid = data.get("uid")
+        if isinstance(uid, str):
+            normalized_uid = uid.strip()
+            if normalized_uid.isdigit():
+                data["uid"] = int(normalized_uid)
+            elif normalized_uid and not data.get("user_name"):
+                data.pop("uid", None)
+                data["user_name"] = normalized_uid
+        return data
 
     @model_validator(mode="after")
     def validate_operation_requirements(self):

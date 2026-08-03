@@ -147,6 +147,8 @@ def get_course_summaries(
     due_from: Optional[date] = None,
     due_to: Optional[date] = None,
     due_state: Optional[str] = None,
+    target_state: Optional[str] = None,
+    order_by: Optional[str] = None,
 ) -> dict:
     user = agent_education_user_read
     status = agent_education_status_read
@@ -223,13 +225,40 @@ def get_course_summaries(
             item["incomplete_count"] + item["in_progress_count"] == 0
         ):
             continue
+        if target_state == "with_targets" and target_count == 0:
+            continue
+        if target_state == "without_targets" and target_count != 0:
+            continue
         items.append(item)
+
+    if order_by == "completion_rate_asc":
+        items.sort(key=lambda item: (item["completion_rate"], item["education_id"]))
+    elif order_by == "completion_rate_desc":
+        items.sort(
+            key=lambda item: (-item["completion_rate"], item["education_id"])
+        )
+
+    target_assignment_count = sum(item["target_count"] for item in items)
+    completed_count = sum(item["completed_count"] for item in items)
+    summary = {
+        "course_count": len(items),
+        "target_assignment_count": target_assignment_count,
+        "incomplete_count": sum(item["incomplete_count"] for item in items),
+        "in_progress_count": sum(item["in_progress_count"] for item in items),
+        "completed_count": completed_count,
+        "completion_rate": (
+            round(completed_count / target_assignment_count * 100, 1)
+            if target_assignment_count
+            else 0.0
+        ),
+    }
 
     return {
         "items": items[offset : offset + limit],
         "total_items": len(items),
         "offset": offset,
         "limit": limit,
+        "summary": summary,
     }
 
 

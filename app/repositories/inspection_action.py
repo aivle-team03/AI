@@ -26,6 +26,8 @@ def get_inspections(
     inspection_id: Optional[int] = None,
     keyword: Optional[str] = None,
     category_id: Optional[int] = None,
+    category_value: Optional[str] = None,
+    category_name: Optional[str] = None,
     uid: Optional[int] = None,
 ) -> dict:
     inspection = agent_inspection_read
@@ -57,6 +59,10 @@ def get_inspections(
         )
     if category_id is not None:
         conditions.append(inspection.c.category_id == category_id)
+    if category_value:
+        conditions.append(category.c.category == category_value)
+    if category_name:
+        conditions.append(category.c.category_name == category_name)
     if uid is not None:
         conditions.append(inspection.c.uid == uid)
 
@@ -101,6 +107,8 @@ def get_inspection_histories(
     inspection_history_id: Optional[int] = None,
     inspection_id: Optional[int] = None,
     keyword: Optional[str] = None,
+    category_value: Optional[str] = None,
+    category_name: Optional[str] = None,
     status: Optional[str] = None,
     is_action_required: Optional[bool] = None,
     date_from: Optional[datetime] = None,
@@ -148,6 +156,10 @@ def get_inspection_histories(
                 _contains(history.c.content, keyword),
             )
         )
+    if category_value:
+        conditions.append(category.c.category == category_value)
+    if category_name:
+        conditions.append(category.c.category_name == category_name)
     if status:
         conditions.append(history.c.status == status)
     if is_action_required is not None:
@@ -227,14 +239,18 @@ def get_action_histories(
     keyword: Optional[str] = None,
     source_type: Optional[str] = None,
     category_id: Optional[int] = None,
+    category_value: Optional[str] = None,
+    category_name: Optional[str] = None,
     action_status: Optional[str] = None,
     approval_status: Optional[str] = None,
     handler_uid: Optional[int] = None,
+    inspection_history_ids: Optional[list[int]] = None,
     unassigned: Optional[bool] = None,
     created_from: Optional[datetime] = None,
     created_to: Optional[datetime] = None,
     completed_from: Optional[datetime] = None,
     completed_to: Optional[datetime] = None,
+    sort_by: Optional[str] = None,
 ) -> dict:
     action = agent_action_history_read
     category = agent_event_category_read
@@ -263,6 +279,13 @@ def get_action_histories(
             ),
         )
     )
+    unassigned_condition = and_(
+        action.c.handler_uid.is_(None),
+        or_(
+            action.c.handler_name.is_(None),
+            func.trim(action.c.handler_name) == "",
+        ),
+    )
     conditions = [action.c.company_id == company_id]
     if action_history_id is not None:
         conditions.append(action.c.action_history_id == action_history_id)
@@ -278,16 +301,24 @@ def get_action_histories(
         conditions.append(action.c.source_type == source_type)
     if category_id is not None:
         conditions.append(action.c.category_id == category_id)
+    if category_value:
+        conditions.append(category.c.category == category_value)
+    if category_name:
+        conditions.append(category.c.category_name == category_name)
     if action_status:
         conditions.append(action.c.action_status == action_status)
     if approval_status:
         conditions.append(action.c.approval_status == approval_status)
     if handler_uid is not None:
         conditions.append(action.c.handler_uid == handler_uid)
+    if inspection_history_ids:
+        conditions.append(
+            action.c.inspection_history_id.in_(inspection_history_ids)
+        )
     if unassigned is True:
-        conditions.append(action.c.handler_uid.is_(None))
+        conditions.append(unassigned_condition)
     elif unassigned is False:
-        conditions.append(action.c.handler_uid.is_not(None))
+        conditions.append(~unassigned_condition)
     if created_from:
         conditions.append(action.c.created_at >= created_from)
     if created_to:
@@ -338,18 +369,27 @@ def get_action_histories(
                 0,
             ).label("pending_approval"),
             func.coalesce(
-                func.sum(case((action.c.handler_uid.is_(None), 1), else_=0)),
+                func.sum(case((unassigned_condition, 1), else_=0)),
                 0,
             ).label("unassigned"),
         )
         .select_from(source)
         .where(*conditions)
     ).mappings().one()
+    ordering = (
+        [
+            category.c.level.desc(),
+            action.c.created_at.desc(),
+            action.c.action_history_id.desc(),
+        ]
+        if sort_by == "risk_desc"
+        else [action.c.created_at.desc(), action.c.action_history_id.desc()]
+    )
     rows = db.execute(
         select(*columns)
         .select_from(source)
         .where(*conditions)
-        .order_by(action.c.created_at.desc(), action.c.action_history_id.desc())
+        .order_by(*ordering)
         .offset(offset)
         .limit(limit)
     ).mappings()

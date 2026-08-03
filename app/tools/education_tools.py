@@ -58,6 +58,7 @@ def execute_education_query(
                 return repository.get_course_summaries(
                     db,
                     company_id=company_id,
+                    education_id=query.education_id,
                     keyword=query.keyword,
                     category=query.category,
                     education_type=query.education_type,
@@ -65,6 +66,8 @@ def execute_education_query(
                     due_from=query.due_from,
                     due_to=query.due_to,
                     due_state=query.due_state,
+                    target_state=query.target_state,
+                    order_by=query.order_by,
                     offset=query.offset,
                     limit=query.limit,
                 )

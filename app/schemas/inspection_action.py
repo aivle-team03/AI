@@ -56,8 +56,14 @@ class InspectionActionQuery(BaseModel):
     action_history_id: Optional[int] = Field(default=None, gt=0)
     keyword: Optional[str] = Field(default=None, max_length=100)
     category_id: Optional[int] = Field(default=None, gt=0)
+    category: Optional[str] = Field(default=None, min_length=1, max_length=50)
+    category_name: Optional[str] = Field(default=None, min_length=1, max_length=100)
     uid: Optional[int] = Field(default=None, gt=0)
     handler_uid: Optional[int] = Field(default=None, gt=0)
+    inspection_history_ids: Optional[List[int]] = Field(
+        default=None,
+        max_length=50,
+    )
     unassigned: Optional[bool] = None
     status_filter: Optional[Literal["점검 대기", "점검 완료"]] = None
     is_action_required: Optional[bool] = None
@@ -74,10 +80,11 @@ class InspectionActionQuery(BaseModel):
     created_to: Optional[date] = None
     completed_from: Optional[date] = None
     completed_to: Optional[date] = None
-    response_mode: Literal["summary", "list", "reason"] = "list"
+    response_mode: Literal["summary", "list", "reason", "ratio"] = "list"
     summary_scope: Optional[
         Literal["inspection_status", "action_status", "approval_status"]
     ] = None
+    sort_by: Optional[Literal["risk_desc"]] = None
     offset: int = Field(default=0, ge=0)
     limit: int = Field(default=20, ge=1, le=50)
 
@@ -124,6 +131,11 @@ class InspectionActionQuery(BaseModel):
         }.get(self.operation)
         if self.operation.startswith("get_") and required_id is None:
             raise ValueError("상세 조회 operation에는 대응하는 ID가 필요합니다.")
+        if self.inspection_history_ids is not None:
+            if not self.inspection_history_ids:
+                raise ValueError("inspection_history_ids는 비어 있을 수 없습니다.")
+            if any(value <= 0 for value in self.inspection_history_ids):
+                raise ValueError("inspection_history_ids는 양수여야 합니다.")
         return self
 
 

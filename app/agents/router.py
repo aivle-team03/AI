@@ -28,10 +28,25 @@ FOLLOW_UP_REFERENCE_TERMS = (
     "그건",
     "그거",
     "그것",
+    "그 점검",
+    "그 조치",
+    "그 교육",
     "해당",
     "앞서",
     "아까",
     "방금",
+)
+INSPECTION_ACTION_TERMS = (
+    "점검",
+    "조치",
+    "반려",
+    "승인 대기",
+)
+EDUCATION_TERMS = (
+    "교육",
+    "이수율",
+    "미이수",
+    "진행중",
 )
 COMPANY_ID_PATTERNS = (
     re.compile(r"company[_\s-]*id\s*[:=#]?\s*(\d+)", re.IGNORECASE),
@@ -71,6 +86,14 @@ def _follow_up_agent(state: AgentState) -> str:
         if executed_agent in ROUTER_NEXT_STEPS - {"answer_agent"}:
             return executed_agent
     return ""
+
+
+def _requests_multiple_domains(user_message: str) -> bool:
+    normalized = " ".join(user_message.split())
+    return (
+        any(term in normalized for term in INSPECTION_ACTION_TERMS)
+        and any(term in normalized for term in EDUCATION_TERMS)
+    )
 
 
 def auth_node(state: AgentState) -> AgentState:
@@ -141,6 +164,22 @@ def router_node(state: AgentState) -> AgentState:
                 "company_scope_violation": True,
             },
             "error_message": "다른 회사의 데이터에는 접근할 수 없습니다.",
+            "next_step": "answer_agent",
+        }
+
+    if _requests_multiple_domains(state["user_message"]):
+        return {
+            **state,
+            "context": {
+                **state["context"],
+                "routing_source": "multi_domain_policy",
+                "routing_target": "answer_agent",
+                "unsupported_multi_domain": True,
+            },
+            "error_message": (
+                "현재는 점검·조치와 교육을 한 질문에서 함께 조회할 수 없습니다. "
+                "두 영역을 각각 질문해 주세요."
+            ),
             "next_step": "answer_agent",
         }
 
