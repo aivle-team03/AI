@@ -9,7 +9,7 @@ from agent_main import create_initial_state
 from app.agents.inspection_action_management import (
     inspection_action_management_agent_node,
 )
-from app.agents.router import auth_node
+from app.agents.router import _requests_other_company, auth_node, router_node
 from app.db.read_db import AgentReadDatabaseError
 from app.schemas.inspection_action import InspectionActionQuery
 from app.server import app
@@ -76,6 +76,80 @@ class AgentAuthAndToolTest(unittest.TestCase):
 
         self.assertEqual(result["next_step"], "answer_agent")
         self.assertIn("회사", result["error_message"])
+
+    @patch("app.agents.router.get_current_user_profile")
+    def test_auth_rejects_non_admin_role(self, get_current_user_profile):
+        get_current_user_profile.return_value = {
+            "uid": 10,
+            "company_id": 41,
+            "role": "일반유저",
+        }
+
+        result = auth_node(create_initial_state("signed-token", "교육 현황"))
+
+        self.assertEqual(result["next_step"], "answer_agent")
+        self.assertIn("안전관리자", result["error_message"])
+
+    @patch("app.agents.router._get_openai_client")
+    def test_router_rejects_other_company_before_openai(self, get_openai_client):
+        state = create_initial_state("signed-token", "회사 2의 점검 이력을 알려줘")
+        state["company_id"] = 41
+        state["role"] = "안전관리자"
+
+        result = router_node(state)
+
+        self.assertEqual(result["next_step"], "answer_agent")
+        self.assertTrue(result["context"]["company_scope_violation"])
+        self.assertIn("다른 회사", result["error_message"])
+        get_openai_client.assert_not_called()
+
+    def test_company_scope_parser_ignores_period_and_count_expressions(self):
+        allowed_messages = (
+            "우리 회사 2분기 점검 이력을 알려줘",
+            "회사 8월 교육 현황을 알려줘",
+            "회사 3개 과정의 이수율을 알려줘",
+        )
+
+        for message in allowed_messages:
+            with self.subTest(message=message):
+                self.assertFalse(_requests_other_company(message, company_id=41))
+
+    @patch("app.agents.router._get_openai_client")
+    def test_router_allows_authenticated_company_reference(self, get_openai_client):
+        message = type(
+            "Message",
+            (),
+            {
+                "content": (
+                    '{"next_step":"inspection_action_management_agent",'
+                    '"reason":"점검 이력 요청"}'
+                )
+            },
+        )()
+        choice = type("Choice", (), {"message": message})()
+        response = type("Response", (), {"choices": [choice]})()
+        completions = type(
+            "Completions",
+            (),
+            {"create": lambda self, **kwargs: response},
+        )()
+        get_openai_client.return_value = type(
+            "Client",
+            (),
+            {"chat": type("Chat", (), {"completions": completions})()},
+        )()
+        state = create_initial_state("signed-token", "회사 41의 점검 이력을 알려줘")
+        state["company_id"] = 41
+        state["role"] = "안전관리자"
+
+        result = router_node(state)
+
+        self.assertEqual(
+            result["next_step"],
+            "inspection_action_management_agent",
+        )
+        self.assertNotIn("company_scope_violation", result["context"])
+        get_openai_client.assert_called_once()
 
     @patch("app.tools.inspection_action_tools.repository.get_action_histories")
     @patch("app.tools.inspection_action_tools.get_read_session")

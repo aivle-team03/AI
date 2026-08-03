@@ -1,4 +1,5 @@
 import json
+import re
 
 from openai import OpenAI
 
@@ -15,11 +16,39 @@ ROUTER_NEXT_STEPS = {
     "answer_agent",
 }
 
+OTHER_COMPANY_TERMS = (
+    "다른 회사",
+    "타 회사",
+    "타회사",
+    "타사",
+)
+COMPANY_ID_PATTERNS = (
+    re.compile(r"company[_\s-]*id\s*[:=#]?\s*(\d+)", re.IGNORECASE),
+    re.compile(
+        r"회사\s*(?:id|아이디)?\s*[:=#]?\s*(\d+)"
+        r"(?!\d|분기|월|년|일|주|차|개)",
+        re.IGNORECASE,
+    ),
+    re.compile(r"(\d+)\s*번\s*회사"),
+)
+
 
 def _get_openai_client():
     if not OPENAI_API_KEY:
         raise RuntimeError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
     return OpenAI(api_key=OPENAI_API_KEY)
+
+
+def _requests_other_company(user_message: str, company_id: int) -> bool:
+    normalized_message = " ".join(user_message.split())
+    if any(term in normalized_message for term in OTHER_COMPANY_TERMS):
+        return True
+
+    for pattern in COMPANY_ID_PATTERNS:
+        for match in pattern.finditer(normalized_message):
+            if int(match.group(1)) != company_id:
+                return True
+    return False
 
 
 def auth_node(state: AgentState) -> AgentState:
@@ -68,6 +97,23 @@ def auth_node(state: AgentState) -> AgentState:
 
 
 def router_node(state: AgentState) -> AgentState:
+    company_id = state.get("company_id")
+    if isinstance(company_id, int) and _requests_other_company(
+        state["user_message"],
+        company_id,
+    ):
+        return {
+            **state,
+            "context": {
+                **state["context"],
+                "routing_source": "company_scope_policy",
+                "routing_target": "answer_agent",
+                "company_scope_violation": True,
+            },
+            "error_message": "다른 회사의 데이터에는 접근할 수 없습니다.",
+            "next_step": "answer_agent",
+        }
+
     try:
         client = _get_openai_client()
         response = client.chat.completions.create(
