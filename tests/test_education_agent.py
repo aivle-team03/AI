@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from agent_main import create_initial_state
 from app.agents.education_management import (
     _prepare_education_plan,
+    _repair_education_plan_payload,
     education_management_agent_node,
 )
 from app.schemas.education import EducationPlan, EducationQuery
@@ -85,6 +86,18 @@ class EducationAgentTest(unittest.TestCase):
                         "due_state": "this_week",
                     }
                 ],
+                "referenced_items": [
+                    {
+                        "education_id": 2,
+                        "title": "비상구 실무 가이드",
+                        "category": "지게차",
+                    },
+                    {
+                        "education_id": 3,
+                        "title": "신규 근로자 기본 수칙",
+                        "category": "화물트럭",
+                    },
+                ],
             }
         ]
         plan = EducationPlan(
@@ -106,6 +119,91 @@ class EducationAgentTest(unittest.TestCase):
         self.assertEqual(query.category, "지게차")
         self.assertEqual(query.due_state, "this_week")
         self.assertEqual(query.status_filter, "미이수")
+
+    def test_follow_up_matches_category_from_previous_results(self):
+        history = [
+            {
+                "executed_agent": "education_management_agent",
+                "queries": [
+                    {
+                        "operation": "list_education_summaries",
+                        "due_state": "no_due_date",
+                    }
+                ],
+                "referenced_items": [
+                    {"education_id": 2, "category": "지게차"},
+                    {"education_id": 3, "category": "화물트럭"},
+                ],
+            }
+        ]
+        plan = EducationPlan(
+            queries=[EducationQuery(operation="list_education_summaries")]
+        )
+
+        prepared = _prepare_education_plan(
+            plan,
+            "그중에서 지게차 교육만 알려줘",
+            history,
+        )
+
+        query = prepared.queries[0]
+        self.assertEqual(query.category, "지게차")
+        self.assertEqual(query.due_state, "no_due_date")
+
+    def test_follow_up_applies_explicit_status_over_previous_filters(self):
+        history = [
+            {
+                "executed_agent": "education_management_agent",
+                "queries": [
+                    {
+                        "operation": "list_education_summaries",
+                        "category": "지게차",
+                        "due_state": "no_due_date",
+                    }
+                ],
+                "referenced_items": [],
+            }
+        ]
+        plan = EducationPlan(
+            queries=[EducationQuery(operation="list_education_summaries")]
+        )
+
+        prepared = _prepare_education_plan(
+            plan,
+            "그중에서 진행중인 대상자가 있는 과정만 알려줘",
+            history,
+        )
+
+        query = prepared.queries[0]
+        self.assertEqual(query.category, "지게차")
+        self.assertEqual(query.due_state, "no_due_date")
+        self.assertEqual(query.status_filter, "진행중")
+
+    def test_follow_up_repairs_ambiguous_detail_operation(self):
+        history = [
+            {
+                "executed_agent": "education_management_agent",
+                "referenced_items": [
+                    {"education_id": 2},
+                    {"education_id": 3},
+                ],
+            }
+        ]
+
+        repaired = _repair_education_plan_payload(
+            {
+                "queries": [
+                    {"operation": "list_course_attendees"},
+                ]
+            },
+            "그중에서 지게차 교육만 알려줘",
+            history,
+        )
+
+        self.assertEqual(
+            repaired["queries"][0]["operation"],
+            "list_education_summaries",
+        )
 
     @patch("app.agents.education_management.execute_education_query")
     @patch("app.agents.education_management._get_openai_client")
