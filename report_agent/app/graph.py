@@ -1,3 +1,4 @@
+﻿from pathlib import Path
 from typing import Literal
 
 from langgraph.graph import END, START, StateGraph
@@ -6,13 +7,23 @@ from app.agents import (
     headquarters_analyze_agent,
     headquarters_review_agent,
     headquarters_writer_agent,
+    risk_data_correction_agent,
+    risk_data_correction_review_agent,
     site_anomaly_analyze_agent,
     site_anomaly_review_agent,
     site_anomaly_writer_agent,
 )
 from app.headquarters_aggregation import aggregate_headquarters_data
+from app.risk_assessment_form import DEFAULT_FORM_PATH, DEFAULT_OUTPUT_PATH
+from app.risk_assessment_form import fill_risk_assessment_form
+from app.risk_data_correction import PROTECTED_FIELDS, enforce_history_table_invariants
 from app.site_anomaly_aggregation import aggregate_site_anomaly_data
-from app.state import HeadquartersReportState, SiteAnomalyReportState
+from app.state import (
+    HeadquartersReportState,
+    RiskAssessmentFormState,
+    SiteAnomalyReportState,
+)
+from scripts.build_final_history_table import build_final_history_table
 
 
 def retry_node(state):
@@ -87,6 +98,59 @@ async def site_anomaly_review_node(state):
     }
 
 
+def risk_assessment_table_node(state):
+    source_data = state["request"].model_dump(mode="json")
+    return {"final_history_rows": build_final_history_table(source_data)}
+
+
+async def risk_data_correction_node(state):
+    raw_result = await risk_data_correction_agent(
+        state["final_history_rows"],
+        protected_fields=PROTECTED_FIELDS,
+        previous_result=state.get("correction_result"),
+        review_result=state.get("correction_review"),
+    )
+    safe_result = enforce_history_table_invariants(
+        state["final_history_rows"],
+        raw_result,
+        PROTECTED_FIELDS,
+    )
+    return {"correction_result": safe_result}
+
+
+async def risk_data_correction_review_node(state):
+    review = await risk_data_correction_review_agent(
+        state["final_history_rows"],
+        state["correction_result"],
+    )
+    return {"correction_review": review}
+
+
+def route_after_correction_review(
+    state,
+) -> Literal["fill_form", "retry", "finish"]:
+    review = state["correction_review"]
+    if review.approved:
+        return "fill_form"
+    if state.get("retry_count", 0) < state.get("max_retry_count", 2):
+        return "retry"
+    return "finish"
+
+
+def risk_assessment_form_node(state):
+    request = state["request"]
+    source_data = request.model_dump(mode="json")
+    form_path = Path(request.form_path) if request.form_path else DEFAULT_FORM_PATH
+    output_path = Path(request.output_path) if request.output_path else DEFAULT_OUTPUT_PATH
+    csv_output_path = fill_risk_assessment_form(
+        source_data,
+        state["correction_result"],
+        form_path=form_path,
+        output_path=output_path,
+    )
+    return {"csv_output_path": csv_output_path}
+
+
 def build_headquarters_full():
     graph = StateGraph(HeadquartersReportState)
     graph.add_node("headquarters_aggregation", headquarters_aggregate_node)
@@ -129,5 +193,31 @@ def build_site_anomaly_full():
     return graph.compile()
 
 
+def build_risk_assessment_form_graph():
+    graph = StateGraph(RiskAssessmentFormState)
+    graph.add_node("build_final_history_table", risk_assessment_table_node)
+    graph.add_node("data_correction_agent", risk_data_correction_node)
+    graph.add_node("data_correction_review_agent", risk_data_correction_review_node)
+    graph.add_node("retry", retry_node)
+    graph.add_node("fill_csv_form", risk_assessment_form_node)
+
+    graph.add_edge(START, "build_final_history_table")
+    graph.add_edge("build_final_history_table", "data_correction_agent")
+    graph.add_edge("data_correction_agent", "data_correction_review_agent")
+    graph.add_conditional_edges(
+        "data_correction_review_agent",
+        route_after_correction_review,
+        {
+            "fill_form": "fill_csv_form",
+            "retry": "retry",
+            "finish": END,
+        },
+    )
+    graph.add_edge("retry", "data_correction_agent")
+    graph.add_edge("fill_csv_form", END)
+    return graph.compile()
+
+
 headquarters_full_graph = build_headquarters_full()
 site_anomaly_full_graph = build_site_anomaly_full()
+risk_assessment_form_graph = build_risk_assessment_form_graph()

@@ -1,4 +1,4 @@
-from enum import Enum
+﻿from enum import Enum
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -82,6 +82,80 @@ class ReviewResult(BaseModel):
     revision_instructions: list[str] = Field(default_factory=list)
 
 
+class FinalHistoryRow(BaseModel):
+    case: str | None = None
+    type: str | None = None
+    inspection_history_id: int | None = None
+    inspection_id: int | None = None
+    inspection_name: str | None = None
+    category_id: int | None = None
+    category_name: str | None = None
+    risk: str | int | None = None
+    inspection_location: str | None = None
+    inspection_date: str | None = None
+    inspection_user_id: int | None = None
+    inspection_user_name: str | None = None
+    inspection_content: str | None = None
+    before_image_url: str | None = None
+    action_history_id: int | None = None
+    action_name: str | None = None
+    action_location: str | None = None
+    action_date: str | None = None
+    action_user_id: int | None = None
+    action_user_name: str | None = None
+    action_content: str | None = None
+    approval_name: str | None = None
+    board_id: int | None = None
+    event_id: str | int | None = None
+
+class DataCorrectionNote(BaseModel):
+    row_index: int
+    field: str
+    original_text: str
+    corrected_text: str
+    reason: str
+
+
+class RiskDataCorrectionRequest(BaseModel):
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+    protected_fields: list[str] = Field(default_factory=list)
+
+
+class RiskDataCorrectionResult(BaseModel):
+    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    correction_notes: list[DataCorrectionNote] = Field(default_factory=list)
+    unresolved_notes: list[str] = Field(default_factory=list)
+
+
+class RiskDataCorrectionResponse(BaseModel):
+    status: Literal["COMPLETED", "FAILED"]
+    result: RiskDataCorrectionResult
+
+class DataCorrectionReviewIssue(BaseModel):
+    row_index: int | None = None
+    field: str | None = None
+    severity: Literal["ERROR", "WARNING"]
+    category: Literal[
+        "MEANING_CHANGED",
+        "FABRICATED_FACT",
+        "REPORT_STYLE",
+        "UNNECESSARY_EDIT",
+        "MISSED_CORRECTION",
+        "PROTECTED_FIELD",
+    ]
+    original_text: str | None = None
+    corrected_text: str | None = None
+    message: str
+    recommendation: str
+
+
+class RiskDataCorrectionReviewResult(BaseModel):
+    approved: bool
+    final_decision: Literal["APPROVED", "REVISION_REQUIRED"]
+    score: int = Field(ge=0, le=100)
+    issues: list[DataCorrectionReviewIssue] = Field(default_factory=list)
+    items_requiring_revision: list[str] = Field(default_factory=list)
+
 class EvidenceContentRequest(BaseModel):
     company: dict[str, Any] | None = None
     user: list[dict[str, Any]] = Field(default_factory=list)
@@ -112,6 +186,19 @@ class EvidenceContentResponse(BaseModel):
     action_history_ids: list[int] = Field(default_factory=list)
 
 
+class RiskAssessmentFormRequest(EvidenceContentRequest):
+    form_path: str | None = None
+    output_path: str | None = None
+
+
+class RiskAssessmentFormResponse(BaseModel):
+    status: Literal["COMPLETED", "FAILED"]
+    retry_count: int
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    correction_result: RiskDataCorrectionResult
+    correction_review: RiskDataCorrectionReviewResult
+    csv_output_path: str | None = None
+
 class HeadquartersReportRequest(EvidenceContentRequest):
     pass
 
@@ -136,3 +223,12 @@ class SiteAnomalyReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
+
+
+
+
+
+
+
+

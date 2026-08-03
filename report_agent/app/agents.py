@@ -1,4 +1,4 @@
-import json
+﻿import json
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -10,8 +10,17 @@ from app.prompts import (
     SITE_ANOMALY_DATA_ANALYSIS_PROMPT,
     SITE_ANOMALY_REPORT_REVIEW_PROMPT,
     SITE_ANOMALY_REPORT_WRITER_PROMPT,
+    RISK_DATA_CORRECTION_PROMPT,
+    RISK_DATA_CORRECTION_REVIEW_PROMPT,
 )
-from app.schemas import AnalysisResult, Audience, GeneratedReport, ReviewResult
+from app.schemas import (
+    AnalysisResult,
+    Audience,
+    GeneratedReport,
+    ReviewResult,
+    RiskDataCorrectionResult,
+    RiskDataCorrectionReviewResult,
+)
 
 
 async def headquarters_analyze_agent(aggregated_data):
@@ -125,3 +134,43 @@ async def site_anomaly_review_agent(aggregated_data, analysis, report):
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
+
+
+async def risk_data_correction_agent(
+    rows,
+    protected_fields=None,
+    previous_result=None,
+    review_result=None,
+):
+    llm = create_llm().with_structured_output(RiskDataCorrectionResult)
+    payload = {
+        "rows": rows,
+        "protected_fields": protected_fields or [],
+        "previous_result": (
+            previous_result.model_dump(mode="json") if previous_result else None
+        ),
+        "review_result": (
+            review_result.model_dump(mode="json") if review_result else None
+        ),
+    }
+    return await llm.ainvoke(
+        [
+            SystemMessage(content=RISK_DATA_CORRECTION_PROMPT),
+            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
+        ]
+    )
+
+async def risk_data_correction_review_agent(original_rows, correction_result):
+    llm = create_llm().with_structured_output(RiskDataCorrectionReviewResult)
+    payload = {
+        "original_rows": original_rows,
+        "correction_result": correction_result.model_dump(mode="json"),
+    }
+    return await llm.ainvoke(
+        [
+            SystemMessage(content=RISK_DATA_CORRECTION_REVIEW_PROMPT),
+            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
+        ]
+    )
+
+
