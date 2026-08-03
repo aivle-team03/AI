@@ -2,8 +2,11 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from agent_main import create_initial_state
-from app.agents.education_management import education_management_agent_node
-from app.schemas.education import EducationQuery
+from app.agents.education_management import (
+    _prepare_education_plan,
+    education_management_agent_node,
+)
+from app.schemas.education import EducationPlan, EducationQuery
 from app.tools.education_tools import execute_education_query
 
 
@@ -71,6 +74,39 @@ class EducationSchemaAndToolTest(unittest.TestCase):
 
 
 class EducationAgentTest(unittest.TestCase):
+    def test_follow_up_inherits_previous_education_filters(self):
+        history = [
+            {
+                "executed_agent": "education_management_agent",
+                "queries": [
+                    {
+                        "operation": "list_education_summaries",
+                        "category": "지게차",
+                        "due_state": "this_week",
+                    }
+                ],
+            }
+        ]
+        plan = EducationPlan(
+            queries=[
+                EducationQuery(
+                    operation="list_education_summaries",
+                    status_filter="미이수",
+                )
+            ]
+        )
+
+        prepared = _prepare_education_plan(
+            plan,
+            "그중에서 미이수 과정만 알려줘",
+            history,
+        )
+
+        query = prepared.queries[0]
+        self.assertEqual(query.category, "지게차")
+        self.assertEqual(query.due_state, "this_week")
+        self.assertEqual(query.status_filter, "미이수")
+
     @patch("app.agents.education_management.execute_education_query")
     @patch("app.agents.education_management._get_openai_client")
     def test_specialist_executes_only_validated_query_plan(

@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from typing import Any
+from uuid import uuid4
 
 from app.graph import agent_graph
 from app.state import AgentState
@@ -10,11 +11,14 @@ from app.state import AgentState
 def create_initial_state(
     access_token: str,
     user_message: str,
+    conversation_id: str = "",
 ) -> AgentState:
     normalized_user_message = user_message.strip()
 
     return {
         "access_token": access_token.strip(),
+        "conversation_id": conversation_id.strip() or str(uuid4()),
+        "conversation_history": [],
         "uid": None,
         "company_id": None,
         "role": "",
@@ -32,10 +36,12 @@ def create_initial_state(
 def run_agent(
     access_token: str,
     user_message: str,
+    conversation_id: str = "",
 ) -> dict[str, Any]:
     initial_state = create_initial_state(
         access_token=access_token,
         user_message=user_message,
+        conversation_id=conversation_id,
     )
     result_state = agent_graph.invoke(initial_state)
 
@@ -43,6 +49,7 @@ def run_agent(
         "final_answer": result_state.get("final_answer", ""),
         "next_step": result_state.get("next_step", ""),
         "context": result_state.get("context", {}),
+        "conversation_id": result_state.get("conversation_id", ""),
     }
 
 
@@ -59,6 +66,7 @@ def main() -> None:
     result = run_agent(
         access_token=access_token,
         user_message=args.user_message,
+        conversation_id=str(uuid4()),
     )
 
     print(

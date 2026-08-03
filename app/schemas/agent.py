@@ -11,6 +11,8 @@ RouteStep = Literal[
 
 class AgentState(TypedDict):
     access_token: str
+    conversation_id: str
+    conversation_history: list[dict[str, Any]]
     uid: Optional[int]
     company_id: Optional[int]
     role: str
