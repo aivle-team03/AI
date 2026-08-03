@@ -62,6 +62,10 @@ async def headquarters_review_agent(aggregated_data, analysis, report):
         "analysis_result": analysis.model_dump(mode="json"),
         "report": report.model_dump(mode="json"),
         "valid_event_ids": aggregated_data.get("source_ids", {}).get("event_ids", []),
+        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
+            "inspection_history_ids",
+            [],
+        ),
         "valid_action_history_ids": aggregated_data.get("source_ids", {}).get(
             "action_history_ids",
             [],
@@ -119,8 +123,16 @@ async def site_anomaly_review_agent(aggregated_data, analysis, report):
         "analysis_result": analysis.model_dump(mode="json"),
         "report": report.model_dump(mode="json"),
         "valid_event_ids": aggregated_data.get("source_ids", {}).get("event_ids", []),
+        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
+            "inspection_history_ids",
+            [],
+        ),
         "valid_action_history_ids": aggregated_data.get("source_ids", {}).get(
             "action_history_ids",
+            [],
+        ),
+        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
+            "inspection_history_ids",
             [],
         ),
         "valid_checklist_ids": aggregated_data.get("source_ids", {}).get(
@@ -172,5 +184,7 @@ async def risk_data_correction_review_agent(original_rows, correction_result):
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
+
+
 
 

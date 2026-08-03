@@ -200,11 +200,11 @@ class RiskAssessmentFormResponse(BaseModel):
     csv_output_path: str | None = None
 
 class HeadquartersReportRequest(EvidenceContentRequest):
-    pass
+    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 class SiteAnomalyReportRequest(EvidenceContentRequest):
-    pass
+    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 class HeadquartersReportResponse(BaseModel):
@@ -223,6 +223,7 @@ class SiteAnomalyReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
 
 
 

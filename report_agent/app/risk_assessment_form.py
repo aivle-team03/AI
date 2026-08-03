@@ -12,6 +12,7 @@ DATA_START_ROW_INDEX = 8
 COLUMN_COUNT = 25
 DEFAULT_FORM_PATH = Path(r"C:\Users\User\Downloads\위험성평가표 - 시트1.csv")
 DEFAULT_OUTPUT_PATH = Path("output/risk_assessment_form_filled.csv")
+DEFAULT_EXCEL_OUTPUT_PATH = Path("output/risk_assessment_form_filled_excel.csv")
 
 
 def _value(value: Any) -> str:
@@ -79,6 +80,13 @@ def _form_row(row: FinalHistoryRow | dict[str, Any]) -> list[str]:
     return output
 
 
+def _write_csv(path: Path, rows: list[list[str]], encoding: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding=encoding, newline="") as file:
+        writer = csv.writer(file)
+        writer.writerows(rows)
+
+
 def fill_risk_assessment_form(
     source_data: dict[str, Any],
     correction_result: RiskDataCorrectionResult,
@@ -107,9 +115,9 @@ def fill_risk_assessment_form(
 
     output_rows.extend(_form_row(row) for row in correction_result.corrected_rows)
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w", encoding="utf-8-sig", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerows(output_rows)
+    _write_csv(output_path, output_rows, "utf-8-sig")
+
+    excel_output_path = output_path.with_name(f"{output_path.stem}_excel{output_path.suffix}")
+    _write_csv(excel_output_path, output_rows, "cp949")
 
     return str(output_path)

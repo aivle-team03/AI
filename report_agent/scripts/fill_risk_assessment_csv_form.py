@@ -116,7 +116,13 @@ def fill_form(
         writer = csv.writer(file)
         writer.writerows(output_rows)
 
+    excel_output_path = output_path.with_name(f"{output_path.stem}_excel{output_path.suffix}")
+    with excel_output_path.open("w", encoding="cp949", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerows(output_rows)
+
     print(f"wrote: {output_path}")
+    print(f"wrote_excel: {excel_output_path}")
     print(f"rows_written: {len(data_rows)}")
 
 
@@ -155,3 +161,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
