@@ -1,32 +1,72 @@
-# BP3 AI Agent
+# AI Agent
 
-FastAPI와 LangGraph로 구성된 BP3 AI 서비스입니다. 점검·조치 관리 agent는
-백엔드가 검증한 사용자 범위를 사용해 조회 전용 DB view에 직접 접근합니다.
+점검·조치 이력과 교육 현황을 조회하는 AI 서비스입니다.
 
-## Environment
+## 1. 실행 전 설정
 
-`.env.example`을 기준으로 OpenAI, 백엔드, 읽기 전용 DB 연결을 설정합니다.
-`AGENT_READ_DATABASE_URL`은 아래 마이그레이션의 8개 view에만 SELECT 가능한
-별도 계정을 사용해야 합니다.
-
-- `migrations/20260803_agent_inspection_action_read_scope.sql`: 점검·조치 5개 view
-- `migrations/20260803_agent_education_read_scope.sql`: 교육 3개 view
-
-## Run
+프로젝트 루트에서 환경변수 파일을 생성합니다.
 
 ```bash
+cp .env.example .env
+```
+
+`.env`에 다음 값을 입력합니다.
+
+```env
+OPENAI_API_KEY="OpenAI API 키"
+AGENT_READ_DATABASE_URL="읽기 전용 DB URL"
+```
+
+원격 DB의 조회용 view와 읽기 전용 계정은 이미 구성되어 있으므로
+마이그레이션 SQL을 다시 실행할 필요가 없습니다.
+
+백엔드는 기본적으로 `http://127.0.0.1:8000`, 프론트엔드는
+`http://127.0.0.1:5173`을 사용합니다. 
+## 2. 설치 및 실행
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 python3 -m uvicorn app.server:app --reload --port 8001
 ```
 
-## Request
 
-```http
-POST /api/agent/query
-Authorization: Bearer <backend-access-token>
-Content-Type: application/json
+## 3. AI Agent 구축 현황
 
-{"user_message":"이번 주 조치 대기 내역을 알려줘"}
-```
+### 점검·조치 관리 Agent
 
-`company_id`와 역할은 요청 본문에서 받지 않습니다. AI 서비스는 JWT를 기존
-`GET /api/users/me`에 전달해 검증하고, 응답의 관리자 회사 범위만 직접 조회합니다.
+구현 완료
+
+- 점검 목록 및 점검 이력 조회
+- 점검 대기·완료·조치 필요 현황 조회
+- 조치 이력과 반려·승인·담당자 상태 조회
+- 날짜·위치·카테고리·위험도 조건 조회
+- 점검과 연결된 조치 이력 조회
+- 회사별 데이터 접근 제한
+
+### 교육 관리 Agent
+
+구현 완료
+
+- 교육 과정과 대상자 현황 조회
+- 사용자별 이수·미이수 교육 조회
+- 과정별 이수율 및 상태별 인원 조회
+- 카테고리·교육 유형·기한 조건 조회
+- 교육 대상자 명단 조회
+- 회사별 데이터 접근 제한
+
+### 법률·매뉴얼 Agent
+
+구현 예정
+
+- Agent 구조와 라우팅만 구성
+- 법률·매뉴얼 데이터 연결 전
+
+### 공통 기능
+
+- 백엔드 JWT를 통한 사용자 및 회사 권한 확인
+- AI 전용 읽기 계정으로 DB 조회
+- 답변 생성 온도 `0`
+- 최근 대화 최대 10개 기억
+- 현재 대화 기억은 메모리 방식이므로 서버 재시작 시 초기화
