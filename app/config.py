@@ -31,6 +31,16 @@ BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://127.0.0.1:8000").rstrip("
 BACKEND_TIMEOUT_SECONDS = float(os.getenv("BACKEND_TIMEOUT_SECONDS", "5"))
 AGENT_READ_DATABASE_URL = os.getenv("AGENT_READ_DATABASE_URL", "").strip()
 AGENT_READ_DB_SSL_CA = os.getenv("AGENT_READ_DB_SSL_CA", "").strip()
+LAW_API_OC = os.getenv("LAW_API_OC", "").strip()
+LAW_API_BASE_URL = os.getenv(
+    "LAW_API_BASE_URL",
+    "https://www.law.go.kr/DRF",
+).rstrip("/")
+LAW_API_TIMEOUT_SECONDS = float(os.getenv("LAW_API_TIMEOUT_SECONDS", "10"))
+LAW_API_CACHE_TTL_SECONDS = _parse_positive_int_env(
+    "LAW_API_CACHE_TTL_SECONDS",
+    21600,
+)
 FRONTEND_ORIGINS = _parse_csv_env(
     "FRONTEND_ORIGINS",
     "http://127.0.0.1:5173,http://localhost:5173",

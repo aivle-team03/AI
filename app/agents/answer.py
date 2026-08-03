@@ -6,6 +6,78 @@ from app.config import OPENAI_MODEL
 from app.state import AgentState
 
 
+def _law_evidence_items(agent_result):
+    if not isinstance(agent_result, dict):
+        return []
+    items = []
+    seen = set()
+    for execution in agent_result.get("executions", []):
+        if not isinstance(execution, dict):
+            continue
+        query = execution.get("query", {})
+        result = execution.get("result", {})
+        if not isinstance(result, dict):
+            continue
+        result_items = (
+            [result]
+            if query.get("operation") == "get_law_article"
+            else result.get("items", [])
+        )
+        for item in result_items:
+            if not isinstance(item, dict) or not item.get("law_name"):
+                continue
+            key = (
+                item.get("law_name"),
+                item.get("article_number"),
+                item.get("article_branch", 0),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            items.append(item)
+    return items
+
+
+def _law_sources(evidence_items):
+    lines = []
+    for item in evidence_items:
+        law_name = item.get("law_name", "")
+        article_label = item.get("article_label", "")
+        effective_date = item.get("article_effective_date") or item.get(
+            "effective_date",
+            "",
+        )
+        source_url = item.get("source_url", "")
+        label = " ".join(value for value in (law_name, article_label) if value)
+        metadata = []
+        if effective_date:
+            metadata.append(f"시행일 {effective_date}")
+        if source_url:
+            metadata.append(f"출처 {source_url}")
+        suffix = f" ({', '.join(metadata)})" if metadata else ""
+        lines.append(f"- {label}{suffix}")
+    return "\n".join(["근거", *lines]) if lines else ""
+
+
+def _law_delegation_notice(user_message, evidence_items):
+    if "시행령" not in user_message:
+        return ""
+
+    delegates_to_labor_rule = any(
+        "고용노동부령" in item.get("delegation_targets", [])
+        and "대통령령" not in item.get("delegation_targets", [])
+        for item in evidence_items
+    )
+    if not delegates_to_labor_rule:
+        return ""
+
+    return (
+        "해당 조문은 세부 기준을 대통령령이 아니라 고용노동부령에 "
+        "위임하므로, 관련 세부 내용은 시행령이 아닌 시행규칙에서 "
+        "확인해야 합니다."
+    )
+
+
 def answer_agent_node(state: AgentState) -> AgentState:
     if state["error_message"]:
         return {
@@ -45,6 +117,24 @@ def answer_agent_node(state: AgentState) -> AgentState:
             "next_step": "end",
         }
 
+    law_evidence = (
+        _law_evidence_items(state.get("law_manual_result"))
+        if executed_agent == "law_manual_agent"
+        else []
+    )
+    if executed_agent == "law_manual_agent" and not law_evidence:
+        return {
+            **state,
+            "context": {
+                **state["context"],
+                "answer_source": "law_evidence_policy",
+            },
+            "final_answer": (
+                "조회된 현행 법령에서 질문과 직접 관련된 조문을 찾지 못했습니다."
+            ),
+            "next_step": "end",
+        }
+
     try:
         client = _get_openai_client()
         response = client.chat.completions.create(
@@ -64,6 +154,12 @@ def answer_agent_node(state: AgentState) -> AgentState:
                         "agent 결과에 없는 사실은 임의로 만들지 마세요. "
                         "데이터가 비어 있으면 확인된 정보가 없다고 말하세요. "
                         "고유 명칭, 숫자, 날짜, 상태는 원문을 그대로 사용하고 바꾸지 마세요. "
+                        "법령 조회 결과인 경우 각 조문의 적용 대상을 구분하고, 법률이 "
+                        "대통령령이 아닌 고용노동부령에 위임한 내용을 시행령 규정으로 "
+                        "설명하지 마세요. delegation_targets가 고용노동부령이고 대통령령은 "
+                        "아니라면 세부 기준은 시행령이 아니라 시행규칙에서 확인해야 한다고 "
+                        "명시하세요. 질문과 직접 관련된 하위법령 근거가 없으면 없다고 "
+                        "명시하세요. URL이나 별도의 근거 목록은 작성하지 마세요. "
                         "Markdown 문법 없이 일반 텍스트로 답변하세요."
                     ),
                 },
@@ -82,6 +178,17 @@ def answer_agent_node(state: AgentState) -> AgentState:
         final_answer = response.choices[0].message.content or ""
         if not final_answer.strip():
             final_answer = "답변 생성 결과가 비어 있습니다."
+
+        if law_evidence:
+            answer_parts = [final_answer.strip()]
+            delegation_notice = _law_delegation_notice(
+                state["user_message"],
+                law_evidence,
+            )
+            if delegation_notice and "시행규칙" not in final_answer:
+                answer_parts.append(delegation_notice)
+            answer_parts.append(_law_sources(law_evidence))
+            final_answer = "\n\n".join(answer_parts)
 
         return {
             **state,

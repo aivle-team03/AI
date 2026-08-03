@@ -18,6 +18,16 @@ REFERENCE_ITEM_FIELDS = (
     "action_status",
     "approval_status",
     "status",
+    "law_id",
+    "law_name",
+    "law_type",
+    "article_number",
+    "article_branch",
+    "article_label",
+    "article_title",
+    "effective_date",
+    "source_url",
+    "delegation_targets",
 )
 
 
@@ -52,6 +62,7 @@ def _referenced_items(state: AgentState) -> list[dict[str, Any]]:
     result_key = {
         "inspection_action_management_agent": "inspection_action_result",
         "education_management_agent": "education_result",
+        "law_manual_agent": "law_manual_result",
     }.get(executed_agent)
     result = state.get(result_key) if result_key else None
     if not isinstance(result, dict):

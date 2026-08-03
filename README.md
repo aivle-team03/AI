@@ -15,6 +15,7 @@ cp .env.example .env
 ```env
 OPENAI_API_KEY="OpenAI API 키"
 AGENT_READ_DATABASE_URL="읽기 전용 DB URL"
+LAW_API_OC="국가법령정보 Open API 인증값"
 ```
 
 원격 DB의 조회용 view와 읽기 전용 계정은 이미 구성되어 있으므로
@@ -58,10 +59,14 @@ python3 -m uvicorn app.server:app --reload --port 8001
 
 ### 법률·매뉴얼 Agent
 
-구현 예정
+법령 조회 구현 완료, 최종 검증 예정
 
-- Agent 구조와 라우팅만 구성
-- 법률·매뉴얼 데이터 연결 전
+- 산업안전보건법 및 시행령 조회
+- 중대재해 처벌 등에 관한 법률 및 시행령 조회
+- 현행 법령의 특정 조문과 관련 조문 조회
+- 법률과 시행령의 관련 근거 비교
+- 국가법령정보 Open API 응답 메모리 캐시
+- 사내 매뉴얼 데이터 연결 전
 
 ### 공통 기능
 
