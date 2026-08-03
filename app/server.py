@@ -1,12 +1,14 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 
 from agent_main import run_agent
 
 
 app = FastAPI(title="BP3 AI Agent API")
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 class HealthResponse(BaseModel):
@@ -14,8 +16,6 @@ class HealthResponse(BaseModel):
 
 
 class AgentQueryRequest(BaseModel):
-    company_code: str = Field(..., min_length=1)
-    role: str = Field(..., min_length=1)
     user_message: str = Field(..., min_length=1)
 
 
@@ -31,11 +31,18 @@ def health_check() -> HealthResponse:
 
 
 @app.post("/api/agent/query", response_model=AgentQueryResponse)
-def query_agent(request: AgentQueryRequest) -> AgentQueryResponse:
+def query_agent(
+    request: AgentQueryRequest,
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
+) -> AgentQueryResponse:
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="인증 토큰이 필요합니다.",
+        )
     try:
         result = run_agent(
-            company_code=request.company_code,
-            role=request.role,
+            access_token=credentials.credentials,
             user_message=request.user_message,
         )
     except Exception as exc:

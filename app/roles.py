@@ -1,11 +1,11 @@
 from typing import Optional
 
 
-ADMIN_ROLE = "admin"
+ADMIN_ROLE = "안전관리자"
 
 
 def normalize_role(role: Optional[str]) -> str:
-    return (role or "").strip().lower()
+    return (role or "").strip()
 
 
 def is_admin(role: Optional[str]) -> bool:
