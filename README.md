@@ -23,23 +23,23 @@
 
 ## 설치
 
-프로젝트 폴더로 이동한 후 가상환경을 생성합니다.
+Windows PowerShell에서 프로젝트 폴더로 이동한 후 가상환경을 생성합니다.
 
-```bash
+```powershell
 cd ai
 
-python3 -m venv .venv
-source .venv/bin/activate
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ## 환경변수 설정
 
 예제 파일을 복사해 `.env`를 생성합니다.
 
-```bash
-cp .env.example .env
+```powershell
+Copy-Item .env.example .env
 ```
 
 `.env`에 다음 값을 설정합니다.
@@ -61,8 +61,8 @@ FRONTEND_ORIGINS="http://127.0.0.1:5173,http://localhost:5173"
 
 백엔드가 실행 중인 상태에서 AI 서버를 실행합니다.
 
-```bash
-source .venv/bin/activate
+```powershell
+.\.venv\Scripts\Activate.ps1
 python -m uvicorn app.server:app --reload --port 8001
 ```
 
@@ -74,8 +74,8 @@ http://127.0.0.1:8001
 
 서버 상태를 확인합니다.
 
-```bash
-curl http://127.0.0.1:8001/health
+```powershell
+Invoke-RestMethod http://127.0.0.1:8001/health
 ```
 
 정상 응답:
