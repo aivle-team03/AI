@@ -720,7 +720,7 @@
         "inspection_date": "2026-07-08T13:30:00",
         "inspection_user_id": 101,
         "inspection_user_name": "김안전",
-        "inspection_content": "분전반 앞에 청소도구가 방치된 것이 확인됨.",
+        "inspection_content": "분전반 앞에 청소도구가 방치되어 있음이 확인됨.",
         "before_image_url": null,
         "action_history_id": 2003,
         "action_name": "전기실 주변 정리",
@@ -728,7 +728,7 @@
         "action_date": "2026-07-08T14:00:00",
         "action_user_id": 104,
         "action_user_name": "최시설",
-        "action_content": "청소도구를 지정 보관함으로 이동하고 접근 공간을 확보하였음.",
+        "action_content": "청소도구를 지정된 보관함으로 이동하고 접근 공간을 확보하였음.",
         "approval_name": "박승인",
         "board_id": null,
         "event_id": null
@@ -746,7 +746,7 @@
         "inspection_date": "2026-07-09T15:20:00",
         "inspection_user_id": 103,
         "inspection_user_name": "박점검",
-        "inspection_content": "보행자 통로 일부에 팔레트가 방치된 것이 확인됨.",
+        "inspection_content": "보행자 통로 일부에 팔레트가 방치되어 있음이 확인됨.",
         "before_image_url": null,
         "action_history_id": 2004,
         "action_name": "팔레트 이동 조치",
@@ -806,7 +806,7 @@
         "action_date": "2026-07-11T11:20:00",
         "action_user_id": 102,
         "action_user_name": "이현장",
-        "action_content": "게시판 신고 건을 확인한 후 적치물을 지정 장소로 이동하였음.",
+        "action_content": "게시판 신고 건을 확인한 후 적치물을 지정된 장소로 이동하였음.",
         "approval_name": "박승인",
         "board_id": 3001,
         "event_id": 4001
@@ -1114,21 +1114,21 @@
         "row_index": 7,
         "field": "inspection_content",
         "original_text": "분전반 앞 청소도구 방치 확인.",
-        "corrected_text": "분전반 앞에 청소도구가 방치된 것이 확인됨.",
+        "corrected_text": "분전반 앞에 청소도구가 방치되어 있음이 확인됨.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 7,
         "field": "action_content",
         "original_text": "청소도구를 지정 보관함으로 이동하고 접근 공간 확보.",
-        "corrected_text": "청소도구를 지정 보관함으로 이동하고 접근 공간을 확보하였음.",
+        "corrected_text": "청소도구를 지정된 보관함으로 이동하고 접근 공간을 확보하였음.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 8,
         "field": "inspection_content",
         "original_text": "보행자 통로 일부에 팔레트 방치 확인.",
-        "corrected_text": "보행자 통로 일부에 팔레트가 방치된 것이 확인됨.",
+        "corrected_text": "보행자 통로 일부에 팔레트가 방치되어 있음이 확인됨.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -1149,7 +1149,7 @@
         "row_index": 10,
         "field": "action_content",
         "original_text": "게시판 신고 건 확인 후 적치물을 지정 장소로 이동.",
-        "corrected_text": "게시판 신고 건을 확인한 후 적치물을 지정 장소로 이동하였음.",
+        "corrected_text": "게시판 신고 건을 확인한 후 적치물을 지정된 장소로 이동하였음.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -1225,5 +1225,5 @@
     "issues": [],
     "items_requiring_revision": []
   },
-  "csv_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form_filled.csv"
+  "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form_filled.csv"
 }

@@ -9,6 +9,9 @@ from app.schemas import (
     RiskDataCorrectionResult,
     RiskDataCorrectionReviewResult,
     SiteAnomalyReportRequest,
+    WorkerFeedbackCorrectionResult,
+    WorkerFeedbackCorrectionReviewResult,
+    WorkerFeedbackImprovementReportRequest,
 )
 
 
@@ -38,6 +41,17 @@ class RiskAssessmentFormState(TypedDict, total=False):
     correction_result: RiskDataCorrectionResult
     correction_review: RiskDataCorrectionReviewResult
     csv_output_path: str
+    retry_count: int
+    max_retry_count: int
+    errors: list[str]
+
+
+class WorkerFeedbackImprovementReportState(TypedDict, total=False):
+    request: WorkerFeedbackImprovementReportRequest
+    worker_feedback_rows: list[dict]
+    correction_result: WorkerFeedbackCorrectionResult
+    correction_review: WorkerFeedbackCorrectionReviewResult
+    excel_output_paths: list[str]
     retry_count: int
     max_retry_count: int
     errors: list[str]

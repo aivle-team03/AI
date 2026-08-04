@@ -12,7 +12,10 @@ from app.agents import (
     site_anomaly_analyze_agent,
     site_anomaly_review_agent,
     site_anomaly_writer_agent,
+    worker_feedback_correction_agent,
+    worker_feedback_correction_review_agent,
 )
+from app.build_worker_feedback_table import build_worker_feedback_table
 from app.headquarters_aggregation import aggregate_headquarters_data
 from app.risk_assessment_form import DEFAULT_FORM_PATH, DEFAULT_OUTPUT_PATH
 from app.risk_assessment_form import fill_risk_assessment_form
@@ -22,7 +25,19 @@ from app.state import (
     HeadquartersReportState,
     RiskAssessmentFormState,
     SiteAnomalyReportState,
+    WorkerFeedbackImprovementReportState,
 )
+from app.worker_feedback_correction import (
+    PROTECTED_FIELDS as WORKER_FEEDBACK_PROTECTED_FIELDS,
+)
+from app.worker_feedback_correction import enforce_worker_feedback_invariants
+from app.worker_feedback_excel import (
+    DEFAULT_OUTPUT_DIR as WORKER_FEEDBACK_EXCEL_OUTPUT_DIR,
+)
+from app.worker_feedback_excel import (
+    DEFAULT_TEMPLATE_PATH as WORKER_FEEDBACK_EXCEL_TEMPLATE_PATH,
+)
+from app.worker_feedback_excel import fill_worker_feedback_excel_reports
 from scripts.build_final_history_table import build_final_history_table
 
 
@@ -151,6 +166,66 @@ def risk_assessment_form_node(state):
     return {"csv_output_path": csv_output_path}
 
 
+def worker_feedback_table_node(state):
+    source_data = state["request"].model_dump(mode="json")
+    return {"worker_feedback_rows": build_worker_feedback_table(source_data)}
+
+
+async def worker_feedback_correction_node(state):
+    raw_result = await worker_feedback_correction_agent(
+        state["worker_feedback_rows"],
+        protected_fields=WORKER_FEEDBACK_PROTECTED_FIELDS,
+        previous_result=state.get("correction_result"),
+        review_result=state.get("correction_review"),
+    )
+    safe_result = enforce_worker_feedback_invariants(
+        state["worker_feedback_rows"],
+        raw_result,
+        WORKER_FEEDBACK_PROTECTED_FIELDS,
+    )
+    return {"correction_result": safe_result}
+
+
+async def worker_feedback_correction_review_node(state):
+    review = await worker_feedback_correction_review_agent(
+        state["worker_feedback_rows"],
+        state["correction_result"],
+        protected_fields=WORKER_FEEDBACK_PROTECTED_FIELDS,
+    )
+    return {"correction_review": review}
+
+
+def route_after_worker_feedback_review(
+    state,
+) -> Literal["fill_excel", "retry", "finish"]:
+    review = state["correction_review"]
+    if review.approved:
+        return "fill_excel"
+    if state.get("retry_count", 0) < state.get("max_retry_count", 2):
+        return "retry"
+    return "finish"
+
+
+def worker_feedback_excel_node(state):
+    request = state["request"]
+    template_path = (
+        Path(request.excel_template_path)
+        if request.excel_template_path
+        else WORKER_FEEDBACK_EXCEL_TEMPLATE_PATH
+    )
+    output_dir = (
+        Path(request.excel_output_dir)
+        if request.excel_output_dir
+        else WORKER_FEEDBACK_EXCEL_OUTPUT_DIR
+    )
+    output_paths = fill_worker_feedback_excel_reports(
+        state["correction_result"].corrected_rows,
+        template_path=template_path,
+        output_dir=output_dir,
+    )
+    return {"excel_output_paths": output_paths}
+
+
 def build_headquarters_full():
     graph = StateGraph(HeadquartersReportState)
     graph.add_node("headquarters_aggregation", headquarters_aggregate_node)
@@ -218,6 +293,38 @@ def build_risk_assessment_form_graph():
     return graph.compile()
 
 
+def build_worker_feedback_improvement_graph():
+    graph = StateGraph(WorkerFeedbackImprovementReportState)
+    graph.add_node("build_worker_feedback_table", worker_feedback_table_node)
+    graph.add_node("worker_feedback_correction_agent", worker_feedback_correction_node)
+    graph.add_node(
+        "worker_feedback_correction_review_agent",
+        worker_feedback_correction_review_node,
+    )
+    graph.add_node("retry", retry_node)
+    graph.add_node("fill_worker_feedback_excel", worker_feedback_excel_node)
+
+    graph.add_edge(START, "build_worker_feedback_table")
+    graph.add_edge("build_worker_feedback_table", "worker_feedback_correction_agent")
+    graph.add_edge(
+        "worker_feedback_correction_agent",
+        "worker_feedback_correction_review_agent",
+    )
+    graph.add_conditional_edges(
+        "worker_feedback_correction_review_agent",
+        route_after_worker_feedback_review,
+        {
+            "fill_excel": "fill_worker_feedback_excel",
+            "retry": "retry",
+            "finish": END,
+        },
+    )
+    graph.add_edge("retry", "worker_feedback_correction_agent")
+    graph.add_edge("fill_worker_feedback_excel", END)
+    return graph.compile()
+
+
 headquarters_full_graph = build_headquarters_full()
 site_anomaly_full_graph = build_site_anomaly_full()
 risk_assessment_form_graph = build_risk_assessment_form_graph()
+worker_feedback_improvement_graph = build_worker_feedback_improvement_graph()
