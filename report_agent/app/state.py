@@ -38,7 +38,9 @@ class RiskAssessmentFormState(TypedDict, total=False):
     correction_result: RiskDataCorrectionResult
     correction_review: RiskDataCorrectionReviewResult
     csv_output_path: str
+    xlsx_output_path: str
     retry_count: int
     max_retry_count: int
     errors: list[str]
+
 

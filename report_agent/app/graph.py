@@ -15,7 +15,7 @@ from app.agents import (
 )
 from app.headquarters_aggregation import aggregate_headquarters_data
 from app.risk_assessment_form import DEFAULT_FORM_PATH, DEFAULT_OUTPUT_PATH
-from app.risk_assessment_form import fill_risk_assessment_form
+from app.risk_assessment_form import fill_risk_assessment_form, resolved_xlsx_path_for
 from app.risk_data_correction import PROTECTED_FIELDS, enforce_history_table_invariants
 from app.site_anomaly_aggregation import aggregate_site_anomaly_data
 from app.state import (
@@ -148,7 +148,7 @@ def risk_assessment_form_node(state):
         form_path=form_path,
         output_path=output_path,
     )
-    return {"csv_output_path": csv_output_path}
+    return {"csv_output_path": csv_output_path, "xlsx_output_path": str(resolved_xlsx_path_for(csv_output_path))}
 
 
 def build_headquarters_full():
@@ -221,3 +221,6 @@ def build_risk_assessment_form_graph():
 headquarters_full_graph = build_headquarters_full()
 site_anomaly_full_graph = build_site_anomaly_full()
 risk_assessment_form_graph = build_risk_assessment_form_graph()
+
+
+

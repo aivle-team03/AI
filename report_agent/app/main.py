@@ -136,9 +136,11 @@ async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
             correction_result=result["correction_result"],
             correction_review=review_result,
             csv_output_path=csv_output_path,
+            xlsx_output_path=result.get("xlsx_output_path"),
         )
     except Exception as exc:
         raise HTTPException(
             500,
             f"Failed to generate risk assessment form: {exc}",
         ) from exc
+

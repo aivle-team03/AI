@@ -84,6 +84,7 @@ async def main():
         correction_result=result["correction_result"],
         correction_review=review_result,
         csv_output_path=csv_output_path,
+        xlsx_output_path=result.get("xlsx_output_path"),
     )
 
     DEFAULT_RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -98,9 +99,12 @@ async def main():
         "review_approved": response.correction_review.approved,
         "review_score": response.correction_review.score,
         "csv_output_path": response.csv_output_path,
+        "xlsx_output_path": response.xlsx_output_path,
         "response_path": str(DEFAULT_RESPONSE_PATH),
     }, ensure_ascii=False, indent=2), flush=True)
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
