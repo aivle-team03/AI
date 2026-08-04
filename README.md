@@ -45,12 +45,11 @@ Copy-Item .env.example .env
 `.env`에 다음 값을 설정합니다.
 
 ```env
-OPENAI_API_KEY="OpenAI API 키"
+OPENAI_API_KEY="실제 OpenAI API 키"
+OPENAI_MODEL="gpt-4o-mini"
 AGENT_READ_DATABASE_URL="팀 공용 AI 읽기 전용 DB URL"
-LAW_API_OC="국가법령정보 Open API 인증값"
-
-BACKEND_API_URL="http://127.0.0.1:8000"
-FRONTEND_ORIGINS="http://127.0.0.1:5173,http://localhost:5173"
+AGENT_READ_DB_SSL_CA="../backend/ca.pem"
+LAW_API_OC="실제 국가법령정보 API 인증값"
 ```
 
 실제 API 키와 DB 접속 정보는 Git에 커밋하지 않습니다.
