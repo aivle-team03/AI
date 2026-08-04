@@ -6,6 +6,7 @@ from app.schemas import (
     HeadquartersReportRequest,
     ReviewResult,
     RiskAssessmentFormRequest,
+    RiskAssessmentReportRequest,
     RiskDataCorrectionResult,
     RiskDataCorrectionReviewResult,
     SiteAnomalyReportRequest,
@@ -44,3 +45,14 @@ class RiskAssessmentFormState(TypedDict, total=False):
     errors: list[str]
 
 
+
+
+class RiskAssessmentReportState(TypedDict, total=False):
+    request: RiskAssessmentReportRequest
+    aggregated_data: dict
+    analysis_result: AnalysisResult
+    generated_report: GeneratedReport
+    review_result: ReviewResult
+    retry_count: int
+    max_retry_count: int
+    errors: list[str]

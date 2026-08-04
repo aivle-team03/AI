@@ -8,6 +8,7 @@ class Audience(str, Enum):
     HEADQUARTERS = "HEADQUARTERS"
     SITE_MANAGER = "SITE_MANAGER"
     EVIDENCE = "EVIDENCE"
+    RISK_ASSESSMENT_REPORT = "RISK_ASSESSMENT_REPORT"
 
 
 class SectionCode(str, Enum):
@@ -24,6 +25,8 @@ class SectionCode(str, Enum):
     ACTION_HISTORY = "ACTION_HISTORY"
     EVIDENCE_LIST = "EVIDENCE_LIST"
     APPROVAL_RECORDS = "APPROVAL_RECORDS"
+    RISK_ASSESSMENT_SUMMARY = "RISK_ASSESSMENT_SUMMARY"
+    HIGH_RISK_ITEMS = "HIGH_RISK_ITEMS"
 
 
 class AnalysisFinding(BaseModel):
@@ -35,6 +38,7 @@ class AnalysisFinding(BaseModel):
         "UNRESOLVED",
         "PRIORITY",
         "EVIDENCE",
+        "RISK_ASSESSMENT",
     ]
     title: str
     description: str
@@ -208,6 +212,10 @@ class SiteAnomalyReportRequest(EvidenceContentRequest):
     corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
+class RiskAssessmentReportRequest(EvidenceContentRequest):
+    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
+
+
 class HeadquartersReportResponse(BaseModel):
     status: Literal["COMPLETED", "FAILED"]
     retry_count: int
@@ -224,6 +232,16 @@ class SiteAnomalyReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
+
+class RiskAssessmentReportResponse(BaseModel):
+    status: Literal["COMPLETED", "FAILED"]
+    retry_count: int
+    aggregated_data: dict[str, Any]
+    analysis_result: AnalysisResult
+    report: GeneratedReport
+    review: ReviewResult
+
 
 
 
