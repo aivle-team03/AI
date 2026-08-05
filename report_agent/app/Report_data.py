@@ -2,13 +2,18 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://127.0.0.1:8000")
-BACKEND_AUTH_TOKEN = os.getenv("BACKEND_AUTH_TOKEN", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDAwMDQ1IiwiY29tcGFueV9pZCI6MSwiZXhwIjoxNzg1OTEyOTg0LCJ0eXBlIjoiYWNjZXNzIn0.rderGxOHZ956MZWOKQgo5luV_Xx-ojVEKRyQ3bEhm5I")
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL")
+BACKEND_AUTH_TOKEN = os.getenv("BACKEND_AUTH_TOKEN")
 
 
 def _headers() -> dict[str, str]:
@@ -73,3 +78,22 @@ def save_backend_data(
         file.write("\n")
 
     return data
+
+
+def main() -> int:
+    try:
+        data = save_backend_data()
+    except RuntimeError as exc:
+        print(f"[ERROR] Backend GET failed: {exc}", file=sys.stderr)
+        return 1
+    except Exception as exc:
+        print(f"[ERROR] Failed to save backend data: {exc}", file=sys.stderr)
+        return 1
+
+    print("[OK] BackendData.json saved")
+    print(json.dumps({key: len(value) for key, value in data.items()}, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

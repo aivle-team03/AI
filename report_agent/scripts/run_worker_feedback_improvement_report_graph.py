@@ -19,7 +19,7 @@ from app.schemas import (
     WorkerFeedbackImprovementReportResponse,
 )
 
-INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "worker_feedback_improvement_report_response.json"
 
 

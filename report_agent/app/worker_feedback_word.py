@@ -13,16 +13,19 @@ ROW_PLACEHOLDER_MAP = {
     "category": "{{category}}",
     "risk": "{{risk}}",
     "board_created_at": "{{board_created_at}}",
+    "board_writer": "{{board_writer}}",
     "category_name": "{{category_name}}",
     "board_contents": "{{board_contents}}",
     "status": "{{status}}",
     "board_image_url": "{{board_image_url}}",
     "location": "{{location}}",
     "completed_at": "{{completed_at}}",
+    "action_status": "{{action_status}}",
     "handler_name": "{{handler_name}}",
     "content": "{{content}}",
     "image_url": "{{image_url}}",
     "user": "{{user}}",
+   
 }
 
 PLACEHOLDER_ALIASES = {
