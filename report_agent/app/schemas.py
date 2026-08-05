@@ -83,8 +83,9 @@ class ReviewResult(BaseModel):
 
 
 class FinalHistoryRow(BaseModel):
-    case: str | None = None
     type: str | None = None
+    source_type: str | None = None
+    source_id: int | str | None = None
     inspection_history_id: int | None = None
     inspection_id: int | None = None
     inspection_name: str | None = None
@@ -104,6 +105,8 @@ class FinalHistoryRow(BaseModel):
     action_user_id: int | None = None
     action_user_name: str | None = None
     action_content: str | None = None
+    action_status: str | None = None
+    approval_status: str | None = None
     approval_name: str | None = None
     board_id: int | None = None
     event_id: str | int | None = None

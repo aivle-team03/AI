@@ -38,7 +38,7 @@ from app.worker_feedback_word import (
     DEFAULT_TEMPLATE_PATH as WORKER_FEEDBACK_WORD_TEMPLATE_PATH,
 )
 from app.worker_feedback_word import fill_worker_feedback_word_reports
-from scripts.build_final_history_table import build_final_history_table
+from scripts.build_final_history_table_14 import build_final_history_table_14
 
 
 def retry_node(state):
@@ -115,7 +115,7 @@ async def site_anomaly_review_node(state):
 
 def risk_assessment_table_node(state):
     source_data = state["request"].model_dump(mode="json")
-    return {"final_history_rows": build_final_history_table(source_data)}
+    return {"final_history_rows": build_final_history_table_14(source_data)}
 
 
 async def risk_data_correction_node(state):

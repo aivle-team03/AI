@@ -3,8 +3,9 @@
 from app.schemas import DataCorrectionNote, FinalHistoryRow, RiskDataCorrectionResult
 
 PROTECTED_FIELDS = [
-    "case",
     "type",
+    "source_type",
+    "source_id",
     "inspection_history_id",
     "inspection_id",
     "category_id",
@@ -15,6 +16,8 @@ PROTECTED_FIELDS = [
     "action_history_id",
     "action_date",
     "action_user_id",
+    "action_status",
+    "approval_status",
     "board_id",
     "event_id",
 ]
