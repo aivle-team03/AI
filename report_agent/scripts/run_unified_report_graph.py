@@ -16,7 +16,8 @@ if str(PROJECT_ROOT) not in sys.path:
 from app.config import MAX_RETRY_COUNT
 from app.graph import unified_report_graph
 from app.schemas import UnifiedReportRequest, UnifiedReportResponse
-from scripts.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
+from scripts.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH as RISK_REPORT_TEMPLATE_PATH, fill_docx_template as fill_risk_report_docx_template
+from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH as MANAGEMENT_ORDER_TEMPLATE_PATH, fill_docx_template as fill_management_order_docx_template
 
 DEFAULT_INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
 OUTPUT_NAME_BY_TYPE = {
@@ -58,7 +59,7 @@ def _markdown(response: UnifiedReportResponse) -> str:
             report.conclusion,
             "",
         ])
-    if report.limitations:
+    if report.limitations and not is_management_order:
         lines.append("## 한계")
         lines.extend(f"- {item}" for item in report.limitations)
         lines.append("")
@@ -143,10 +144,16 @@ async def main() -> None:
         markdown_path = PROJECT_ROOT / "output" / MARKDOWN_NAME_BY_TYPE[args.report_type]
         markdown_path.write_text(_markdown(response), encoding="utf-8-sig")
         if args.report_type == "risk_assessment_report":
-            docx_report_path = fill_docx_template(
+            docx_report_path = fill_risk_report_docx_template(
                 response.model_dump(mode="json"),
-                DEFAULT_TEMPLATE_PATH,
+                RISK_REPORT_TEMPLATE_PATH,
                 PROJECT_ROOT / "output" / "risk_assessment_report_unified.docx",
+            )
+        elif args.report_type in {"management_review_order", "site_anomaly_improvement"}:
+            docx_report_path = fill_management_order_docx_template(
+                response.model_dump(mode="json"),
+                MANAGEMENT_ORDER_TEMPLATE_PATH,
+                PROJECT_ROOT / "output" / "management_review_order_unified.docx",
             )
 
     print(json.dumps({
@@ -167,4 +174,6 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
 

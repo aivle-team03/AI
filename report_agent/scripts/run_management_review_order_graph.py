@@ -14,11 +14,13 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from app.config import MAX_RETRY_COUNT
 from app.graph import unified_report_graph
+from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 from app.schemas import UnifiedReportRequest, UnifiedReportResponse
 
 INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "management_review_order_response.json"
 REPORT_PATH = PROJECT_ROOT / "output" / "management_review_order.md"
+DOCX_REPORT_PATH = PROJECT_ROOT / "output" / "management_review_order.docx"
 
 
 def _markdown(response: UnifiedReportResponse) -> str:
@@ -42,10 +44,6 @@ def _markdown(response: UnifiedReportResponse) -> str:
             section.content,
             "",
         ])
-    if report.limitations:
-        lines.append("## 한계")
-        lines.extend(f"- {item}" for item in report.limitations)
-        lines.append("")
     return "\n".join(lines)
 
 
@@ -87,6 +85,7 @@ async def main() -> None:
     with RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
         json.dump(response.model_dump(mode="json"), file, ensure_ascii=False, indent=2)
     REPORT_PATH.write_text(_markdown(response), encoding="utf-8-sig")
+    docx_report_path = fill_docx_template(response.model_dump(mode="json"), DEFAULT_TEMPLATE_PATH, DOCX_REPORT_PATH)
 
     print(json.dumps({
         "status": response.status,
@@ -98,8 +97,11 @@ async def main() -> None:
         "review_score": response.review.score if response.review else None,
         "response_path": str(RESPONSE_PATH),
         "report_path": str(REPORT_PATH),
+        "docx_report_path": str(docx_report_path),
     }, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
