@@ -155,12 +155,12 @@
         "board_contents": "살려주세요",
         "status": "접수",
         "board_image_url": null,
-        "action_name": "리포트가 이상합니다",
+        "action_name": "리포트가 이상해요",
         "location": "살려주세요",
         "completed_at": "2026-08-05 16:27:01",
         "action_status": "조치 완료",
         "handler_name": "작업자24",
-        "content": "내용이 부적절합니다.",
+        "content": "zz",
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
         "approver_name": "판교관리자",
         "source_type": "게시판"
@@ -187,20 +187,6 @@
         "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
         "corrected_text": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 3,
-        "field": "action_name",
-        "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트가 이상합니다",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 3,
-        "field": "content",
-        "original_text": "zz",
-        "corrected_text": "내용이 부적절합니다.",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       }
     ],
     "unresolved_notes": []
@@ -218,7 +204,7 @@
         "original_text": "조치 이름 Action_name에 들어가는 지 확인",
         "corrected_text": "조치 이름 Action_name에 들어가는지 확인",
         "message": "띄어쓰기 및 문장 종결 표현을 정리하여 보고서 문체에 적합하게 수정함.",
-        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
+        "recommendation": "이와 같은 문체 정리는 적절하며 승인합니다."
       },
       {
         "row_index": 0,
@@ -227,8 +213,8 @@
         "category": "REPORT_STYLE",
         "original_text": "없다",
         "corrected_text": "없음",
-        "message": "구어체 표현을 더 간결하고 객관적인 문체로 수정함.",
-        "recommendation": "간결한 표현 유지가 바람직합니다."
+        "message": "더 간결하고 객관적인 표현으로 변경하여 보고서 문체에 적합하게 수정함.",
+        "recommendation": "이와 같은 문체 정리는 적절하며 승인합니다."
       },
       {
         "row_index": 1,
@@ -238,35 +224,15 @@
         "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
         "corrected_text": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
         "message": "띄어쓰기 및 문장 종결 표현을 정리하여 보고서 문체에 적합하게 수정함.",
-        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
-      },
-      {
-        "row_index": 3,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트가 이상합니다",
-        "message": "구어체 표현을 더 공식적이고 객관적인 문체로 수정함.",
-        "recommendation": "공식적인 문체 유지가 바람직합니다."
-      },
-      {
-        "row_index": 3,
-        "field": "content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "zz",
-        "corrected_text": "내용이 부적절합니다.",
-        "message": "모호하고 부적절한 표현을 명확하고 객관적인 문장으로 수정함.",
-        "recommendation": "명확한 표현 유지가 필요합니다."
+        "recommendation": "이와 같은 문체 정리는 적절하며 승인합니다."
       }
     ],
     "items_requiring_revision": []
   },
   "word_output_paths": [
-    "output\\worker_feedback_reports\\worker_feedback_001_ㄴㄴ_03.docx",
-    "output\\worker_feedback_reports\\worker_feedback_002_화재_감지_03.docx",
-    "output\\worker_feedback_reports\\worker_feedback_003_ㄴㄴ_03.docx",
-    "output\\worker_feedback_reports\\worker_feedback_004_현수님_03.docx"
+    "output\\worker_feedback_reports\\worker_feedback_001_ㄴㄴ_04.docx",
+    "output\\worker_feedback_reports\\worker_feedback_002_화재_감지_04.docx",
+    "output\\worker_feedback_reports\\worker_feedback_003_ㄴㄴ_04.docx",
+    "output\\worker_feedback_reports\\worker_feedback_004_현수님_04.docx"
   ]
 }

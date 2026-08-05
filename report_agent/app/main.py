@@ -6,6 +6,7 @@ from app.evidence_report import build_evidence_content
 from app.graph import (
     headquarters_full_graph,
     risk_assessment_form_graph,
+    risk_assessment_report_graph,
     site_anomaly_full_graph,
 )
 from app.schemas import (
@@ -14,7 +15,9 @@ from app.schemas import (
     HeadquartersReportRequest,
     HeadquartersReportResponse,
     RiskAssessmentFormRequest,
+    RiskAssessmentReportRequest,
     RiskAssessmentFormResponse,
+    RiskAssessmentReportResponse,
     SiteAnomalyReportRequest,
     SiteAnomalyReportResponse,
 )
@@ -136,9 +139,43 @@ async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
             correction_result=result["correction_result"],
             correction_review=review_result,
             csv_output_path=csv_output_path,
+            xlsx_output_path=result.get("xlsx_output_path"),
         )
     except Exception as exc:
         raise HTTPException(
             500,
             f"Failed to generate risk assessment form: {exc}",
         ) from exc
+
+
+
+@app.post(
+    "/api/reports/risk-assessment/report/generate",
+    response_model=RiskAssessmentReportResponse,
+    tags=["report-generation"],
+)
+async def generate_risk_assessment_report(req: RiskAssessmentReportRequest):
+    try:
+        result = await risk_assessment_report_graph.ainvoke(
+            {
+                "request": req,
+                "retry_count": 0,
+                "max_retry_count": MAX_RETRY_COUNT,
+                "errors": [],
+            }
+        )
+        review_result = result["review_result"]
+        return RiskAssessmentReportResponse(
+            status="COMPLETED" if review_result.passed else "FAILED",
+            retry_count=result.get("retry_count", 0),
+            aggregated_data=result["aggregated_data"],
+            analysis_result=result["analysis_result"],
+            report=result["generated_report"],
+            review=review_result,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            500,
+            f"Failed to generate risk assessment report: {exc}",
+        ) from exc
+
