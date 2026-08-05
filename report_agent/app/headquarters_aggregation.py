@@ -1,8 +1,25 @@
-from collections import Counter, defaultdict
+﻿from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any
 
 from app.schemas import HeadquartersReportRequest
+
+RISK_SCORE = {
+    "CRITICAL": 4,
+    "HIGH": 3,
+    "MEDIUM": 2,
+    "LOW": 1,
+}
+
+
+def _row_dict(row: Any) -> dict[str, Any]:
+    if hasattr(row, "model_dump"):
+        return row.model_dump(mode="json")
+    return dict(row or {})
+
+
+def _rows(req: HeadquartersReportRequest) -> list[dict[str, Any]]:
+    return [_row_dict(row) for row in req.corrected_rows]
 
 
 def _parse_datetime(value: Any) -> datetime | None:
@@ -31,40 +48,26 @@ def _round_rate(numerator: int, denominator: int) -> float:
     return round(numerator / denominator * 100, 1) if denominator else 0.0
 
 
-def _normalized_text(value: Any) -> str:
-    return str(value or "").strip().lower().replace(" ", "").replace("_", "")
+def _risk_score(value: Any) -> int:
+    if isinstance(value, int):
+        return value
+    text = str(value or "").strip().upper()
+    if text.isdigit():
+        return int(text)
+    return RISK_SCORE.get(text, 0)
 
 
-def _is_action_completed(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"조치완료", "완료", "completed", "complete", "done", "approved"}
-
-
-def _is_approval_completed(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"승인완료", "승인", "approved", "complete", "completed"}
-
-
-def _is_approval_waiting(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"승인대기", "대기", "waiting", "pending"}
-
-
-def _is_approval_rejected(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"반려", "거절", "rejected", "reject", "denied"}
-
-
-def _is_education_completed(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"이수", "완료", "completed", "complete", "done"}
-
-
-def _top_counts(counter: Counter, limit: int = 5) -> list[dict[str, Any]]:
-    return [
-        {"name": name, "count": count}
-        for name, count in counter.most_common(limit)
-    ]
+def _risk_band(value: Any) -> str:
+    score = _risk_score(value)
+    if score >= 4:
+        return "CRITICAL"
+    if score >= 3:
+        return "HIGH"
+    if score >= 2:
+        return "MEDIUM"
+    if score >= 1:
+        return "LOW"
+    return "UNKNOWN"
 
 
 def _period(dates: list[str]) -> dict[str, str]:
@@ -104,104 +107,90 @@ def _trend_delta(series: dict[str, int]) -> dict[str, Any]:
     }
 
 
-def _status_counts(items: list[dict[str, Any]], key: str) -> dict[str, int]:
-    return dict(Counter(str(item.get(key) or "-") for item in items))
+def _top_counts(counter: Counter, limit: int = 5) -> list[dict[str, Any]]:
+    return [
+        {"name": name, "count": count}
+        for name, count in counter.most_common(limit)
+    ]
+
+
+def _has_action(row: dict[str, Any]) -> bool:
+    return bool(row.get("action_history_id"))
+
+
+def _is_action_completed(row: dict[str, Any]) -> bool:
+    return _has_action(row) and bool(row.get("action_date") or row.get("action_content"))
+
+
+def _is_approval_completed(row: dict[str, Any]) -> bool:
+    return bool(row.get("approval_name"))
+
+
+def _source_id(row: dict[str, Any]) -> str:
+    return str(
+        row.get("event_id")
+        or row.get("inspection_history_id")
+        or row.get("action_history_id")
+        or row.get("case")
+        or "-"
+    )
 
 
 def aggregate_headquarters_data(req: HeadquartersReportRequest) -> dict[str, Any]:
-    category_by_id = {item.get("category_id"): item for item in req.event_category}
-    cctv_by_id = {item.get("cctv_id"): item for item in req.cctv}
-    actions_by_event = _group_by(req.action_history, "event_id")
+    rows = _rows(req)
+    inspection_rows = [row for row in rows if row.get("inspection_history_id")]
+    action_rows = [row for row in rows if _has_action(row)]
+    completed_action_rows = [row for row in action_rows if _is_action_completed(row)]
+    pending_action_rows = [row for row in action_rows if not _is_action_completed(row)]
+    unaddressed_inspection_rows = [row for row in inspection_rows if not _has_action(row)]
+    approved_rows = [row for row in action_rows if _is_approval_completed(row)]
 
-    event_dates = [_date_key(event.get("date")) for event in req.event]
-    period = _period(event_dates)
+    date_values = [_date_key(row.get("inspection_date") or row.get("action_date")) for row in rows]
+    period = _period(date_values)
 
-    high_events = []
-    medium_events = []
-    low_events = []
     category_counts: Counter = Counter()
     location_counts: Counter = Counter()
     daily_counts: Counter = Counter()
     weekly_counts: Counter = Counter()
     daily_high_counts: Counter = Counter()
+    risk_band_counts: Counter = Counter()
     category_daily_counts: dict[str, Counter] = defaultdict(Counter)
     location_daily_counts: dict[str, Counter] = defaultdict(Counter)
     repeated_groups: dict[tuple[str, str], list[str]] = defaultdict(list)
 
-    for event in req.event:
-        category = category_by_id.get(event.get("category_id"), {})
-        cctv = cctv_by_id.get(event.get("cctv_id"), {})
-        event_id = str(event.get("event_id"))
-        category_name = str(category.get("category_name", "-"))
-        location = str(cctv.get("location", "-"))
-        level = int(category.get("level") or 0)
-        day = _date_key(event.get("date"))
+    for row in inspection_rows:
+        category_name = str(row.get("category_name") or "-")
+        location = str(row.get("inspection_location") or row.get("action_location") or "-")
+        day = _date_key(row.get("inspection_date") or row.get("action_date"))
+        band = _risk_band(row.get("risk"))
+        source_id = _source_id(row)
 
         category_counts[category_name] += 1
         location_counts[location] += 1
         daily_counts[day] += 1
-        weekly_counts[_week_key(event.get("date"))] += 1
+        weekly_counts[_week_key(row.get("inspection_date") or row.get("action_date"))] += 1
         category_daily_counts[category_name][day] += 1
         location_daily_counts[location][day] += 1
-        repeated_groups[(location, category_name)].append(event_id)
-
-        if level >= 8:
-            high_events.append(event)
+        risk_band_counts[band] += 1
+        repeated_groups[(location, category_name)].append(source_id)
+        if band in {"CRITICAL", "HIGH"}:
             daily_high_counts[day] += 1
-        elif level >= 5:
-            medium_events.append(event)
-        else:
-            low_events.append(event)
-
-    completed_actions = [
-        action for action in req.action_history
-        if _is_action_completed(action.get("action_status"))
-    ]
-    pending_actions = [
-        action for action in req.action_history
-        if not _is_action_completed(action.get("action_status"))
-    ]
-    approved_actions = [
-        action for action in req.action_history
-        if _is_approval_completed(action.get("approval_status"))
-    ]
-    approval_waiting_actions = [
-        action for action in req.action_history
-        if _is_approval_waiting(action.get("approval_status"))
-    ]
-    rejected_actions = [
-        action for action in req.action_history
-        if _is_approval_rejected(action.get("approval_status"))
-    ]
-
-    action_minutes = []
-    for action in completed_actions:
-        created_at = _parse_datetime(action.get("created_at"))
-        completed_at = _parse_datetime(action.get("completed_at"))
-        if created_at and completed_at and completed_at >= created_at:
-            action_minutes.append((completed_at - created_at).total_seconds() / 60)
-
-    high_event_ids = {event.get("event_id") for event in high_events}
-    unresolved_high_risk_events = [
-        str(action.get("event_id"))
-        for action in pending_actions
-        if action.get("event_id") in high_event_ids
-    ]
 
     repeated_risks = [
         {
             "location": location,
             "category_name": category_name,
-            "count": len(event_ids),
-            "event_ids": event_ids,
+            "count": len(source_ids),
+            "source_ids": source_ids,
         }
-        for (location, category_name), event_ids in repeated_groups.items()
-        if len(event_ids) >= 2
+        for (location, category_name), source_ids in repeated_groups.items()
+        if len(source_ids) >= 2
     ]
 
-    education_completed = [
-        item for item in req.education_status
-        if _is_education_completed(item.get("status"))
+    unresolved_high_risk_ids = [
+        _source_id(row)
+        for row in inspection_rows
+        if _risk_band(row.get("risk")) in {"CRITICAL", "HIGH"} and not _has_action(row)
     ]
 
     daily_counts_dict = dict(sorted(daily_counts.items()))
@@ -210,48 +199,37 @@ def aggregate_headquarters_data(req: HeadquartersReportRequest) -> dict[str, Any
 
     return {
         "company": req.company or {},
+        "data_source": {
+            "name": "final_history_table_corrected.corrected_rows",
+            "row_count": len(rows),
+            "input_shape": "corrected_final_history_table",
+        },
         "period": period,
         "kpi": {
-            "total_events": len(req.event),
-            "high_risk_events": len(high_events),
-            "medium_risk_events": len(medium_events),
-            "low_risk_events": len(low_events),
-            "action_total": len(req.action_history),
-            "action_completed": len(completed_actions),
-            "action_waiting": len(pending_actions),
-            "action_completion_rate": _round_rate(
-                len(completed_actions),
-                len(req.action_history),
+            "total_records": len(rows),
+            "inspection_records": len(inspection_rows),
+            "critical_risk_records": risk_band_counts.get("CRITICAL", 0),
+            "high_risk_records": risk_band_counts.get("HIGH", 0),
+            "medium_risk_records": risk_band_counts.get("MEDIUM", 0),
+            "low_risk_records": risk_band_counts.get("LOW", 0),
+            "action_total": len(action_rows),
+            "action_completed": len(completed_action_rows),
+            "action_waiting": len(pending_action_rows),
+            "action_completion_rate": _round_rate(len(completed_action_rows), len(action_rows)),
+            "approval_completed": len(approved_rows),
+            "approval_waiting": len(action_rows) - len(approved_rows),
+            "approval_completion_rate": _round_rate(len(approved_rows), len(action_rows)),
+            "high_risk_ratio": _round_rate(
+                risk_band_counts.get("CRITICAL", 0) + risk_band_counts.get("HIGH", 0),
+                len(inspection_rows),
             ),
-            "approval_completed": len(approved_actions),
-            "approval_waiting": len(approval_waiting_actions),
-            "approval_rejected": len(rejected_actions),
-            "average_action_minutes": (
-                round(sum(action_minutes) / len(action_minutes), 1)
-                if action_minutes
-                else None
-            ),
-            "education_target_count": len(req.education_status),
-            "education_completed_count": len(education_completed),
-            "education_completion_rate": _round_rate(
-                len(education_completed),
-                len(req.education_status),
-            ),
-            "high_risk_ratio": _round_rate(len(high_events), len(req.event)),
-            "pending_action_rate": _round_rate(
-                len(pending_actions),
-                len(req.action_history),
-            ),
-            "approval_completion_rate": _round_rate(
-                len(approved_actions),
-                len(req.action_history),
-            ),
+            "pending_action_rate": _round_rate(len(pending_action_rows), len(action_rows)),
         },
         "trend": {
-            "daily_event_counts": daily_counts_dict,
-            "weekly_event_counts": weekly_counts_dict,
+            "daily_record_counts": daily_counts_dict,
+            "weekly_record_counts": weekly_counts_dict,
             "daily_high_risk_counts": daily_high_counts_dict,
-            "event_trend_delta": _trend_delta(daily_counts_dict),
+            "record_trend_delta": _trend_delta(daily_counts_dict),
             "weekly_trend_delta": _trend_delta(weekly_counts_dict),
             "high_risk_trend_delta": _trend_delta(daily_high_counts_dict),
             "category_daily_counts": {
@@ -264,87 +242,53 @@ def aggregate_headquarters_data(req: HeadquartersReportRequest) -> dict[str, Any
             },
         },
         "status_distribution": {
-            "action_status_counts": _status_counts(req.action_history, "action_status"),
-            "approval_status_counts": _status_counts(
-                req.action_history,
-                "approval_status",
-            ),
-            "education_status_counts": _status_counts(req.education_status, "status"),
-            "checklist_status_counts": _status_counts(req.checklist, "status"),
+            "risk_band_counts": dict(risk_band_counts),
+            "action_status_counts": {
+                "completed": len(completed_action_rows),
+                "waiting": len(pending_action_rows),
+                "unaddressed_inspections": len(unaddressed_inspection_rows),
+            },
+            "approval_status_counts": {
+                "approved": len(approved_rows),
+                "waiting": len(action_rows) - len(approved_rows),
+            },
+            "type_counts": dict(Counter(str(row.get("type") or "-") for row in rows)),
         },
         "rankings": {
             "top_categories": _top_counts(category_counts),
             "top_locations": _top_counts(location_counts),
-            "top_delayed_actions": _top_delayed_actions(req.action_history),
+            "top_repeated_risks": sorted(
+                repeated_risks,
+                key=lambda item: item["count"],
+                reverse=True,
+            )[:5],
         },
         "risk_flags": {
             "repeated_risks": repeated_risks,
-            "unresolved_high_risk_event_ids": unresolved_high_risk_events,
+            "unresolved_high_risk_source_ids": unresolved_high_risk_ids,
             "pending_action_ids": [
-                action.get("action_history_id") for action in pending_actions
+                row.get("action_history_id") for row in pending_action_rows
+            ],
+            "unaddressed_inspection_history_ids": [
+                row.get("inspection_history_id") for row in unaddressed_inspection_rows
             ],
         },
         "source_ids": {
-            "event_ids": [event.get("event_id") for event in req.event],
+            "inspection_history_ids": [
+                row.get("inspection_history_id") for row in inspection_rows
+            ],
             "action_history_ids": [
-                action.get("action_history_id") for action in req.action_history
+                row.get("action_history_id") for row in action_rows
             ],
-            "checklist_ids": [
-                checklist.get("checklist_id") for checklist in req.checklist
-            ],
+            "event_ids": [row.get("event_id") for row in rows if row.get("event_id")],
         },
         "source_samples": {
-            "high_risk_events": _event_samples(high_events, category_by_id, cctv_by_id),
-            "pending_actions": pending_actions[:10],
+            "high_risk_records": [
+                row for row in inspection_rows
+                if _risk_band(row.get("risk")) in {"CRITICAL", "HIGH"}
+            ][:10],
+            "pending_action_records": pending_action_rows[:10],
+            "unaddressed_inspection_records": unaddressed_inspection_rows[:10],
         },
     }
 
-
-def _group_by(items: list[dict[str, Any]], key: str) -> dict[Any, list[dict[str, Any]]]:
-    grouped: dict[Any, list[dict[str, Any]]] = {}
-    for item in items:
-        grouped.setdefault(item.get(key), []).append(item)
-    return grouped
-
-
-def _top_delayed_actions(actions: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    delayed = []
-    for action in actions:
-        created_at = _parse_datetime(action.get("created_at"))
-        completed_at = _parse_datetime(action.get("completed_at"))
-        if not created_at or not completed_at or completed_at < created_at:
-            continue
-
-        delayed.append(
-            {
-                "action_history_id": action.get("action_history_id"),
-                "event_id": action.get("event_id"),
-                "action_name": action.get("action_name"),
-                "handler_name": action.get("handler_name"),
-                "minutes": round((completed_at - created_at).total_seconds() / 60, 1),
-            }
-        )
-
-    return sorted(delayed, key=lambda item: item["minutes"], reverse=True)[:5]
-
-
-def _event_samples(
-    events: list[dict[str, Any]],
-    category_by_id: dict[Any, dict[str, Any]],
-    cctv_by_id: dict[Any, dict[str, Any]],
-) -> list[dict[str, Any]]:
-    samples = []
-    for event in events[:10]:
-        category = category_by_id.get(event.get("category_id"), {})
-        cctv = cctv_by_id.get(event.get("cctv_id"), {})
-        samples.append(
-            {
-                "event_id": event.get("event_id"),
-                "date": event.get("date"),
-                "category_name": category.get("category_name"),
-                "level": category.get("level"),
-                "location": cctv.get("location"),
-                "image_url": event.get("image_url"),
-            }
-        )
-    return samples

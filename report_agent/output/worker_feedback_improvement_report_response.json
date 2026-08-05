@@ -1,0 +1,242 @@
+﻿{
+  "status": "FAILED",
+  "retry_count": 2,
+  "worker_feedback_rows": [
+    {
+      "category": "기타",
+      "risk": "상",
+      "category_name": "ㄴㄴ",
+      "user": null,
+      "board_writer": null,
+      "board_created_at": null,
+      "board_contents": null,
+      "status": null,
+      "board_image_url": null,
+      "action_name": "조치 이름 Action_name에 들어가는 지 확인",
+      "location": "집",
+      "completed_at": "2026-08-05 16:08:25",
+      "action_status": "조치 완료",
+      "handler_name": "작업자23",
+      "content": "없다",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_42_20260805160825009402_7d15c7db.png",
+      "approver_name": "판교관리자",
+      "source_type": "게시판"
+    },
+    {
+      "category": "소방안전",
+      "risk": "상",
+      "category_name": "화재 감지",
+      "user": "김작업",
+      "board_writer": "김작업",
+      "board_created_at": "2026-07-29 08:44:25",
+      "board_contents": "소화기 외관 점검 결과 일부 소화기 위치 이동 및 가압 점검이 필요합니다.",
+      "status": "접수",
+      "board_image_url": null,
+      "action_name": "A동 복도 소화기 배치 재점검 요청",
+      "location": "A동 복도",
+      "completed_at": "2026-07-29 06:43:54",
+      "action_status": "조치 완료",
+      "handler_name": null,
+      "content": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
+      "image_url": "http://127.0.0.1:8000/static/uploads/board_1785201730.jpg",
+      "approver_name": "현수",
+      "source_type": "게시판"
+    },
+    {
+      "category": "기타",
+      "risk": "상",
+      "category_name": "ㄴㄴ",
+      "user": "판교관리자",
+      "board_writer": "판교관리자",
+      "board_created_at": "2026-08-05 07:10:58",
+      "board_contents": "살려주세요",
+      "status": "접수",
+      "board_image_url": null,
+      "action_name": "게시판-조치테이블-담당자배정-report 생성",
+      "location": "집",
+      "completed_at": "2026-08-05 16:12:06",
+      "action_status": "조치 완료",
+      "handler_name": "작업자22",
+      "content": "살려주세요",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
+      "approver_name": "판교관리자",
+      "source_type": "게시판"
+    },
+    {
+      "category": "소방안전",
+      "risk": "중",
+      "category_name": "현수님",
+      "user": "판교관리자",
+      "board_writer": "판교관리자",
+      "board_created_at": "2026-08-05 07:26:04",
+      "board_contents": "살려주세요",
+      "status": "접수",
+      "board_image_url": null,
+      "action_name": "리포트가 이상해요",
+      "location": "살려주세요",
+      "completed_at": "2026-08-05 16:27:01",
+      "action_status": "조치 완료",
+      "handler_name": "작업자24",
+      "content": "zz",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
+      "approver_name": "판교관리자",
+      "source_type": "게시판"
+    }
+  ],
+  "correction_result": {
+    "corrected_rows": [
+      {
+        "category": "기타",
+        "risk": "상",
+        "category_name": "ㄴㄴ",
+        "user": null,
+        "board_writer": null,
+        "board_created_at": null,
+        "board_contents": null,
+        "status": null,
+        "board_image_url": null,
+        "action_name": "조치 이름 Action_name에 들어가는지 확인",
+        "location": "집",
+        "completed_at": "2026-08-05 16:08:25",
+        "action_status": "조치 완료",
+        "handler_name": "작업자23",
+        "content": "없음",
+        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_42_20260805160825009402_7d15c7db.png",
+        "approver_name": "판교관리자",
+        "source_type": "게시판"
+      },
+      {
+        "category": "소방안전",
+        "risk": "상",
+        "category_name": "화재 감지",
+        "user": "김작업",
+        "board_writer": "김작업",
+        "board_created_at": "2026-07-29 08:44:25",
+        "board_contents": "소화기 외관 점검 결과 일부 소화기 위치 이동 및 가압 점검이 필요합니다.",
+        "status": "접수",
+        "board_image_url": null,
+        "action_name": "A동 복도 소화기 배치 재점검 요청",
+        "location": "A동 복도",
+        "completed_at": "2026-07-29 06:43:54",
+        "action_status": "조치 완료",
+        "handler_name": null,
+        "content": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
+        "image_url": "http://127.0.0.1:8000/static/uploads/board_1785201730.jpg",
+        "approver_name": "현수",
+        "source_type": "게시판"
+      },
+      {
+        "category": "기타",
+        "risk": "상",
+        "category_name": "ㄴㄴ",
+        "user": "판교관리자",
+        "board_writer": "판교관리자",
+        "board_created_at": "2026-08-05 07:10:58",
+        "board_contents": "살려주세요",
+        "status": "접수",
+        "board_image_url": null,
+        "action_name": "게시판-조치테이블-담당자배정-report 생성",
+        "location": "집",
+        "completed_at": "2026-08-05 16:12:06",
+        "action_status": "조치 완료",
+        "handler_name": "작업자22",
+        "content": "살려주세요",
+        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
+        "approver_name": "판교관리자",
+        "source_type": "게시판"
+      },
+      {
+        "category": "소방안전",
+        "risk": "중",
+        "category_name": "현수님",
+        "user": "판교관리자",
+        "board_writer": "판교관리자",
+        "board_created_at": "2026-08-05 07:26:04",
+        "board_contents": "살려주세요",
+        "status": "접수",
+        "board_image_url": null,
+        "action_name": "리포트가 이상합니다",
+        "location": "살려주세요",
+        "completed_at": "2026-08-05 16:27:01",
+        "action_status": "조치 완료",
+        "handler_name": "작업자24",
+        "content": "내용이 부적절하여 수정이 필요합니다.",
+        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
+        "approver_name": "판교관리자",
+        "source_type": "게시판"
+      }
+    ],
+    "correction_notes": [
+      {
+        "row_index": 0,
+        "field": "action_name",
+        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
+        "corrected_text": "조치 이름 Action_name에 들어가는지 확인",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 0,
+        "field": "content",
+        "original_text": "없다",
+        "corrected_text": "없음",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 1,
+        "field": "content",
+        "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
+        "corrected_text": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 3,
+        "field": "action_name",
+        "original_text": "리포트가 이상해요",
+        "corrected_text": "리포트가 이상합니다",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 3,
+        "field": "content",
+        "original_text": "zz",
+        "corrected_text": "내용이 부적절하여 수정이 필요합니다.",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      }
+    ],
+    "unresolved_notes": [
+      "4번째 행의 content 필드 원문 'zz'는 의미가 불명확하여 명확한 수정이 어렵습니다."
+    ]
+  },
+  "correction_review": {
+    "approved": false,
+    "final_decision": "REVISION_REQUIRED",
+    "score": 70,
+    "issues": [
+      {
+        "row_index": 3,
+        "field": "content",
+        "severity": "ERROR",
+        "category": "MEANING_CHANGED",
+        "original_text": "zz",
+        "corrected_text": "내용이 부적절하여 수정이 필요합니다.",
+        "message": "원문 'zz'는 의미가 불명확하지만, 수정문은 원문에 없는 판단과 조치 필요성을 추가하여 의미가 변경됨.",
+        "recommendation": "원문의 의미가 불명확하다면, 수정문도 간결하고 객관적으로 원문 상태를 반영하는 표현으로 수정해야 함."
+      },
+      {
+        "row_index": 3,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "리포트가 이상해요",
+        "corrected_text": "리포트가 이상합니다",
+        "message": "수정문은 보고서 문체에 더 적합하나, '이상합니다'도 다소 모호한 표현임.",
+        "recommendation": "더 구체적이고 객관적인 표현으로 수정하는 것이 바람직함."
+      }
+    ],
+    "items_requiring_revision": [
+      "4번째 행 content 필드: 원문 'zz'의 의미 불명확 문제 해결 및 적절한 보고서 문체로 수정 필요",
+      "4번째 행 action_name 필드: 모호한 표현 개선 필요"
+    ]
+  },
+  "word_output_paths": []
+}

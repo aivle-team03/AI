@@ -1,14 +1,20 @@
-from fastapi import FastAPI, HTTPException
+﻿from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import MAX_RETRY_COUNT
 from app.evidence_report import build_evidence_content
-from app.graph import headquarters_full_graph, site_anomaly_full_graph
+from app.graph import (
+    headquarters_full_graph,
+    risk_assessment_form_graph,
+    site_anomaly_full_graph,
+)
 from app.schemas import (
     EvidenceContentRequest,
     EvidenceContentResponse,
     HeadquartersReportRequest,
     HeadquartersReportResponse,
+    RiskAssessmentFormRequest,
+    RiskAssessmentFormResponse,
     SiteAnomalyReportRequest,
     SiteAnomalyReportResponse,
 )
@@ -103,4 +109,36 @@ async def generate_site_anomaly_report(req: SiteAnomalyReportRequest):
         raise HTTPException(
             500,
             f"Failed to generate site anomaly report: {exc}",
+        ) from exc
+
+
+@app.post(
+    "/api/reports/risk-assessment/form/generate",
+    response_model=RiskAssessmentFormResponse,
+    tags=["report-generation"],
+)
+async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
+    try:
+        result = await risk_assessment_form_graph.ainvoke(
+            {
+                "request": req,
+                "retry_count": 0,
+                "max_retry_count": MAX_RETRY_COUNT,
+                "errors": [],
+            }
+        )
+        review_result = result["correction_review"]
+        csv_output_path = result.get("csv_output_path")
+        return RiskAssessmentFormResponse(
+            status="COMPLETED" if review_result.approved and csv_output_path else "FAILED",
+            retry_count=result.get("retry_count", 0),
+            final_history_rows=result.get("final_history_rows", []),
+            correction_result=result["correction_result"],
+            correction_review=review_result,
+            csv_output_path=csv_output_path,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            500,
+            f"Failed to generate risk assessment form: {exc}",
         ) from exc

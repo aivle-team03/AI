@@ -1,0 +1,596 @@
+﻿{
+  "site_context": {
+    "company": {},
+    "period": {
+      "start_date": "2026-07-01",
+      "end_date": "2026-07-10"
+    },
+    "audience": "SITE_MANAGER",
+    "report_type": "ANOMALY_IMPROVEMENT_RECOMMENDATION",
+    "data_source": "final_history_table_corrected.corrected_rows"
+  },
+  "summary_counts": {
+    "total_records": 20,
+    "inspection_records": 10,
+    "high_risk_records": 6,
+    "pending_or_unapproved_records": 5,
+    "repeated_risk_groups": 5
+  },
+  "anomaly_candidates": [
+    {
+      "pattern_type": "REPEATED_LOCATION_CATEGORY",
+      "location": "지하 전기실",
+      "risk_type": "전기실 주변 적치",
+      "count": 2,
+      "severity": "HIGH",
+      "max_risk_score": 4,
+      "source_ids": [
+        "1003",
+        "1103"
+      ],
+      "inspection_history_ids": [
+        1003,
+        1103
+      ],
+      "action_history_ids": [
+        2003
+      ],
+      "latest_record_date": "2026-07-08T13:30:00",
+      "pending_source_ids": [
+        "1003"
+      ],
+      "recurrence_after_action_count": 0,
+      "why_flagged": "same location and same risk type repeated 2 times; critical risk included; 1 items require action or approval follow-up",
+      "field_check_points": [
+        "Confirm whether the same hazard remains at the same location.",
+        "Check whether previous corrective action prevented recurrence.",
+        "Confirm delayed action or approval items with the site manager."
+      ]
+    },
+    {
+      "pattern_type": "REPEATED_LOCATION_CATEGORY",
+      "location": "2층 A구역",
+      "risk_type": "피난통로 적치",
+      "count": 2,
+      "severity": "HIGH",
+      "max_risk_score": 3,
+      "source_ids": [
+        "1001",
+        "1101"
+      ],
+      "inspection_history_ids": [
+        1001,
+        1101
+      ],
+      "action_history_ids": [
+        2001
+      ],
+      "latest_record_date": "2026-07-06T09:00:00",
+      "pending_source_ids": [
+        "1001"
+      ],
+      "recurrence_after_action_count": 0,
+      "why_flagged": "same location and same risk type repeated 2 times; high risk included; 1 items require action or approval follow-up",
+      "field_check_points": [
+        "Confirm whether the same hazard remains at the same location.",
+        "Check whether previous corrective action prevented recurrence.",
+        "Confirm delayed action or approval items with the site manager."
+      ]
+    },
+    {
+      "pattern_type": "REPEATED_LOCATION_CATEGORY",
+      "location": "3층 포장라인",
+      "risk_type": "지게차 동선 침범",
+      "count": 2,
+      "severity": "HIGH",
+      "max_risk_score": 3,
+      "source_ids": [
+        "1004",
+        "1104"
+      ],
+      "inspection_history_ids": [
+        1004,
+        1104
+      ],
+      "action_history_ids": [
+        2004
+      ],
+      "latest_record_date": "2026-07-09T15:20:00",
+      "pending_source_ids": [
+        "1004"
+      ],
+      "recurrence_after_action_count": 0,
+      "why_flagged": "same location and same risk type repeated 2 times; high risk included; 1 items require action or approval follow-up",
+      "field_check_points": [
+        "Confirm whether the same hazard remains at the same location.",
+        "Check whether previous corrective action prevented recurrence.",
+        "Confirm delayed action or approval items with the site manager."
+      ]
+    },
+    {
+      "pattern_type": "REPEATED_LOCATION_CATEGORY",
+      "location": "1층 상하차장",
+      "risk_type": "보호구 미착용",
+      "count": 2,
+      "severity": "LOW",
+      "max_risk_score": 2,
+      "source_ids": [
+        "1002",
+        "1102"
+      ],
+      "inspection_history_ids": [
+        1002,
+        1102
+      ],
+      "action_history_ids": [
+        2002
+      ],
+      "latest_record_date": "2026-07-07T08:40:00",
+      "pending_source_ids": [
+        "1002"
+      ],
+      "recurrence_after_action_count": 0,
+      "why_flagged": "same location and same risk type repeated 2 times; 1 items require action or approval follow-up",
+      "field_check_points": [
+        "Confirm whether the same hazard remains at the same location.",
+        "Check whether previous corrective action prevented recurrence.",
+        "Confirm delayed action or approval items with the site manager."
+      ]
+    },
+    {
+      "pattern_type": "REPEATED_LOCATION_CATEGORY",
+      "location": "1층 출고 대기구역",
+      "risk_type": "바닥 장애물 방치",
+      "count": 2,
+      "severity": "LOW",
+      "max_risk_score": 1,
+      "source_ids": [
+        "1005",
+        "1105"
+      ],
+      "inspection_history_ids": [
+        1005,
+        1105
+      ],
+      "action_history_ids": [
+        2005
+      ],
+      "latest_record_date": "2026-07-10T17:00:00",
+      "pending_source_ids": [
+        "1005"
+      ],
+      "recurrence_after_action_count": 0,
+      "why_flagged": "same location and same risk type repeated 2 times; 1 items require action or approval follow-up",
+      "field_check_points": [
+        "Confirm whether the same hazard remains at the same location.",
+        "Check whether previous corrective action prevented recurrence.",
+        "Confirm delayed action or approval items with the site manager."
+      ]
+    }
+  ],
+  "action_context": [
+    {
+      "source_id": "1001",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1001,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-01T09:00:00",
+      "location": "2층 A구역",
+      "risk_type": "피난통로 적치",
+      "risk": "HIGH",
+      "risk_band": "HIGH",
+      "inspection_name": "피난통로 적치물 정기 점검",
+      "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1002",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1002,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-02T10:30:00",
+      "location": "1층 상하차장",
+      "risk_type": "보호구 미착용",
+      "risk": "MEDIUM",
+      "risk_band": "MEDIUM",
+      "inspection_name": "상하차장 보호구 착용 점검",
+      "inspection_content": "작업자 전원 안전모 및 안전화 착용 확인.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1003",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1003,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-03T14:00:00",
+      "location": "지하 전기실",
+      "risk_type": "전기실 주변 적치",
+      "risk": "CRITICAL",
+      "risk_band": "CRITICAL",
+      "inspection_name": "전기실 화재위험 점검",
+      "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1004",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1004,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-04T11:20:00",
+      "location": "3층 포장라인",
+      "risk_type": "지게차 동선 침범",
+      "risk": "HIGH",
+      "risk_band": "HIGH",
+      "inspection_name": "지게차 동선 안전 점검",
+      "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1005",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1005,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-05T16:10:00",
+      "location": "1층 출고 대기구역",
+      "risk_type": "바닥 장애물 방치",
+      "risk": "LOW",
+      "risk_band": "LOW",
+      "inspection_name": "바닥 장애물 정리 점검",
+      "inspection_content": "출고 대기구역 바닥 장애물 없음. 통행로 확보.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    }
+  ],
+  "recent_records": [
+    {
+      "source_id": "1105",
+      "case": "Case 2",
+      "type": "조치이력",
+      "inspection_history_id": 1105,
+      "action_history_id": 2005,
+      "event_id": null,
+      "date": "2026-07-10T17:00:00",
+      "location": "1층 출고 대기구역",
+      "risk_type": "바닥 장애물 방치",
+      "risk": "LOW",
+      "risk_band": "LOW",
+      "inspection_name": "바닥 장애물 정리 점검",
+      "inspection_content": "랩핑 필름 잔재가 통로에 남아 있음.",
+      "action_name": "바닥 장애물 제거",
+      "action_content": "필름 잔재 수거 및 통로 청소 완료.",
+      "action_completed": true,
+      "approval_completed": true,
+      "approval_name": "정승인",
+      "before_image_url": null
+    },
+    {
+      "source_id": "1104",
+      "case": "Case 2",
+      "type": "조치이력",
+      "inspection_history_id": 1104,
+      "action_history_id": 2004,
+      "event_id": null,
+      "date": "2026-07-09T15:20:00",
+      "location": "3층 포장라인",
+      "risk_type": "지게차 동선 침범",
+      "risk": "HIGH",
+      "risk_band": "HIGH",
+      "inspection_name": "지게차 동선 안전 점검",
+      "inspection_content": "보행자 통로 일부에 팔레트 방치 확인.",
+      "action_name": "팔레트 이동 조치",
+      "action_content": "팔레트를 적재 구역으로 이동하여 보행 통로를 재확보함.",
+      "action_completed": true,
+      "approval_completed": true,
+      "approval_name": "정승인",
+      "before_image_url": null
+    },
+    {
+      "source_id": "1103",
+      "case": "Case 2",
+      "type": "조치이력",
+      "inspection_history_id": 1103,
+      "action_history_id": 2003,
+      "event_id": null,
+      "date": "2026-07-08T13:30:00",
+      "location": "지하 전기실",
+      "risk_type": "전기실 주변 적치",
+      "risk": "CRITICAL",
+      "risk_band": "CRITICAL",
+      "inspection_name": "전기실 화재위험 점검",
+      "inspection_content": "분전반 앞 청소도구 방치 확인.",
+      "action_name": "전기실 주변 정리",
+      "action_content": "청소도구를 지정 보관함으로 이동하고 접근 공간 확보.",
+      "action_completed": true,
+      "approval_completed": true,
+      "approval_name": "박승인",
+      "before_image_url": null
+    },
+    {
+      "source_id": "1102",
+      "case": "Case 2",
+      "type": "조치이력",
+      "inspection_history_id": 1102,
+      "action_history_id": 2002,
+      "event_id": null,
+      "date": "2026-07-07T08:40:00",
+      "location": "1층 상하차장",
+      "risk_type": "보호구 미착용",
+      "risk": "MEDIUM",
+      "risk_band": "MEDIUM",
+      "inspection_name": "상하차장 보호구 착용 점검",
+      "inspection_content": "일부 작업자 안전모 미착용 확인.",
+      "action_name": "보호구 착용 안내",
+      "action_content": "작업자에게 안전모 착용을 안내하고 현장 재확인 완료.",
+      "action_completed": true,
+      "approval_completed": true,
+      "approval_name": "박승인",
+      "before_image_url": null
+    },
+    {
+      "source_id": "1101",
+      "case": "Case 2",
+      "type": "조치이력",
+      "inspection_history_id": 1101,
+      "action_history_id": 2001,
+      "event_id": null,
+      "date": "2026-07-06T09:00:00",
+      "location": "2층 A구역",
+      "risk_type": "피난통로 적치",
+      "risk": "HIGH",
+      "risk_band": "HIGH",
+      "inspection_name": "피난통로 적치물 정기 점검",
+      "inspection_content": "피난통로에 박스 적치 확인. 조치 필요.",
+      "action_name": "피난통로 적치물 제거",
+      "action_content": "박스 6개를 이동 보관하여 피난통로 폭을 확보함.",
+      "action_completed": true,
+      "approval_completed": true,
+      "approval_name": "박승인",
+      "before_image_url": null
+    },
+    {
+      "source_id": "1005",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1005,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-05T16:10:00",
+      "location": "1층 출고 대기구역",
+      "risk_type": "바닥 장애물 방치",
+      "risk": "LOW",
+      "risk_band": "LOW",
+      "inspection_name": "바닥 장애물 정리 점검",
+      "inspection_content": "출고 대기구역 바닥 장애물 없음. 통행로 확보.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1004",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1004,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-04T11:20:00",
+      "location": "3층 포장라인",
+      "risk_type": "지게차 동선 침범",
+      "risk": "HIGH",
+      "risk_band": "HIGH",
+      "inspection_name": "지게차 동선 안전 점검",
+      "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1003",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1003,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-03T14:00:00",
+      "location": "지하 전기실",
+      "risk_type": "전기실 주변 적치",
+      "risk": "CRITICAL",
+      "risk_band": "CRITICAL",
+      "inspection_name": "전기실 화재위험 점검",
+      "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1002",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1002,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-02T10:30:00",
+      "location": "1층 상하차장",
+      "risk_type": "보호구 미착용",
+      "risk": "MEDIUM",
+      "risk_band": "MEDIUM",
+      "inspection_name": "상하차장 보호구 착용 점검",
+      "inspection_content": "작업자 전원 안전모 및 안전화 착용 확인.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    },
+    {
+      "source_id": "1001",
+      "case": "Case 1",
+      "type": "inspection",
+      "inspection_history_id": 1001,
+      "action_history_id": null,
+      "event_id": null,
+      "date": "2026-07-01T09:00:00",
+      "location": "2층 A구역",
+      "risk_type": "피난통로 적치",
+      "risk": "HIGH",
+      "risk_band": "HIGH",
+      "inspection_name": "피난통로 적치물 정기 점검",
+      "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
+      "action_name": null,
+      "action_content": null,
+      "action_completed": false,
+      "approval_completed": false,
+      "approval_name": null,
+      "before_image_url": null
+    }
+  ],
+  "distributions": {
+    "record_counts_by_day": {
+      "2026-07-01": 1,
+      "2026-07-02": 1,
+      "2026-07-03": 1,
+      "2026-07-04": 1,
+      "2026-07-05": 1,
+      "2026-07-06": 1,
+      "2026-07-07": 1,
+      "2026-07-08": 1,
+      "2026-07-09": 1,
+      "2026-07-10": 1
+    },
+    "top_risk_types": [
+      {
+        "name": "피난통로 적치",
+        "count": 2
+      },
+      {
+        "name": "보호구 미착용",
+        "count": 2
+      },
+      {
+        "name": "전기실 주변 적치",
+        "count": 2
+      },
+      {
+        "name": "지게차 동선 침범",
+        "count": 2
+      },
+      {
+        "name": "바닥 장애물 방치",
+        "count": 2
+      }
+    ],
+    "top_locations": [
+      {
+        "name": "2층 A구역",
+        "count": 2
+      },
+      {
+        "name": "1층 상하차장",
+        "count": 2
+      },
+      {
+        "name": "지하 전기실",
+        "count": 2
+      },
+      {
+        "name": "3층 포장라인",
+        "count": 2
+      },
+      {
+        "name": "1층 출고 대기구역",
+        "count": 2
+      }
+    ]
+  },
+  "source_ids": {
+    "inspection_history_ids": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1101,
+      1102,
+      1103,
+      1104,
+      1105
+    ],
+    "action_history_ids": [
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2101,
+      2102,
+      2103,
+      2104,
+      2105,
+      2201,
+      2202,
+      2203,
+      2204,
+      2205
+    ],
+    "event_ids": [
+      4001,
+      4002,
+      4003,
+      4004,
+      4005,
+      5001,
+      5002,
+      5003,
+      5004,
+      5005
+    ]
+  },
+  "constraints": {
+    "do_not_infer_root_cause": true,
+    "recommend_only_site_level_actions": true,
+    "require_source_id_basis": true
+  }
+}

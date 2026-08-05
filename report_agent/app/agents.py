@@ -1,4 +1,4 @@
-import json
+﻿import json
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -10,8 +10,21 @@ from app.prompts import (
     SITE_ANOMALY_DATA_ANALYSIS_PROMPT,
     SITE_ANOMALY_REPORT_REVIEW_PROMPT,
     SITE_ANOMALY_REPORT_WRITER_PROMPT,
+    RISK_DATA_CORRECTION_PROMPT,
+    RISK_DATA_CORRECTION_REVIEW_PROMPT,
+    WORKER_FEEDBACK_CORRECTION_PROMPT,
+    WORKER_FEEDBACK_CORRECTION_REVIEW_PROMPT,
 )
-from app.schemas import AnalysisResult, Audience, GeneratedReport, ReviewResult
+from app.schemas import (
+    AnalysisResult,
+    Audience,
+    GeneratedReport,
+    ReviewResult,
+    RiskDataCorrectionResult,
+    RiskDataCorrectionReviewResult,
+    WorkerFeedbackCorrectionResult,
+    WorkerFeedbackCorrectionReviewResult,
+)
 
 
 async def headquarters_analyze_agent(aggregated_data):
@@ -53,6 +66,10 @@ async def headquarters_review_agent(aggregated_data, analysis, report):
         "analysis_result": analysis.model_dump(mode="json"),
         "report": report.model_dump(mode="json"),
         "valid_event_ids": aggregated_data.get("source_ids", {}).get("event_ids", []),
+        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
+            "inspection_history_ids",
+            [],
+        ),
         "valid_action_history_ids": aggregated_data.get("source_ids", {}).get(
             "action_history_ids",
             [],
@@ -110,8 +127,16 @@ async def site_anomaly_review_agent(aggregated_data, analysis, report):
         "analysis_result": analysis.model_dump(mode="json"),
         "report": report.model_dump(mode="json"),
         "valid_event_ids": aggregated_data.get("source_ids", {}).get("event_ids", []),
+        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
+            "inspection_history_ids",
+            [],
+        ),
         "valid_action_history_ids": aggregated_data.get("source_ids", {}).get(
             "action_history_ids",
+            [],
+        ),
+        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
+            "inspection_history_ids",
             [],
         ),
         "valid_checklist_ids": aggregated_data.get("source_ids", {}).get(
@@ -125,3 +150,89 @@ async def site_anomaly_review_agent(aggregated_data, analysis, report):
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
+
+
+async def risk_data_correction_agent(
+    rows,
+    protected_fields=None,
+    previous_result=None,
+    review_result=None,
+):
+    llm = create_llm().with_structured_output(RiskDataCorrectionResult)
+    payload = {
+        "rows": rows,
+        "protected_fields": protected_fields or [],
+        "previous_result": (
+            previous_result.model_dump(mode="json") if previous_result else None
+        ),
+        "review_result": (
+            review_result.model_dump(mode="json") if review_result else None
+        ),
+    }
+    return await llm.ainvoke(
+        [
+            SystemMessage(content=RISK_DATA_CORRECTION_PROMPT),
+            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
+        ]
+    )
+
+async def risk_data_correction_review_agent(original_rows, correction_result):
+    llm = create_llm().with_structured_output(RiskDataCorrectionReviewResult)
+    payload = {
+        "original_rows": original_rows,
+        "correction_result": correction_result.model_dump(mode="json"),
+    }
+    return await llm.ainvoke(
+        [
+            SystemMessage(content=RISK_DATA_CORRECTION_REVIEW_PROMPT),
+            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
+        ]
+    )
+
+
+async def worker_feedback_correction_agent(
+    rows,
+    protected_fields=None,
+    previous_result=None,
+    review_result=None,
+):
+    llm = create_llm().with_structured_output(WorkerFeedbackCorrectionResult)
+    payload = {
+        "rows": rows,
+        "protected_fields": protected_fields or [],
+        "previous_result": (
+            previous_result.model_dump(mode="json") if previous_result else None
+        ),
+        "review_result": (
+            review_result.model_dump(mode="json") if review_result else None
+        ),
+    }
+    return await llm.ainvoke(
+        [
+            SystemMessage(content=WORKER_FEEDBACK_CORRECTION_PROMPT),
+            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
+        ]
+    )
+
+
+async def worker_feedback_correction_review_agent(
+    original_rows,
+    correction_result,
+    protected_fields=None,
+):
+    llm = create_llm().with_structured_output(WorkerFeedbackCorrectionReviewResult)
+    payload = {
+        "original_rows": original_rows,
+        "correction_result": correction_result.model_dump(mode="json"),
+        "protected_fields": protected_fields or [],
+    }
+    return await llm.ainvoke(
+        [
+            SystemMessage(content=WORKER_FEEDBACK_CORRECTION_REVIEW_PROMPT),
+            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
+        ]
+    )
+
+
+
+

@@ -1,8 +1,25 @@
-from collections import Counter, defaultdict
+﻿from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any
 
 from app.schemas import SiteAnomalyReportRequest
+
+RISK_SCORE = {
+    "CRITICAL": 4,
+    "HIGH": 3,
+    "MEDIUM": 2,
+    "LOW": 1,
+}
+
+
+def _row_dict(row: Any) -> dict[str, Any]:
+    if hasattr(row, "model_dump"):
+        return row.model_dump(mode="json")
+    return dict(row or {})
+
+
+def _rows(req: SiteAnomalyReportRequest) -> list[dict[str, Any]]:
+    return [_row_dict(row) for row in req.corrected_rows]
 
 
 def _parse_datetime(value: Any) -> datetime | None:
@@ -24,177 +41,127 @@ def _date_key(value: Any) -> str:
     return parsed.date().isoformat() if parsed else "-"
 
 
-def _normalized_text(value: Any) -> str:
-    return str(value or "").strip().lower().replace(" ", "").replace("_", "")
-
-
-def _is_action_completed(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"조치완료", "완료", "completed", "complete", "done", "approved"}
-
-
-def _is_approval_completed(value: Any) -> bool:
-    normalized = _normalized_text(value)
-    return normalized in {"승인완료", "승인", "approved", "complete", "completed"}
-
-
-def _risk_band(level: int) -> str:
-    if level >= 8:
-        return "HIGH"
-    if level >= 5:
-        return "MEDIUM"
-    return "LOW"
-
-
-def _period(events: list[dict[str, Any]]) -> dict[str, str]:
-    dates = sorted(_date_key(event.get("date")) for event in events)
+def _period(rows: list[dict[str, Any]]) -> dict[str, str]:
+    dates = sorted(
+        _date_key(row.get("inspection_date") or row.get("action_date"))
+        for row in rows
+    )
     dates = [date for date in dates if date != "-"]
     if not dates:
         return {"start_date": "-", "end_date": "-"}
     return {"start_date": dates[0], "end_date": dates[-1]}
 
 
-def _group_by(items: list[dict[str, Any]], key: str) -> dict[Any, list[dict[str, Any]]]:
-    grouped: dict[Any, list[dict[str, Any]]] = {}
-    for item in items:
-        grouped.setdefault(item.get(key), []).append(item)
-    return grouped
+def _risk_score(value: Any) -> int:
+    if isinstance(value, int):
+        return value
+    text = str(value or "").strip().upper()
+    if text.isdigit():
+        return int(text)
+    return RISK_SCORE.get(text, 0)
 
 
-def _recent_events(
-    events: list[dict[str, Any]],
-    category_by_id: dict[Any, dict[str, Any]],
-    cctv_by_id: dict[Any, dict[str, Any]],
-    limit: int = 10,
-) -> list[dict[str, Any]]:
-    sorted_events = sorted(
-        events,
-        key=lambda event: _parse_datetime(event.get("date")) or datetime.min,
-        reverse=True,
+def _risk_band(value: Any) -> str:
+    score = _risk_score(value)
+    if score >= 4:
+        return "CRITICAL"
+    if score >= 3:
+        return "HIGH"
+    if score >= 2:
+        return "MEDIUM"
+    if score >= 1:
+        return "LOW"
+    return "UNKNOWN"
+
+
+def _has_action(row: dict[str, Any]) -> bool:
+    return bool(row.get("action_history_id"))
+
+
+def _action_completed(row: dict[str, Any]) -> bool:
+    return _has_action(row) and bool(row.get("action_date") or row.get("action_content"))
+
+
+def _approval_completed(row: dict[str, Any]) -> bool:
+    return bool(row.get("approval_name"))
+
+
+def _source_id(row: dict[str, Any]) -> str:
+    return str(
+        row.get("event_id")
+        or row.get("inspection_history_id")
+        or row.get("action_history_id")
+        or row.get("case")
+        or "-"
     )
-    return [
-        _event_context(event, category_by_id, cctv_by_id)
-        for event in sorted_events[:limit]
-    ]
 
 
-def _event_context(
-    event: dict[str, Any],
-    category_by_id: dict[Any, dict[str, Any]],
-    cctv_by_id: dict[Any, dict[str, Any]],
-) -> dict[str, Any]:
-    category = category_by_id.get(event.get("category_id"), {})
-    cctv = cctv_by_id.get(event.get("cctv_id"), {})
-    level = int(category.get("level") or 0)
+def _record_context(row: dict[str, Any]) -> dict[str, Any]:
     return {
-        "event_id": event.get("event_id"),
-        "date": _date_text(event.get("date")),
-        "location": cctv.get("location", "-"),
-        "cctv_name": cctv.get("cctv_name", "-"),
-        "risk_type": category.get("category_name", "-"),
-        "risk_category": category.get("category", "-"),
-        "risk_level": level,
-        "risk_band": _risk_band(level),
-        "image_url": event.get("image_url"),
+        "source_id": _source_id(row),
+        "case": row.get("case"),
+        "type": row.get("type"),
+        "inspection_history_id": row.get("inspection_history_id"),
+        "action_history_id": row.get("action_history_id"),
+        "event_id": row.get("event_id"),
+        "date": _date_text(row.get("inspection_date") or row.get("action_date")),
+        "location": row.get("inspection_location") or row.get("action_location") or "-",
+        "risk_type": row.get("category_name") or "-",
+        "risk": row.get("risk"),
+        "risk_band": _risk_band(row.get("risk")),
+        "inspection_name": row.get("inspection_name"),
+        "inspection_content": row.get("inspection_content"),
+        "action_name": row.get("action_name"),
+        "action_content": row.get("action_content"),
+        "action_completed": _action_completed(row),
+        "approval_completed": _approval_completed(row),
+        "approval_name": row.get("approval_name"),
+        "before_image_url": row.get("before_image_url"),
     }
 
 
-def _pending_actions(actions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _pending_records(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
-        action
-        for action in actions
-        if not _is_action_completed(action.get("action_status"))
-        or not _is_approval_completed(action.get("approval_status"))
-    ]
-
-
-def _action_context(actions: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    context = []
-    for action in actions:
-        context.append(
-            {
-                "action_history_id": action.get("action_history_id"),
-                "event_id": action.get("event_id"),
-                "action_name": action.get("action_name"),
-                "action_status": action.get("action_status"),
-                "approval_status": action.get("approval_status"),
-                "handler_name": action.get("handler_name"),
-                "approver_name": action.get("approver_name"),
-                "created_at": _date_text(action.get("created_at")),
-                "completed_at": _date_text(action.get("completed_at")),
-                "approval_date": _date_text(action.get("approval_date")),
-                "content": action.get("content"),
-                "image_url": action.get("image_url"),
-            }
-        )
-    return context
-
-
-def _checklist_context(checklists: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [
-        {
-            "checklist_id": item.get("checklist_id"),
-            "event_id": item.get("event_id"),
-            "date": _date_text(item.get("date")),
-            "status": item.get("status"),
-            "content": item.get("content"),
-            "type": item.get("type"),
-            "image_url": item.get("image_url"),
-        }
-        for item in checklists
+        row for row in rows
+        if not _has_action(row) or not _approval_completed(row)
     ]
 
 
 def _severity_for_group(
     count: int,
-    max_level: int,
+    max_score: int,
     pending_count: int,
     recurrence_after_action_count: int,
 ) -> str:
-    if max_level >= 8 and (count >= 3 or pending_count > 0):
+    if max_score >= 4 or (max_score >= 3 and pending_count > 0):
         return "HIGH"
-    if recurrence_after_action_count > 0 or count >= 3 or max_level >= 8:
+    if recurrence_after_action_count > 0 or count >= 3 or max_score >= 3:
         return "MEDIUM"
     return "LOW"
 
 
 def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]:
-    category_by_id = {item.get("category_id"): item for item in req.event_category}
-    cctv_by_id = {item.get("cctv_id"): item for item in req.cctv}
-    actions_by_event = _group_by(req.action_history, "event_id")
-    checklists_by_event = _group_by(req.checklist, "event_id")
+    rows = _rows(req)
+    inspection_rows = [row for row in rows if row.get("inspection_history_id")]
+    contexts = [_record_context(row) for row in inspection_rows]
 
-    enriched_events = [
-        _event_context(event, category_by_id, cctv_by_id)
-        for event in req.event
-    ]
-    events_by_id = {event["event_id"]: event for event in enriched_events}
-
-    grouped_events: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
-    for event in enriched_events:
-        grouped_events[(event["location"], event["risk_type"])].append(event)
+    grouped_records: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    for context in contexts:
+        grouped_records[(context["location"], context["risk_type"])].append(context)
 
     anomaly_candidates = []
-    for (location, risk_type), events in grouped_events.items():
-        if len(events) < 2:
+    for (location, risk_type), records in grouped_records.items():
+        if len(records) < 2:
             continue
 
-        event_ids = [event["event_id"] for event in events]
-        related_actions = [
-            action
-            for event_id in event_ids
-            for action in actions_by_event.get(event_id, [])
-        ]
-        pending_actions = _pending_actions(related_actions)
-        related_checklists = [
-            checklist
-            for event_id in event_ids
-            for checklist in checklists_by_event.get(event_id, [])
+        pending_items = [
+            record for record in records
+            if not record["action_completed"] or not record["approval_completed"]
         ]
         completed_action_dates = [
-            _parse_datetime(action.get("completed_at"))
-            for action in related_actions
-            if _is_action_completed(action.get("action_status"))
+            _parse_datetime(record.get("date"))
+            for record in records
+            if record["action_completed"]
         ]
         completed_action_dates = [date for date in completed_action_dates if date]
         latest_completed_at = max(completed_action_dates) if completed_action_dates else None
@@ -202,57 +169,57 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         if latest_completed_at:
             recurrence_after_action_count = sum(
                 1
-                for event in events
-                if (_parse_datetime(event["date"]) or datetime.min) > latest_completed_at
+                for record in records
+                if (_parse_datetime(record["date"]) or datetime.min) > latest_completed_at
             )
 
-        max_level = max(int(event["risk_level"] or 0) for event in events)
-        latest_event = max(
-            events,
-            key=lambda event: _parse_datetime(event["date"]) or datetime.min,
+        max_score = max(_risk_score(record.get("risk")) for record in records)
+        latest_record = max(
+            records,
+            key=lambda record: _parse_datetime(record["date"]) or datetime.min,
         )
-        pending_action_ids = [
-            action.get("action_history_id")
-            for action in pending_actions
-            if action.get("action_history_id") is not None
-        ]
         severity = _severity_for_group(
-            len(events),
-            max_level,
-            len(pending_actions),
+            len(records),
+            max_score,
+            len(pending_items),
             recurrence_after_action_count,
         )
 
-        reasons = [f"동일 구역/동일 위험유형이 {len(events)}회 반복"]
-        if max_level >= 8:
-            reasons.append(f"고위험 등급(level {max_level}) 포함")
-        if pending_action_ids:
-            reasons.append(f"미완료 또는 승인 대기 조치 {len(pending_action_ids)}건 존재")
+        reasons = [f"same location and same risk type repeated {len(records)} times"]
+        if max_score >= 4:
+            reasons.append("critical risk included")
+        elif max_score >= 3:
+            reasons.append("high risk included")
+        if pending_items:
+            reasons.append(f"{len(pending_items)} items require action or approval follow-up")
         if recurrence_after_action_count:
-            reasons.append("조치 완료 이후 동일 패턴 재발 가능성 존재")
+            reasons.append("similar pattern appears after previous action date")
 
         anomaly_candidates.append(
             {
                 "pattern_type": "REPEATED_LOCATION_CATEGORY",
                 "location": location,
                 "risk_type": risk_type,
-                "count": len(events),
+                "count": len(records),
                 "severity": severity,
-                "max_risk_level": max_level,
-                "event_ids": event_ids,
-                "latest_event_date": latest_event["date"],
-                "pending_action_ids": pending_action_ids,
-                "related_checklist_ids": [
-                    checklist.get("checklist_id")
-                    for checklist in related_checklists
-                    if checklist.get("checklist_id") is not None
+                "max_risk_score": max_score,
+                "source_ids": [record["source_id"] for record in records],
+                "inspection_history_ids": [
+                    record.get("inspection_history_id") for record in records
                 ],
+                "action_history_ids": [
+                    record.get("action_history_id")
+                    for record in records
+                    if record.get("action_history_id") is not None
+                ],
+                "latest_record_date": latest_record["date"],
+                "pending_source_ids": [record["source_id"] for record in pending_items],
                 "recurrence_after_action_count": recurrence_after_action_count,
                 "why_flagged": "; ".join(reasons),
                 "field_check_points": [
-                    "동일 위치에 위험요인이 남아 있는지 현장 확인",
-                    "기존 조치가 실제 재발 방지로 이어졌는지 확인",
-                    "미완료/승인 대기 조치의 처리 지연 사유 확인",
+                    "Confirm whether the same hazard remains at the same location.",
+                    "Check whether previous corrective action prevented recurrence.",
+                    "Confirm delayed action or approval items with the site manager.",
                 ],
             }
         )
@@ -262,43 +229,50 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         key=lambda item: (
             {"HIGH": 3, "MEDIUM": 2, "LOW": 1}.get(item["severity"], 0),
             item["count"],
-            item["max_risk_level"],
+            item["max_risk_score"],
         ),
         reverse=True,
     )
 
-    pending_action_items = _pending_actions(req.action_history)
-    event_counts_by_day = Counter(event["date"][:10] for event in enriched_events)
-    risk_type_counts = Counter(event["risk_type"] for event in enriched_events)
-    location_counts = Counter(event["location"] for event in enriched_events)
-    high_events = [event for event in enriched_events if event["risk_band"] == "HIGH"]
+    pending_items = _pending_records(inspection_rows)
+    high_records = [
+        row for row in inspection_rows
+        if _risk_band(row.get("risk")) in {"CRITICAL", "HIGH"}
+    ]
+    event_counts_by_day = Counter(
+        _date_key(row.get("inspection_date") or row.get("action_date"))
+        for row in inspection_rows
+    )
+    risk_type_counts = Counter(str(row.get("category_name") or "-") for row in inspection_rows)
+    location_counts = Counter(
+        str(row.get("inspection_location") or row.get("action_location") or "-")
+        for row in inspection_rows
+    )
 
     return {
         "site_context": {
             "company": req.company or {},
-            "period": _period(req.event),
+            "period": _period(inspection_rows),
             "audience": "SITE_MANAGER",
             "report_type": "ANOMALY_IMPROVEMENT_RECOMMENDATION",
+            "data_source": "final_history_table_corrected.corrected_rows",
         },
         "summary_counts": {
-            "total_events": len(req.event),
-            "high_risk_events": len(high_events),
-            "pending_actions": len(pending_action_items),
+            "total_records": len(rows),
+            "inspection_records": len(inspection_rows),
+            "high_risk_records": len(high_records),
+            "pending_or_unapproved_records": len(pending_items),
             "repeated_risk_groups": len(anomaly_candidates),
-            "checklist_items": len(req.checklist),
         },
         "anomaly_candidates": anomaly_candidates,
-        "action_context": _action_context(pending_action_items),
-        "recent_events": _recent_events(req.event, category_by_id, cctv_by_id),
-        "checklist_context": _checklist_context(
-            [
-                checklist
-                for checklist in req.checklist
-                if checklist.get("event_id") in events_by_id
-            ]
-        ),
+        "action_context": [_record_context(row) for row in pending_items],
+        "recent_records": sorted(
+            contexts,
+            key=lambda record: _parse_datetime(record["date"]) or datetime.min,
+            reverse=True,
+        )[:10],
         "distributions": {
-            "event_counts_by_day": dict(sorted(event_counts_by_day.items())),
+            "record_counts_by_day": dict(sorted(event_counts_by_day.items())),
             "top_risk_types": [
                 {"name": name, "count": count}
                 for name, count in risk_type_counts.most_common(5)
@@ -309,17 +283,19 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
             ],
         },
         "source_ids": {
-            "event_ids": [event.get("event_id") for event in req.event],
+            "inspection_history_ids": [
+                row.get("inspection_history_id") for row in inspection_rows
+            ],
             "action_history_ids": [
-                action.get("action_history_id") for action in req.action_history
+                row.get("action_history_id")
+                for row in rows
+                if row.get("action_history_id") is not None
             ],
-            "checklist_ids": [
-                checklist.get("checklist_id") for checklist in req.checklist
-            ],
+            "event_ids": [row.get("event_id") for row in rows if row.get("event_id")],
         },
         "constraints": {
             "do_not_infer_root_cause": True,
             "recommend_only_site_level_actions": True,
-            "require_event_id_basis": True,
+            "require_source_id_basis": True,
         },
     }

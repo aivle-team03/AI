@@ -214,4 +214,8 @@ Write-Output "wrote: $OutputPath"
 Write-Output "total: $($sortedRows.Count)"
 $sortedRows | Group-Object case | Sort-Object Name | ForEach-Object {
     Write-Output "$($_.Name): $($_.Count)"
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 96761bff8c74c46250f4d32ca8169b83263fa879

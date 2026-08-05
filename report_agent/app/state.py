@@ -1,11 +1,17 @@
-from typing import TypedDict
+﻿from typing import TypedDict
 
 from app.schemas import (
     AnalysisResult,
     GeneratedReport,
     HeadquartersReportRequest,
     ReviewResult,
+    RiskAssessmentFormRequest,
+    RiskDataCorrectionResult,
+    RiskDataCorrectionReviewResult,
     SiteAnomalyReportRequest,
+    WorkerFeedbackCorrectionResult,
+    WorkerFeedbackCorrectionReviewResult,
+    WorkerFeedbackImprovementReportRequest,
 )
 
 
@@ -29,3 +35,24 @@ class SiteAnomalyReportState(TypedDict, total=False):
     retry_count: int
     max_retry_count: int
     errors: list[str]
+class RiskAssessmentFormState(TypedDict, total=False):
+    request: RiskAssessmentFormRequest
+    final_history_rows: list[dict]
+    correction_result: RiskDataCorrectionResult
+    correction_review: RiskDataCorrectionReviewResult
+    csv_output_path: str
+    retry_count: int
+    max_retry_count: int
+    errors: list[str]
+
+
+class WorkerFeedbackImprovementReportState(TypedDict, total=False):
+    request: WorkerFeedbackImprovementReportRequest
+    worker_feedback_rows: list[dict]
+    correction_result: WorkerFeedbackCorrectionResult
+    correction_review: WorkerFeedbackCorrectionReviewResult
+    word_output_paths: list[str]
+    retry_count: int
+    max_retry_count: int
+    errors: list[str]
+
