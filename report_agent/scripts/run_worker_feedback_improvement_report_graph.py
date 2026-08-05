@@ -48,11 +48,11 @@ async def run_graph(request):
                 print("[3/4] 데이터 검토 agent 실행 중", flush=True)
             elif node_name == "worker_feedback_correction_review_agent":
                 print("[3/4] 데이터 검토 agent 완료", flush=True)
-                print("[4/4] 엑셀 보고서 생성 중", flush=True)
+                print("[4/4] 워드 보고서 생성 중", flush=True)
             elif node_name == "retry":
                 print("검토 결과 수정 필요: 데이터 수정 agent 재실행", flush=True)
-            elif node_name == "fill_worker_feedback_excel":
-                print("[4/4] 엑셀 보고서 생성 완료", flush=True)
+            elif node_name == "fill_worker_feedback_word":
+                print("[4/4] 워드 보고서 생성 완료", flush=True)
 
     return state
 
@@ -68,14 +68,14 @@ async def main() -> None:
     result = await run_graph(request)
 
     review_result = result["correction_review"]
-    excel_output_paths = result.get("excel_output_paths", [])
+    word_output_paths = result.get("word_output_paths", [])
     response = WorkerFeedbackImprovementReportResponse(
-        status="COMPLETED" if review_result.approved and excel_output_paths else "FAILED",
+        status="COMPLETED" if review_result.approved and word_output_paths else "FAILED",
         retry_count=result.get("retry_count", 0),
         worker_feedback_rows=result.get("worker_feedback_rows", []),
         correction_result=result["correction_result"],
         correction_review=review_result,
-        excel_output_paths=excel_output_paths,
+        word_output_paths=word_output_paths,
     )
 
     RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -91,7 +91,7 @@ async def main() -> None:
                 "corrections": len(response.correction_result.correction_notes),
                 "review_approved": response.correction_review.approved,
                 "review_score": response.correction_review.score,
-                "excel_output_paths": response.excel_output_paths,
+                "word_output_paths": response.word_output_paths,
                 "response_path": str(RESPONSE_PATH),
             },
             ensure_ascii=False,

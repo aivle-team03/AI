@@ -232,6 +232,7 @@ class WorkerFeedbackRow(BaseModel):
     category: str | None = Field(default=None, alias="카테고리")
     risk: str | int | None = Field(default=None, alias="위험도")
     category_name: str | None = Field(default=None, alias="이름")
+    user: str | None = Field(default=None, alias="근로자 성명")
     board_created_at: str | None = Field(default=None, alias="신고일시")
     board_contents: str | None = Field(default=None, alias="신고 내용")
     status: str | None = Field(default=None, alias="상태")
@@ -287,8 +288,8 @@ class WorkerFeedbackCorrectionReviewResult(BaseModel):
 
 
 class WorkerFeedbackImprovementReportRequest(EvidenceContentRequest):
-    excel_template_path: str | None = None
-    excel_output_dir: str | None = None
+    word_template_path: str | None = None
+    word_output_dir: str | None = None
 
 
 class WorkerFeedbackImprovementReportResponse(BaseModel):
@@ -297,7 +298,7 @@ class WorkerFeedbackImprovementReportResponse(BaseModel):
     worker_feedback_rows: list[WorkerFeedbackRow] = Field(default_factory=list)
     correction_result: WorkerFeedbackCorrectionResult
     correction_review: WorkerFeedbackCorrectionReviewResult
-    excel_output_paths: list[str] = Field(default_factory=list)
+    word_output_paths: list[str] = Field(default_factory=list)
 
 
 

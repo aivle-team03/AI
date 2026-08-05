@@ -13,6 +13,12 @@ def _risk(category: dict[str, Any] | None) -> str | int | None:
     return category.get("risk_level") or category.get("risk") or category.get("level")
 
 
+def _date_text(value: Any) -> str | None:
+    if value is None:
+        return None
+    return str(value).replace("T", " ")
+
+
 def build_worker_feedback_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
     category_by_id = _index_by(tables.get("event_category", []), "category_id")
     board_by_id = _index_by(tables.get("board", []), "board_id")
@@ -32,13 +38,14 @@ def build_worker_feedback_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
                 "category": category.get("category"),
                 "risk": _risk(category),
                 "category_name": category.get("category_name"),
-                "board_created_at": board.get("created_at"),
+                "user": board.get("writer"),
+                "board_created_at": _date_text(board.get("created_at")),
                 "board_contents": board.get("board_contents"),
                 "status": board.get("status"),
                 "board_image_url": board.get("image_url"),
                 "action_name": action.get("action_name"),
                 "location": action.get("location"),
-                "completed_at": action.get("completed_at"),
+                "completed_at": _date_text(action.get("completed_at")),
                 "handler_name": action.get("handler_name"),
                 "content": action.get("content"),
                 "image_url": action.get("image_url"),

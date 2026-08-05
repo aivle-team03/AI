@@ -51,7 +51,7 @@ class WorkerFeedbackImprovementReportState(TypedDict, total=False):
     worker_feedback_rows: list[dict]
     correction_result: WorkerFeedbackCorrectionResult
     correction_review: WorkerFeedbackCorrectionReviewResult
-    excel_output_paths: list[str]
+    word_output_paths: list[str]
     retry_count: int
     max_retry_count: int
     errors: list[str]

@@ -10,6 +10,7 @@ PROTECTED_FIELDS = [
     "category",
     "risk",
     "category_name",
+    "user",
     "board_created_at",
     "status",
     "board_image_url",

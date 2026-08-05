@@ -31,13 +31,13 @@ from app.worker_feedback_correction import (
     PROTECTED_FIELDS as WORKER_FEEDBACK_PROTECTED_FIELDS,
 )
 from app.worker_feedback_correction import enforce_worker_feedback_invariants
-from app.worker_feedback_excel import (
-    DEFAULT_OUTPUT_DIR as WORKER_FEEDBACK_EXCEL_OUTPUT_DIR,
+from app.worker_feedback_word import (
+    DEFAULT_OUTPUT_DIR as WORKER_FEEDBACK_WORD_OUTPUT_DIR,
 )
-from app.worker_feedback_excel import (
-    DEFAULT_TEMPLATE_PATH as WORKER_FEEDBACK_EXCEL_TEMPLATE_PATH,
+from app.worker_feedback_word import (
+    DEFAULT_TEMPLATE_PATH as WORKER_FEEDBACK_WORD_TEMPLATE_PATH,
 )
-from app.worker_feedback_excel import fill_worker_feedback_excel_reports
+from app.worker_feedback_word import fill_worker_feedback_word_reports
 from scripts.build_final_history_table import build_final_history_table
 
 
@@ -197,33 +197,33 @@ async def worker_feedback_correction_review_node(state):
 
 def route_after_worker_feedback_review(
     state,
-) -> Literal["fill_excel", "retry", "finish"]:
+) -> Literal["fill_word", "retry", "finish"]:
     review = state["correction_review"]
     if review.approved:
-        return "fill_excel"
+        return "fill_word"
     if state.get("retry_count", 0) < state.get("max_retry_count", 2):
         return "retry"
     return "finish"
 
 
-def worker_feedback_excel_node(state):
+def worker_feedback_word_node(state):
     request = state["request"]
     template_path = (
-        Path(request.excel_template_path)
-        if request.excel_template_path
-        else WORKER_FEEDBACK_EXCEL_TEMPLATE_PATH
+        Path(request.word_template_path)
+        if request.word_template_path
+        else WORKER_FEEDBACK_WORD_TEMPLATE_PATH
     )
     output_dir = (
-        Path(request.excel_output_dir)
-        if request.excel_output_dir
-        else WORKER_FEEDBACK_EXCEL_OUTPUT_DIR
+        Path(request.word_output_dir)
+        if request.word_output_dir
+        else WORKER_FEEDBACK_WORD_OUTPUT_DIR
     )
-    output_paths = fill_worker_feedback_excel_reports(
+    output_paths = fill_worker_feedback_word_reports(
         state["correction_result"].corrected_rows,
         template_path=template_path,
         output_dir=output_dir,
     )
-    return {"excel_output_paths": output_paths}
+    return {"word_output_paths": output_paths}
 
 
 def build_headquarters_full():
@@ -302,7 +302,7 @@ def build_worker_feedback_improvement_graph():
         worker_feedback_correction_review_node,
     )
     graph.add_node("retry", retry_node)
-    graph.add_node("fill_worker_feedback_excel", worker_feedback_excel_node)
+    graph.add_node("fill_worker_feedback_word", worker_feedback_word_node)
 
     graph.add_edge(START, "build_worker_feedback_table")
     graph.add_edge("build_worker_feedback_table", "worker_feedback_correction_agent")
@@ -314,13 +314,13 @@ def build_worker_feedback_improvement_graph():
         "worker_feedback_correction_review_agent",
         route_after_worker_feedback_review,
         {
-            "fill_excel": "fill_worker_feedback_excel",
+            "fill_word": "fill_worker_feedback_word",
             "retry": "retry",
             "finish": END,
         },
     )
     graph.add_edge("retry", "worker_feedback_correction_agent")
-    graph.add_edge("fill_worker_feedback_excel", END)
+    graph.add_edge("fill_worker_feedback_word", END)
     return graph.compile()
 
 
