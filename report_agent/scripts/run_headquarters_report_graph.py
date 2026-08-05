@@ -17,7 +17,7 @@ from app.config import MAX_RETRY_COUNT
 from app.graph import headquarters_full_graph
 from app.schemas import HeadquartersReportRequest, HeadquartersReportResponse
 
-INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_corrected.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "headquarters_kpi_trend_report_response.json"
 REPORT_PATH = PROJECT_ROOT / "output" / "headquarters_kpi_trend_report.md"
 

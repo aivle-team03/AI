@@ -16,7 +16,7 @@ from app.config import MAX_RETRY_COUNT
 from app.graph import site_anomaly_full_graph
 from app.schemas import SiteAnomalyReportRequest, SiteAnomalyReportResponse
 
-INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_corrected.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "site_anomaly_improvement_report_response.json"
 REPORT_PATH = PROJECT_ROOT / "output" / "site_anomaly_improvement_report.md"
 

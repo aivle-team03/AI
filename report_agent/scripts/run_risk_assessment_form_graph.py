@@ -15,7 +15,7 @@ from app.config import MAX_RETRY_COUNT
 from app.graph import risk_assessment_form_graph
 from app.schemas import RiskAssessmentFormRequest, RiskAssessmentFormResponse
 
-INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
 DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_graph_response.json"
 DEFAULT_CSV_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_filled.csv"
 TIMEOUT_SECONDS = 180

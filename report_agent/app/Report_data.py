@@ -50,20 +50,64 @@ def get_boards() -> Any:
     return _items(_get_json("/api/boards?size=100"))
 
 
+def get_inspection() -> Any:
+    return _items(_get_json("/api/inspection?size=100"))
+
+def get_inspection_histories_all() -> Any:
+    return _items(_get_json("/api/inspection/histories/all?size=100"))
+
+
+
 def get_action_history() -> Any:
     return _items(_get_json("/api/action-histories?size=100"))
+
+
+def get_event() -> Any:
+    return _items(_get_json("/api/monitoring/events"))
+
+
+def get_checklists() -> Any:
+    return _items(_get_json("/api/checklists"))
 
 
 def get_event_categories() -> Any:
     return _items(_get_json("/api/risk/list"))
 
 
+def _load_backend_item(name: str, loader) -> list[dict[str, Any]]:
+    try:
+        items = loader()
+    except RuntimeError as exc:
+        print(f"[ERROR] {name} GET failed: {exc}", file=sys.stderr)
+        raise
+
+    print(f"[OK] {name} GET success: {len(items)} rows")
+    return items
+
+
 def build_worker_feedback_source_data() -> dict[str, Any]:
-    return {
-        "board": get_boards(),
-        "action_history": get_action_history(),
-        "event_category": get_event_categories(),
+    loaders = {
+        "board": get_boards,
+        "action_history": get_action_history,
+        "event_category": get_event_categories,
+        "inspection": get_inspection,
+        "inspection_history": get_inspection_histories_all,
+        "event": get_event,
+        "checklist" : get_checklists,
     }
+
+    data: dict[str, Any] = {}
+    failed_items: list[str] = []
+    for name, loader in loaders.items():
+        try:
+            data[name] = _load_backend_item(name, loader)
+        except RuntimeError:
+            failed_items.append(name)
+
+    if failed_items:
+        raise RuntimeError(f"Backend GET failed items: {', '.join(failed_items)}")
+
+    return data
 
 
 def save_backend_data(

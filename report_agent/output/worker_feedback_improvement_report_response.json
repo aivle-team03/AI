@@ -1,6 +1,6 @@
 ﻿{
-  "status": "COMPLETED",
-  "retry_count": 1,
+  "status": "FAILED",
+  "retry_count": 2,
   "worker_feedback_rows": [
     {
       "category": "기타",
@@ -160,7 +160,7 @@
         "completed_at": "2026-08-05 16:27:01",
         "action_status": "조치 완료",
         "handler_name": "작업자24",
-        "content": "내용 불명확",
+        "content": "내용이 부적절하여 수정이 필요합니다.",
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
         "approver_name": "판교관리자",
         "source_type": "게시판"
@@ -199,46 +199,28 @@
         "row_index": 3,
         "field": "content",
         "original_text": "zz",
-        "corrected_text": "내용 불명확",
+        "corrected_text": "내용이 부적절하여 수정이 필요합니다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       }
     ],
-    "unresolved_notes": []
+    "unresolved_notes": [
+      "4번째 행의 content 필드 원문 'zz'는 의미가 불명확하여 명확한 수정이 어렵습니다."
+    ]
   },
   "correction_review": {
-    "approved": true,
-    "final_decision": "APPROVED",
-    "score": 100,
+    "approved": false,
+    "final_decision": "REVISION_REQUIRED",
+    "score": 70,
     "issues": [
       {
-        "row_index": 0,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
-        "corrected_text": "조치 이름 Action_name에 들어가는지 확인",
-        "message": "띄어쓰기 및 문장 종결 표현을 정리하여 보고서 문체에 적합하게 수정함.",
-        "recommendation": "이와 같은 문체 정리는 적절하며 승인함."
-      },
-      {
-        "row_index": 0,
+        "row_index": 3,
         "field": "content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "없다",
-        "corrected_text": "없음",
-        "message": "구어체 표현을 더 간결하고 객관적인 표현으로 변경함.",
-        "recommendation": "적절한 수정으로 승인함."
-      },
-      {
-        "row_index": 1,
-        "field": "content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
-        "corrected_text": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
-        "message": "띄어쓰기 및 문장 종결 표현을 정리하여 보고서 문체에 적합하게 수정함.",
-        "recommendation": "적절한 수정으로 승인함."
+        "severity": "ERROR",
+        "category": "MEANING_CHANGED",
+        "original_text": "zz",
+        "corrected_text": "내용이 부적절하여 수정이 필요합니다.",
+        "message": "원문 'zz'는 의미가 불명확하지만, 수정문은 원문에 없는 판단과 조치 필요성을 추가하여 의미가 변경됨.",
+        "recommendation": "원문의 의미가 불명확하다면, 수정문도 간결하고 객관적으로 원문 상태를 반영하는 표현으로 수정해야 함."
       },
       {
         "row_index": 3,
@@ -247,26 +229,14 @@
         "category": "REPORT_STYLE",
         "original_text": "리포트가 이상해요",
         "corrected_text": "리포트가 이상합니다",
-        "message": "구어체 표현을 더 공식적이고 객관적인 표현으로 변경함.",
-        "recommendation": "적절한 수정으로 승인함."
-      },
-      {
-        "row_index": 3,
-        "field": "content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "zz",
-        "corrected_text": "내용 불명확",
-        "message": "모호한 표현을 구체적이고 객관적인 표현으로 변경함.",
-        "recommendation": "적절한 수정으로 승인함."
+        "message": "수정문은 보고서 문체에 더 적합하나, '이상합니다'도 다소 모호한 표현임.",
+        "recommendation": "더 구체적이고 객관적인 표현으로 수정하는 것이 바람직함."
       }
     ],
-    "items_requiring_revision": []
+    "items_requiring_revision": [
+      "4번째 행 content 필드: 원문 'zz'의 의미 불명확 문제 해결 및 적절한 보고서 문체로 수정 필요",
+      "4번째 행 action_name 필드: 모호한 표현 개선 필요"
+    ]
   },
-  "word_output_paths": [
-    "output\\worker_feedback_reports\\worker_feedback_001_ㄴㄴ.docx",
-    "output\\worker_feedback_reports\\worker_feedback_002_화재_감지.docx",
-    "output\\worker_feedback_reports\\worker_feedback_003_ㄴㄴ.docx",
-    "output\\worker_feedback_reports\\worker_feedback_004_현수님.docx"
-  ]
+  "word_output_paths": []
 }

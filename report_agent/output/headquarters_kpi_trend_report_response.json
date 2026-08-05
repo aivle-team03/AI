@@ -1,874 +1,240 @@
 ﻿{
-  "status": "FAILED",
-  "retry_count": 2,
+  "status": "COMPLETED",
+  "retry_count": 0,
   "aggregated_data": {
     "company": {},
     "data_source": {
       "name": "final_history_table_corrected.corrected_rows",
-      "row_count": 20,
+      "row_count": 0,
       "input_shape": "corrected_final_history_table"
     },
     "period": {
-      "start_date": "2026-07-01",
-      "end_date": "2026-07-20"
+      "start_date": "-",
+      "end_date": "-"
     },
     "kpi": {
-      "total_records": 20,
-      "inspection_records": 10,
-      "critical_risk_records": 2,
-      "high_risk_records": 4,
-      "medium_risk_records": 2,
-      "low_risk_records": 2,
-      "action_total": 15,
-      "action_completed": 15,
+      "total_records": 0,
+      "inspection_records": 0,
+      "critical_risk_records": 0,
+      "high_risk_records": 0,
+      "medium_risk_records": 0,
+      "low_risk_records": 0,
+      "action_total": 0,
+      "action_completed": 0,
       "action_waiting": 0,
-      "action_completion_rate": 100.0,
-      "approval_completed": 15,
+      "action_completion_rate": 0.0,
+      "approval_completed": 0,
       "approval_waiting": 0,
-      "approval_completion_rate": 100.0,
-      "high_risk_ratio": 60.0,
+      "approval_completion_rate": 0.0,
+      "high_risk_ratio": 0.0,
       "pending_action_rate": 0.0
     },
     "trend": {
-      "daily_record_counts": {
-        "2026-07-01": 1,
-        "2026-07-02": 1,
-        "2026-07-03": 1,
-        "2026-07-04": 1,
-        "2026-07-05": 1,
-        "2026-07-06": 1,
-        "2026-07-07": 1,
-        "2026-07-08": 1,
-        "2026-07-09": 1,
-        "2026-07-10": 1
-      },
-      "weekly_record_counts": {
-        "2026-W27": 5,
-        "2026-W28": 5
-      },
-      "daily_high_risk_counts": {
-        "2026-07-01": 1,
-        "2026-07-03": 1,
-        "2026-07-04": 1,
-        "2026-07-06": 1,
-        "2026-07-08": 1,
-        "2026-07-09": 1
-      },
+      "daily_record_counts": {},
+      "weekly_record_counts": {},
+      "daily_high_risk_counts": {},
       "record_trend_delta": {
-        "first_value": 1,
-        "last_value": 1,
+        "first_value": 0,
+        "last_value": 0,
         "delta": 0,
         "delta_rate": 0.0,
         "direction": "FLAT"
       },
       "weekly_trend_delta": {
-        "first_value": 5,
-        "last_value": 5,
+        "first_value": 0,
+        "last_value": 0,
         "delta": 0,
         "delta_rate": 0.0,
         "direction": "FLAT"
       },
       "high_risk_trend_delta": {
-        "first_value": 1,
-        "last_value": 1,
+        "first_value": 0,
+        "last_value": 0,
         "delta": 0,
         "delta_rate": 0.0,
         "direction": "FLAT"
       },
-      "category_daily_counts": {
-        "피난통로 적치": {
-          "2026-07-01": 1,
-          "2026-07-06": 1
-        },
-        "보호구 미착용": {
-          "2026-07-02": 1,
-          "2026-07-07": 1
-        },
-        "전기실 주변 적치": {
-          "2026-07-03": 1,
-          "2026-07-08": 1
-        },
-        "지게차 동선 침범": {
-          "2026-07-04": 1,
-          "2026-07-09": 1
-        },
-        "바닥 장애물 방치": {
-          "2026-07-05": 1,
-          "2026-07-10": 1
-        }
-      },
-      "location_daily_counts": {
-        "2층 A구역": {
-          "2026-07-01": 1,
-          "2026-07-06": 1
-        },
-        "1층 상하차장": {
-          "2026-07-02": 1,
-          "2026-07-07": 1
-        },
-        "지하 전기실": {
-          "2026-07-03": 1,
-          "2026-07-08": 1
-        },
-        "3층 포장라인": {
-          "2026-07-04": 1,
-          "2026-07-09": 1
-        },
-        "1층 출고 대기구역": {
-          "2026-07-05": 1,
-          "2026-07-10": 1
-        }
-      }
+      "category_daily_counts": {},
+      "location_daily_counts": {}
     },
     "status_distribution": {
-      "risk_band_counts": {
-        "HIGH": 4,
-        "MEDIUM": 2,
-        "CRITICAL": 2,
-        "LOW": 2
-      },
+      "risk_band_counts": {},
       "action_status_counts": {
-        "completed": 15,
+        "completed": 0,
         "waiting": 0,
-        "unaddressed_inspections": 5
+        "unaddressed_inspections": 0
       },
       "approval_status_counts": {
-        "approved": 15,
+        "approved": 0,
         "waiting": 0
       },
-      "type_counts": {
-        "inspection": 5,
-        "조치이력": 5,
-        "board": 5,
-        "event": 5
-      }
+      "type_counts": {}
     },
     "rankings": {
-      "top_categories": [
-        {
-          "name": "피난통로 적치",
-          "count": 2
-        },
-        {
-          "name": "보호구 미착용",
-          "count": 2
-        },
-        {
-          "name": "전기실 주변 적치",
-          "count": 2
-        },
-        {
-          "name": "지게차 동선 침범",
-          "count": 2
-        },
-        {
-          "name": "바닥 장애물 방치",
-          "count": 2
-        }
-      ],
-      "top_locations": [
-        {
-          "name": "2층 A구역",
-          "count": 2
-        },
-        {
-          "name": "1층 상하차장",
-          "count": 2
-        },
-        {
-          "name": "지하 전기실",
-          "count": 2
-        },
-        {
-          "name": "3층 포장라인",
-          "count": 2
-        },
-        {
-          "name": "1층 출고 대기구역",
-          "count": 2
-        }
-      ],
-      "top_repeated_risks": [
-        {
-          "location": "2층 A구역",
-          "category_name": "피난통로 적치",
-          "count": 2,
-          "source_ids": [
-            "1001",
-            "1101"
-          ]
-        },
-        {
-          "location": "1층 상하차장",
-          "category_name": "보호구 미착용",
-          "count": 2,
-          "source_ids": [
-            "1002",
-            "1102"
-          ]
-        },
-        {
-          "location": "지하 전기실",
-          "category_name": "전기실 주변 적치",
-          "count": 2,
-          "source_ids": [
-            "1003",
-            "1103"
-          ]
-        },
-        {
-          "location": "3층 포장라인",
-          "category_name": "지게차 동선 침범",
-          "count": 2,
-          "source_ids": [
-            "1004",
-            "1104"
-          ]
-        },
-        {
-          "location": "1층 출고 대기구역",
-          "category_name": "바닥 장애물 방치",
-          "count": 2,
-          "source_ids": [
-            "1005",
-            "1105"
-          ]
-        }
-      ]
+      "top_categories": [],
+      "top_locations": [],
+      "top_repeated_risks": []
     },
     "risk_flags": {
-      "repeated_risks": [
-        {
-          "location": "2층 A구역",
-          "category_name": "피난통로 적치",
-          "count": 2,
-          "source_ids": [
-            "1001",
-            "1101"
-          ]
-        },
-        {
-          "location": "1층 상하차장",
-          "category_name": "보호구 미착용",
-          "count": 2,
-          "source_ids": [
-            "1002",
-            "1102"
-          ]
-        },
-        {
-          "location": "지하 전기실",
-          "category_name": "전기실 주변 적치",
-          "count": 2,
-          "source_ids": [
-            "1003",
-            "1103"
-          ]
-        },
-        {
-          "location": "3층 포장라인",
-          "category_name": "지게차 동선 침범",
-          "count": 2,
-          "source_ids": [
-            "1004",
-            "1104"
-          ]
-        },
-        {
-          "location": "1층 출고 대기구역",
-          "category_name": "바닥 장애물 방치",
-          "count": 2,
-          "source_ids": [
-            "1005",
-            "1105"
-          ]
-        }
-      ],
-      "unresolved_high_risk_source_ids": [
-        "1001",
-        "1003",
-        "1004"
-      ],
+      "repeated_risks": [],
+      "unresolved_high_risk_source_ids": [],
       "pending_action_ids": [],
-      "unaddressed_inspection_history_ids": [
-        1001,
-        1002,
-        1003,
-        1004,
-        1005
-      ]
+      "unaddressed_inspection_history_ids": []
     },
     "source_ids": {
-      "inspection_history_ids": [
-        1001,
-        1002,
-        1003,
-        1004,
-        1005,
-        1101,
-        1102,
-        1103,
-        1104,
-        1105
-      ],
-      "action_history_ids": [
-        2001,
-        2002,
-        2003,
-        2004,
-        2005,
-        2101,
-        2102,
-        2103,
-        2104,
-        2105,
-        2201,
-        2202,
-        2203,
-        2204,
-        2205
-      ],
-      "event_ids": [
-        4001,
-        4002,
-        4003,
-        4004,
-        4005,
-        5001,
-        5002,
-        5003,
-        5004,
-        5005
-      ]
+      "inspection_history_ids": [],
+      "action_history_ids": [],
+      "event_ids": []
     },
     "source_samples": {
-      "high_risk_records": [
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1001,
-          "inspection_id": 501,
-          "inspection_name": "피난통로 적치물 정기 점검",
-          "category_id": 201,
-          "category_name": "피난통로 적치",
-          "risk": "HIGH",
-          "inspection_location": "2층 A구역",
-          "inspection_date": "2026-07-01T09:00:00",
-          "inspection_user_id": 101,
-          "inspection_user_name": "김안전",
-          "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1003,
-          "inspection_id": 503,
-          "inspection_name": "전기실 화재위험 점검",
-          "category_id": 204,
-          "category_name": "전기실 주변 적치",
-          "risk": "CRITICAL",
-          "inspection_location": "지하 전기실",
-          "inspection_date": "2026-07-03T14:00:00",
-          "inspection_user_id": 101,
-          "inspection_user_name": "김안전",
-          "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1004,
-          "inspection_id": 504,
-          "inspection_name": "지게차 동선 안전 점검",
-          "category_id": 203,
-          "category_name": "지게차 동선 침범",
-          "risk": "HIGH",
-          "inspection_location": "3층 포장라인",
-          "inspection_date": "2026-07-04T11:20:00",
-          "inspection_user_id": 103,
-          "inspection_user_name": "박점검",
-          "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 2",
-          "type": "조치이력",
-          "inspection_history_id": 1101,
-          "inspection_id": 501,
-          "inspection_name": "피난통로 적치물 정기 점검",
-          "category_id": 201,
-          "category_name": "피난통로 적치",
-          "risk": "HIGH",
-          "inspection_location": "2층 A구역",
-          "inspection_date": "2026-07-06T09:00:00",
-          "inspection_user_id": 101,
-          "inspection_user_name": "김안전",
-          "inspection_content": "피난통로에 박스 적치 확인. 조치 필요.",
-          "before_image_url": null,
-          "action_history_id": 2001,
-          "action_name": "피난통로 적치물 제거",
-          "action_location": "2층 A구역",
-          "action_date": "2026-07-06T10:10:00",
-          "action_user_id": 102,
-          "action_user_name": "이현장",
-          "action_content": "박스 6개를 이동 보관하여 피난통로 폭을 확보함.",
-          "approval_name": "박승인",
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 2",
-          "type": "조치이력",
-          "inspection_history_id": 1103,
-          "inspection_id": 503,
-          "inspection_name": "전기실 화재위험 점검",
-          "category_id": 204,
-          "category_name": "전기실 주변 적치",
-          "risk": "CRITICAL",
-          "inspection_location": "지하 전기실",
-          "inspection_date": "2026-07-08T13:30:00",
-          "inspection_user_id": 101,
-          "inspection_user_name": "김안전",
-          "inspection_content": "분전반 앞 청소도구 방치 확인.",
-          "before_image_url": null,
-          "action_history_id": 2003,
-          "action_name": "전기실 주변 정리",
-          "action_location": "지하 전기실",
-          "action_date": "2026-07-08T14:00:00",
-          "action_user_id": 104,
-          "action_user_name": "최시설",
-          "action_content": "청소도구를 지정 보관함으로 이동하고 접근 공간 확보.",
-          "approval_name": "박승인",
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 2",
-          "type": "조치이력",
-          "inspection_history_id": 1104,
-          "inspection_id": 504,
-          "inspection_name": "지게차 동선 안전 점검",
-          "category_id": 203,
-          "category_name": "지게차 동선 침범",
-          "risk": "HIGH",
-          "inspection_location": "3층 포장라인",
-          "inspection_date": "2026-07-09T15:20:00",
-          "inspection_user_id": 103,
-          "inspection_user_name": "박점검",
-          "inspection_content": "보행자 통로 일부에 팔레트 방치 확인.",
-          "before_image_url": null,
-          "action_history_id": 2004,
-          "action_name": "팔레트 이동 조치",
-          "action_location": "3층 포장라인",
-          "action_date": "2026-07-09T15:45:00",
-          "action_user_id": 102,
-          "action_user_name": "이현장",
-          "action_content": "팔레트를 적재 구역으로 이동하여 보행 통로를 재확보함.",
-          "approval_name": "정승인",
-          "board_id": null,
-          "event_id": null
-        }
-      ],
+      "high_risk_records": [],
       "pending_action_records": [],
-      "unaddressed_inspection_records": [
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1001,
-          "inspection_id": 501,
-          "inspection_name": "피난통로 적치물 정기 점검",
-          "category_id": 201,
-          "category_name": "피난통로 적치",
-          "risk": "HIGH",
-          "inspection_location": "2층 A구역",
-          "inspection_date": "2026-07-01T09:00:00",
-          "inspection_user_id": 101,
-          "inspection_user_name": "김안전",
-          "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1002,
-          "inspection_id": 502,
-          "inspection_name": "상하차장 보호구 착용 점검",
-          "category_id": 202,
-          "category_name": "보호구 미착용",
-          "risk": "MEDIUM",
-          "inspection_location": "1층 상하차장",
-          "inspection_date": "2026-07-02T10:30:00",
-          "inspection_user_id": 102,
-          "inspection_user_name": "이현장",
-          "inspection_content": "작업자 전원 안전모 및 안전화 착용 확인.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1003,
-          "inspection_id": 503,
-          "inspection_name": "전기실 화재위험 점검",
-          "category_id": 204,
-          "category_name": "전기실 주변 적치",
-          "risk": "CRITICAL",
-          "inspection_location": "지하 전기실",
-          "inspection_date": "2026-07-03T14:00:00",
-          "inspection_user_id": 101,
-          "inspection_user_name": "김안전",
-          "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1004,
-          "inspection_id": 504,
-          "inspection_name": "지게차 동선 안전 점검",
-          "category_id": 203,
-          "category_name": "지게차 동선 침범",
-          "risk": "HIGH",
-          "inspection_location": "3층 포장라인",
-          "inspection_date": "2026-07-04T11:20:00",
-          "inspection_user_id": 103,
-          "inspection_user_name": "박점검",
-          "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        },
-        {
-          "case": "Case 1",
-          "type": "inspection",
-          "inspection_history_id": 1005,
-          "inspection_id": 505,
-          "inspection_name": "바닥 장애물 정리 점검",
-          "category_id": 205,
-          "category_name": "바닥 장애물 방치",
-          "risk": "LOW",
-          "inspection_location": "1층 출고 대기구역",
-          "inspection_date": "2026-07-05T16:10:00",
-          "inspection_user_id": 102,
-          "inspection_user_name": "이현장",
-          "inspection_content": "출고 대기구역 바닥 장애물 없음. 통행로 확보.",
-          "before_image_url": null,
-          "action_history_id": null,
-          "action_name": null,
-          "action_location": null,
-          "action_date": null,
-          "action_user_id": null,
-          "action_user_name": null,
-          "action_content": null,
-          "approval_name": null,
-          "board_id": null,
-          "event_id": null
-        }
-      ]
+      "unaddressed_inspection_records": []
     }
   },
   "analysis_result": {
     "executive_insights": [
-      "전체 조치 완료율과 승인 완료율이 100%로 매우 우수함.",
-      "전체 위험 중 고위험 비율이 60%로 높아 지속적인 관리 필요.",
-      "주요 위험 유형 5개가 모두 2회씩 반복 발생하며, 특히 2층 A구역 피난통로 적치, 3층 포장라인 지게차 동선 침범 등 고위험 반복 위험 존재.",
-      "최근 20일간 일별 및 주별 사고 건수와 고위험 건수 모두 변동 없이 안정적 추세 유지.",
-      "미조치 검사 이력 5건 중 3건이 고위험 또는 치명적 위험으로, 신속한 후속 조치 필요."
+      "현재 제공된 데이터에 기록이 전혀 없어 KPI 및 추세 분석이 불가능합니다.",
+      "고위험 사건, 조치 현황, 승인 상태, 교육 이수율 등 핵심 안전 지표가 모두 0으로 나타나 데이터 입력 또는 수집에 문제가 있음을 시사합니다.",
+      "반복 위험 및 미조치 사례가 전무하여 위험 관리 현황 파악이 불가능합니다.",
+      "추세 지표가 모두 변동이 없고 기록이 없어 안전 성과 평가 및 개선 방향 설정에 제약이 큽니다."
     ],
     "findings": [
       {
         "finding_type": "KPI",
-        "title": "조치 및 승인 완료율 100%",
-        "description": "전체 15건의 조치 이력이 모두 완료되고 승인도 모두 완료되어 조치 및 승인 완료율이 100%임.",
+        "title": "데이터 부재로 인한 KPI 산출 불가",
+        "description": "총 기록 수, 검사 기록, 고위험 및 기타 위험 등급 기록이 모두 0으로 나타나 KPI 산출이 불가능합니다.",
         "related_event_ids": [],
-        "evidence_ids": [
-          "2001",
-          "2003",
-          "2004"
-        ],
-        "severity": "INFO"
-      },
-      {
-        "finding_type": "KPI",
-        "title": "고위험 비율 60%로 높음",
-        "description": "전체 20건 중 고위험 및 치명적 위험이 6건(30%)이며, 고위험 포함 비율은 60%로 위험도가 높음.",
-        "related_event_ids": [],
-        "evidence_ids": [
-          "1001",
-          "1003",
-          "1004",
-          "1101",
-          "1103",
-          "1104"
-        ],
+        "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "TREND",
-        "title": "사고 발생 건수 및 고위험 건수 추세 안정적",
-        "description": "일별 및 주별 사고 건수는 1건씩 꾸준히 발생하며, 고위험 건수도 1건씩 유지되어 추세 변화가 없음(추세 지표 모두 FLAT).",
+        "title": "추세 데이터 부재",
+        "description": "일별, 주별 기록 수 및 고위험 기록 수가 모두 0이며, 추세 변화량도 0으로 추세 분석이 불가능합니다.",
         "related_event_ids": [],
         "evidence_ids": [],
-        "severity": "INFO"
-      },
-      {
-        "finding_type": "REPEATED_RISK",
-        "title": "주요 위험 유형 및 장소에서 반복 위험 발생",
-        "description": "피난통로 적치(2층 A구역), 보호구 미착용(1층 상하차장), 전기실 주변 적치(지하 전기실), 지게차 동선 침범(3층 포장라인), 바닥 장애물 방치(1층 출고 대기구역) 5개 위험 유형이 각각 2회씩 반복 발생함.",
-        "related_event_ids": [
-          "1001",
-          "1101",
-          "1002",
-          "1102",
-          "1003",
-          "1103",
-          "1004",
-          "1104",
-          "1005",
-          "1105"
-        ],
-        "evidence_ids": [
-          "1001",
-          "1101",
-          "1002",
-          "1102",
-          "1003",
-          "1103",
-          "1004",
-          "1104",
-          "1005",
-          "1105"
-        ],
         "severity": "HIGH"
       },
       {
-        "finding_type": "UNRESOLVED",
-        "title": "미조치 고위험 검사 이력 존재",
-        "description": "미조치 검사 이력 5건 중 3건(inspection_history_id 1001, 1003, 1004)이 고위험 또는 치명적 위험으로 확인되어 신속한 조치 필요.",
+        "finding_type": "REPEATED_RISK",
+        "title": "반복 위험 사례 없음",
+        "description": "반복 위험으로 식별된 사건이 없으며, 위험 관리의 반복성 평가가 불가능합니다.",
         "related_event_ids": [],
-        "evidence_ids": [
-          "1001",
-          "1003",
-          "1004"
-        ],
+        "evidence_ids": [],
+        "severity": "MEDIUM"
+      },
+      {
+        "finding_type": "UNRESOLVED",
+        "title": "미조치 및 승인 대기 사례 없음",
+        "description": "미조치 검사 기록 및 승인 대기 기록이 모두 0으로 미조치 및 승인 대기 리스크 평가가 불가능합니다.",
+        "related_event_ids": [],
+        "evidence_ids": [],
         "severity": "HIGH"
       }
     ],
     "recommended_actions": [
-      "고위험 및 치명적 위험에 대한 미조치 검사 이력(inspection_history_id 1001, 1003, 1004)에 대해 즉각적인 조치 및 승인 절차 진행 지시.",
-      "반복 위험 발생 장소 및 유형(예: 2층 A구역 피난통로 적치, 3층 포장라인 지게차 동선 침범)에 대한 집중 점검 및 예방 대책 수립 권고.",
-      "현재 유지 중인 조치 및 승인 완료율 100%를 지속 관리하고, 미조치 검사 이력 발생 원인 분석 및 개선 방안 마련.",
-      "고위험 비율이 높은 점을 감안하여 위험도별 대응 우선순위 재검토 및 교육 강화 필요성 검토."
+      "데이터 수집 및 입력 프로세스 점검을 통해 기록 누락 문제를 해결해야 합니다.",
+      "안전 관리 시스템의 데이터 연동 상태를 확인하여 실시간 데이터 확보를 보장해야 합니다.",
+      "기록이 정상적으로 수집되는 시점부터 KPI 및 추세 분석을 재개하여 안전 성과를 모니터링해야 합니다.",
+      "데이터 부재 상황을 본사에 신속히 보고하고, 관련 부서와 협력하여 개선 계획을 수립해야 합니다."
     ],
     "data_limitations": [
-      "20일간 데이터로 장기 추세 분석에 한계가 있음.",
-      "교육 이수율 관련 데이터가 제공되지 않아 교육 리스크 분석 불가.",
-      "사고 원인 및 책임 부서 정보가 없어 원인별 대응책 제시에 제한 있음."
+      "분석 대상 기간 및 데이터가 전혀 제공되지 않아 모든 KPI 및 추세 분석이 불가능합니다.",
+      "기록이 없으므로 안전 사고 원인, 책임 부서, 법적 판단, 비용 효과 등 추가 분석이 불가능합니다.",
+      "데이터 부재로 인해 반복 위험, 미조치, 승인 대기, 교육 이수 리스크 평가가 전혀 이루어지지 않았습니다."
     ]
   },
   "report": {
-    "title": "안전 KPI 및 추세 보고서 - 2026년 7월 1일~7월 20일",
+    "title": "안전 KPI 및 추세 종합 보고서 - 데이터 부재 현황",
     "audience": "HEADQUARTERS",
-    "period": "2026-07-01 to 2026-07-20",
-    "summary": "본 기간 동안 전체 15건의 조치 및 승인 이력이 모두 완료되어 100%의 완료율을 기록하였습니다. 전체 20건 중 고위험 4건(20%), 치명적 위험 2건(10%)으로 합계 6건(30%)이며, 고위험 포함 비율은 60%로 높은 수준입니다. 주요 위험 유형 5개가 각각 2회씩 반복 발생하였고, 특히 2층 A구역 피난통로 적치와 3층 포장라인 지게차 동선 침범 등 고위험 반복 위험이 확인됩니다. 일별 및 주별 사고 건수와 고위험 건수는 변동 없이 안정적인 추세를 유지하나, 미조치 검사 이력 5건 중 3건이 고위험 또는 치명적 위험으로 신속한 후속 조치가 필요합니다. 교육 관련 데이터 부재로 인한 리스크 분석이 제한적이며, 법적 판단 및 비용 효과 관련 정보도 제공되지 않아 향후 보완이 요구됩니다.",
+    "period": "- ~ -",
+    "summary": "현재 제공된 데이터에 기록이 전혀 없어 KPI 및 추세 분석이 불가능합니다. 고위험 사건, 조치 현황, 승인 상태 등 핵심 안전 지표가 모두 0으로 나타나 데이터 입력 또는 수집에 문제가 있음을 시사합니다. 반복 위험 및 미조치 사례가 전무하여 위험 관리 현황 파악이 어렵습니다. 추세 지표가 모두 변동이 없고 기록이 없어 안전 성과 평가 및 개선 방향 설정에 제약이 큽니다.",
     "sections": [
       {
         "section_code": "KPI",
-        "heading": "KPI 요약",
-        "content": "총 20건의 기록 중 검사 기록은 10건이며, 고위험 4건(20%), 치명적 위험 2건(10%)으로 합계 6건(30%)입니다. 고위험 포함 비율은 60%로 위험도가 높습니다. 조치 이력은 15건 모두 완료되어 조치 완료율 100%를 기록하였고, 승인도 15건 모두 완료되어 승인 완료율 역시 100%입니다. 미조치 검사 이력은 5건 존재하며, 이 중 3건(inspection_history_id 1001, 1003, 1004)은 고위험 또는 치명적 위험으로 확인됩니다. 다만 inspection_history_id 1001은 점검 내용상 적치물이 없음을 확인하였으나, 고위험으로 분류된 점은 별도 검토가 필요합니다. 나머지 2건(inspection_history_id 1002, 1005)은 중간 및 저위험에 해당합니다.",
+        "heading": "1. KPI 요약",
+        "content": "총 기록 수, 검사 기록, 고위험 및 기타 위험 등급 기록이 모두 0으로 나타나 KPI 산출이 불가능합니다. 조치 및 승인 현황 또한 모두 0으로 집계되어 안전 관리 현황 파악이 어렵습니다.",
         "related_event_ids": [],
-        "evidence_ids": [
-          "2001",
-          "2003",
-          "2004",
-          "1001",
-          "1002",
-          "1003",
-          "1004",
-          "1005",
-          "1101",
-          "1102",
-          "1103",
-          "1104",
-          "1105"
-        ]
+        "evidence_ids": []
       },
       {
         "section_code": "TREND_ANALYSIS",
-        "heading": "발생 추세 분석",
-        "content": "2026년 7월 1일부터 10일까지 일별 사고 건수는 매일 1건씩 꾸준히 발생하였으며, 주별 사고 건수도 5건으로 변동이 없습니다. 고위험 건수 역시 일별 1건씩 유지되어 전체 추세는 안정적이며 변화가 없는 상태입니다.",
+        "heading": "2. 발생 추세 분석",
+        "content": "일별, 주별 기록 수 및 고위험 기록 수가 모두 0이며, 추세 변화량도 0으로 추세 분석이 불가능합니다. 기록 부재로 인해 안전 성과의 시간적 변동을 평가할 수 없습니다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "RISK_DISTRIBUTION",
-        "heading": "주요 위험 구역 및 유형",
-        "content": "주요 위험 유형은 피난통로 적치, 보호구 미착용, 전기실 주변 적치, 지게차 동선 침범, 바닥 장애물 방치로 각각 2회씩 반복 발생하였습니다. 위험 구역별로는 2층 A구역, 1층 상하차장, 지하 전기실, 3층 포장라인, 1층 출고 대기구역에서 각각 2건씩 위험이 반복되었습니다. 특히 2층 A구역 피난통로 적치(inspection_history_id 1001, 1101)와 3층 포장라인 지게차 동선 침범(inspection_history_id 1004, 1104) 등 고위험 반복 위험이 확인됩니다. 사고 원인, 책임 부서, 법적 판단, 비용 효과 등 관련 데이터는 제공되지 않아 분석에 제한이 있으며, 향후 보완이 필요합니다.",
-        "related_event_ids": [
-          "1001",
-          "1101",
-          "1002",
-          "1102",
-          "1003",
-          "1103",
-          "1004",
-          "1104",
-          "1005",
-          "1105"
-        ],
-        "evidence_ids": [
-          "1001",
-          "1101",
-          "1002",
-          "1102",
-          "1003",
-          "1103",
-          "1004",
-          "1104",
-          "1005",
-          "1105"
-        ]
+        "heading": "3. 주요 위험 구역 및 유형",
+        "content": "반복 위험으로 식별된 사건이 없으며, 위험 관리의 반복성 평가가 불가능합니다. 위험 유형별 분포 데이터가 전무하여 위험 구역 및 유형 분석이 이루어지지 않았습니다.",
+        "related_event_ids": [],
+        "evidence_ids": []
       },
       {
         "section_code": "ACTION_HISTORY",
-        "heading": "조치/승인/교육 현황",
-        "content": "총 15건의 조치 이력이 모두 완료되었으며, 승인도 15건 모두 완료되어 조치 및 승인 완료율이 100%입니다. 미조치 검사 이력 5건 중 3건(inspection_history_id 1001, 1003, 1004)은 고위험 또는 치명적 위험으로 확인되어 신속한 후속 조치가 요구됩니다. 다만 inspection_history_id 1001은 점검 내용상 적치물이 없음을 확인하였으나 고위험으로 분류된 점은 별도 검토가 필요합니다. 나머지 2건(inspection_history_id 1002, 1005)은 중간 및 저위험에 해당합니다. 교육 이수 및 진행 현황 관련 데이터가 제공되지 않아 교육 리스크 분석이 불가하며, 이에 따른 교육 데이터 수집 및 분석 체계 구축을 권고합니다.",
+        "heading": "4. 조치/승인/교육 현황",
+        "content": "미조치 검사 기록 및 승인 대기 기록이 모두 0으로 미조치 및 승인 대기 리스크 평가가 불가능합니다. 조치 완료 및 교육 이수 현황 데이터가 없어 현황 파악에 제약이 있습니다.",
         "related_event_ids": [],
-        "evidence_ids": [
-          "2001",
-          "2003",
-          "2004",
-          "1001",
-          "1002",
-          "1003",
-          "1004",
-          "1005"
-        ]
+        "evidence_ids": []
       },
       {
         "section_code": "PRIORITY_ACTIONS",
-        "heading": "본사 후속 의사결정 사항",
-        "content": "고위험 및 치명적 위험에 대한 미조치 검사 이력(inspection_history_id 1001, 1003, 1004)에 대해 즉각적인 조치 및 승인 절차 진행을 안전관리팀과 현장 담당자에게 지시하시기 바랍니다. 또한 반복 위험 발생 장소 및 유형(예: 2층 A구역 피난통로 적치, 3층 포장라인 지게차 동선 침범)에 대해 품질관리팀과 안전관리팀이 협력하여 집중 점검 및 예방 대책을 2026년 7월 말까지 수립하도록 권고합니다. 조치 및 승인 완료율 100%를 지속 관리하며, 미조치 검사 이력 발생 원인 분석 및 개선 방안을 8월 초까지 마련해 주시기 바랍니다. 고위험 비율이 높은 점을 감안하여 위험도별 대응 우선순위 재검토 및 교육 강화 필요성에 대해 인사팀과 협의하여 구체적인 교육 계획을 8월 중 수립하도록 추진해 주시기 바랍니다.",
+        "heading": "5. 본사 후속 의사결정 사항",
+        "content": "데이터 수집 및 입력 프로세스 점검을 통해 기록 누락 문제를 해결해야 합니다. 안전 관리 시스템의 데이터 연동 상태를 확인하여 실시간 데이터 확보를 보장해야 합니다. 기록이 정상적으로 수집되는 시점부터 KPI 및 추세 분석을 재개하여 안전 성과를 모니터링해야 합니다. 데이터 부재 상황을 본사에 신속히 보고하고, 관련 부서와 협력하여 개선 계획을 수립해야 합니다.",
         "related_event_ids": [],
         "evidence_ids": []
       }
     ],
-    "conclusion": "본 보고서 기간 동안 조치 및 승인 완료율은 우수하나, 고위험 및 치명적 위험이 전체의 30%를 차지하고 반복 위험이 존재하여 지속적인 관리와 신속한 후속 조치가 필요합니다. 본사는 위험 유형별 집중 점검과 예방 대책 수립, 미조치 검사 이력에 대한 즉각적인 대응, 교육 현황 데이터 확보 및 분석 체계 구축을 통해 안전 수준을 강화해야 할 것입니다.",
+    "conclusion": "현재 데이터 부재로 인해 안전 KPI 및 추세 분석이 전면 중단된 상태입니다. 신속한 데이터 수집 체계 개선과 시스템 점검이 필요하며, 이후 정상 데이터 확보 시 안전 성과 평가를 재개해야 합니다.",
     "limitations": [
-      "20일간 데이터로 장기 추세 분석에 한계가 있음.",
-      "교육 이수율 관련 데이터가 제공되지 않아 교육 리스크 분석 불가.",
-      "사고 원인 및 책임 부서 정보가 없어 원인별 대응책 제시에 제한 있음."
+      "분석 대상 기간 및 데이터가 전혀 제공되지 않아 모든 KPI 및 추세 분석이 불가능합니다.",
+      "기록이 없으므로 안전 사고 원인, 책임 부서, 법적 판단, 비용 효과 등 추가 분석이 불가능합니다.",
+      "데이터 부재로 인해 반복 위험, 미조치, 승인 대기, 교육 이수 리스크 평가가 전혀 이루어지지 않았습니다."
     ]
   },
   "review": {
-    "passed": false,
-    "score": 70,
+    "passed": true,
+    "score": 100,
     "issues": [
       {
-        "severity": "ERROR",
+        "severity": "WARNING",
         "category": "KPI",
-        "message": "보고서 KPI 요약에서 고위험 4건(20%), 치명적 위험 2건(10%)으로 합계 6건(30%)이라고 기술하였으나, aggregated_data.kpi에 따르면 고위험 4건(20%), 치명적 위험 2건(10%) 합계는 6건(30%)이 맞으나 고위험 포함 비율을 60%로 명시한 부분과 혼동이 있음. 고위험 포함 비율 60%는 전체 20건 중 고위험(4건)과 치명적 위험(2건) 외에 중간 위험 2건, 저위험 2건 포함 비율로 해석 불가. KPI 수치와 보고서 표현이 혼동을 초래함.",
+        "message": "KPI 수치가 모두 0으로 데이터 부재를 명확히 보고하고 있으나, 고위험, 반복 위험, 미조치, 승인 대기, 교육 이수/진행중 항목이 모두 누락되어 있어 본사 의사결정에 참고할 수 있도록 최소한의 현황 표기가 필요합니다.",
         "section_code": "KPI"
       },
       {
-        "severity": "ERROR",
-        "category": "KPI",
-        "message": "미조치 검사 이력 5건 중 inspection_history_id 1001이 점검 내용상 적치물이 없고 비상구 접근 상태 양호하다고 되어 있으나 고위험으로 분류되어 있음. 점검 내용과 위험 등급 간 불일치가 있어 별도 검토 필요하다고 보고서에 명시했으나, 이 부분에 대한 명확한 설명이나 조치 방안이 부족함.",
-        "section_code": "KPI"
+        "severity": "WARNING",
+        "category": "TREND_ANALYSIS",
+        "message": "추세 설명이 데이터 부재와 일치하나, 추세 분석 불가 상황임을 명확히 강조하고 향후 데이터 확보 시 재분석 계획을 명확히 제시할 필요가 있습니다.",
+        "section_code": "TREND_ANALYSIS"
       },
       {
-        "severity": "ERROR",
-        "category": "RISK_DISTRIBUTION",
-        "message": "보고서에 사고 원인, 책임 부서, 법적 판단, 비용 효과 등 관련 데이터가 제공되지 않아 분석에 제한이 있다고 명시하였으나, 원본 데이터에 법적 판단 및 비용 효과 관련 내용이 전혀 없으므로 보고서에서 단정적으로 언급하는 것은 부적절함.",
+        "severity": "WARNING",
+        "category": "REPEATED_RISKS",
+        "message": "반복 위험 사례가 없음을 명확히 보고하였으나, 반복 위험 관리의 중요성 및 향후 데이터 확보 시 모니터링 계획을 추가하는 것이 바람직합니다.",
         "section_code": "RISK_DISTRIBUTION"
       },
       {
-        "severity": "ERROR",
-        "category": "ACTION_HISTORY",
-        "message": "교육 이수 및 진행 현황 관련 데이터가 제공되지 않아 교육 리스크 분석이 불가하다고 하였으나, 보고서 내 교육 관련 언급이 일부 모호하며 교육 미이수/진행중 항목 누락에 대한 명확한 지적과 후속 조치 권고가 부족함.",
+        "severity": "WARNING",
+        "category": "UNRESOLVED_ITEMS",
+        "message": "미조치 및 승인 대기 사례가 없음을 보고하였으나, 교육 이수 및 진행중 현황도 함께 포함하여 안전 리스크 전반을 포괄적으로 보고할 필요가 있습니다.",
         "section_code": "ACTION_HISTORY"
       },
       {
-        "severity": "ERROR",
-        "category": "PRIORITY_ACTIONS",
-        "message": "본사 후속 의사결정 사항에서 '즉각적인 조치 및 승인 절차 진행 지시', '집중 점검 및 예방 대책 수립 권고', '원인 분석 및 개선 방안 마련', '교육 계획 수립 추진' 등 실행 지시가 있으나, 구체적인 책임 부서 지정, 일정 명확화, 실행 방법에 대한 구체성 부족으로 본사 의사결정자가 실행 계획을 명확히 이해하기 어려움.",
-        "section_code": "PRIORITY_ACTIONS"
+        "severity": "WARNING",
+        "category": "EXECUTIVE_SUMMARY",
+        "message": "보고서 전반에 걸쳐 원인, 책임, 법적 판단, 비용 효과 등 단정적 표현이 없으나, 데이터 부재 원인에 대한 구체적 분석 없이 단순 데이터 누락으로만 표현되어 있어 본사 의사결정자가 이해하기 쉽도록 원인 추정 및 대응 방향을 명확히 제시할 필요가 있습니다.",
+        "section_code": "EXECUTIVE_SUMMARY"
       }
     ],
     "revision_instructions": [
-      "KPI 섹션 및 요약에서 고위험, 치명적 위험, 고위험 포함 비율 수치를 명확히 구분하여 혼동을 방지하도록 표현을 수정하세요.",
-      "inspection_history_id 1001의 점검 내용과 위험 등급 불일치 문제에 대해 별도 검토 결과를 추가하거나, 위험 등급 재검토 필요성을 명확히 기술하세요.",
-      "법적 판단 및 비용 효과 관련 언급은 원본 데이터에 근거가 없으므로 삭제하거나, 해당 정보 부재로 인한 분석 제한으로 표현을 완화하세요.",
-      "교육 관련 데이터 부재 및 교육 미이수/진행중 항목 누락 문제를 명확히 지적하고, 교육 데이터 수집 및 분석 체계 구축에 대한 구체적 권고를 추가하세요.",
-      "본사 후속 의사결정 사항에 책임 부서, 구체적 일정, 실행 방법 등을 명확히 명시하여 실행 가능성을 높이도록 내용을 보완하세요."
+      "KPI 섹션에 고위험, 반복 위험, 미조치, 승인 대기, 교육 이수/진행중 현황을 최소한의 수치 또는 '데이터 없음'으로 명시하세요.",
+      "추세 분석 섹션에 데이터 부재 상황임을 명확히 강조하고, 향후 데이터 확보 시 재분석 계획을 구체적으로 기술하세요.",
+      "반복 위험 관련 섹션에 반복 위험 관리의 중요성과 향후 모니터링 계획을 추가하세요.",
+      "조치/승인/교육 현황 섹션에 교육 이수 및 진행중 현황을 포함하여 안전 리스크 전반을 포괄적으로 보고하도록 수정하세요.",
+      "요약 및 결론 부분에 데이터 부재 원인에 대한 추정 및 대응 방향을 명확히 제시하여 본사 의사결정자가 이해하기 쉽도록 표현을 보완하세요."
     ]
   }
 }
