@@ -3,36 +3,24 @@
 from app.schemas import DataCorrectionNote, FinalHistoryRow, RiskDataCorrectionResult
 
 PROTECTED_FIELDS = [
+    "category",
     "type",
-    "source_type",
-    "source_id",
-    "inspection_history_id",
-    "inspection_id",
-    "category_id",
     "risk",
     "inspection_date",
-    "inspection_user_id",
-    "before_image_url",
-    "action_history_id",
-    "action_date",
-    "action_user_id",
-    "action_status",
-    "approval_status",
-    "board_id",
-    "event_id",
+    "image_url",
+    "completed_at",
+    "handler_name",
+    "approver_name",
 ]
 
 TEXT_FIELDS = [
-    "inspection_name",
     "category_name",
     "inspection_location",
     "inspection_user_name",
     "inspection_content",
     "action_name",
     "action_location",
-    "action_user_name",
-    "action_content",
-    "approval_name",
+    "content",
 ]
 
 

@@ -5,150 +5,117 @@
     "report_context": {
       "company": {},
       "period": {
-        "start_date": "2026-07-01",
-        "end_date": "2026-07-10"
+        "start_date": "2026-07-28",
+        "end_date": "2026-08-03"
       },
       "audience": "RISK_ASSESSMENT_REPORT",
       "report_type": "RISK_ASSESSMENT_REPORT",
-      "data_source": "final_history_table_corrected.corrected_rows",
+      "data_source": "preprocessed_final_history_rows.final_history_rows",
       "excluded_scope": [
         "anomaly_pattern_analysis",
         "improvement_recommendation_report"
       ]
     },
     "kpi": {
-      "total_records": 20,
-      "assessment_records": 10,
-      "critical_risk_records": 2,
+      "total_records": 17,
+      "assessment_records": 12,
+      "critical_risk_records": 0,
       "high_risk_records": 4,
-      "medium_risk_records": 2,
-      "low_risk_records": 2,
-      "high_or_critical_risk_records": 6,
-      "high_or_critical_risk_rate": 60.0,
-      "action_total": 15,
-      "action_completed": 15,
-      "action_completion_rate": 100.0,
-      "approval_completed": 15,
-      "approval_completion_rate": 100.0,
-      "unaddressed_assessment_records": 5,
-      "unaddressed_high_risk_records": 3
+      "medium_risk_records": 8,
+      "low_risk_records": 0,
+      "high_or_critical_risk_records": 4,
+      "high_or_critical_risk_rate": 33.3,
+      "action_total": 3,
+      "action_completed": 3,
+      "action_completion_rate": 25.0,
+      "approval_completed": 3,
+      "approval_completion_rate": 25.0,
+      "unaddressed_assessment_records": 9,
+      "unaddressed_high_risk_records": 2
     },
     "trend": {
       "daily_assessment_counts": {
-        "2026-07-01": 1,
-        "2026-07-02": 1,
-        "2026-07-03": 1,
-        "2026-07-04": 1,
-        "2026-07-05": 1,
-        "2026-07-06": 1,
-        "2026-07-07": 1,
-        "2026-07-08": 1,
-        "2026-07-09": 1,
-        "2026-07-10": 1
+        "2026-07-28": 1,
+        "2026-07-29": 2,
+        "2026-07-30": 2,
+        "2026-07-31": 1,
+        "2026-08-01": 2,
+        "2026-08-03": 4
       },
       "weekly_assessment_counts": {
-        "2026-W27": 5,
-        "2026-W28": 5
+        "2026-W31": 8,
+        "2026-W32": 4
       },
       "daily_high_risk_counts": {
-        "2026-07-01": 1,
-        "2026-07-03": 1,
-        "2026-07-04": 1,
-        "2026-07-06": 1,
-        "2026-07-08": 1,
-        "2026-07-09": 1
+        "2026-07-28": 1,
+        "2026-08-03": 3
       },
       "assessment_trend_delta": {
         "first_value": 1,
-        "last_value": 1,
-        "delta": 0,
-        "delta_rate": 0.0,
-        "direction": "FLAT"
+        "last_value": 4,
+        "delta": 3,
+        "delta_rate": 300.0,
+        "direction": "UP"
       },
       "weekly_trend_delta": {
-        "first_value": 5,
-        "last_value": 5,
-        "delta": 0,
-        "delta_rate": 0.0,
-        "direction": "FLAT"
+        "first_value": 8,
+        "last_value": 4,
+        "delta": -4,
+        "delta_rate": -50.0,
+        "direction": "DOWN"
       },
       "high_risk_trend_delta": {
         "first_value": 1,
-        "last_value": 1,
-        "delta": 0,
-        "delta_rate": 0.0,
-        "direction": "FLAT"
+        "last_value": 3,
+        "delta": 2,
+        "delta_rate": 200.0,
+        "direction": "UP"
       }
     },
     "risk_distribution": {
       "risk_band_counts": {
         "HIGH": 4,
-        "MEDIUM": 2,
-        "CRITICAL": 2,
-        "LOW": 2
+        "MEDIUM": 8
       },
       "category_counts": {
-        "피난통로 적치": 2,
-        "보호구 미착용": 2,
-        "전기실 주변 적치": 2,
-        "지게차 동선 침범": 2,
-        "바닥 장애물 방치": 2
+        "화재 감지": 4,
+        "적재물": 3,
+        "충돌": 5
       },
       "location_counts": {
-        "2층 A구역": 2,
-        "1층 상하차장": 2,
-        "지하 전기실": 2,
-        "3층 포장라인": 2,
-        "1층 출고 대기구역": 2
+        "집": 1,
+        "운동장": 1,
+        "기석님 집": 1,
+        "B동 자재창고": 2,
+        "C동 하역장": 4,
+        "D동 정문": 1,
+        "A동 복도": 1,
+        "B동 2층": 1
       },
       "category_risk_counts": {
-        "피난통로 적치": {
-          "HIGH": 2
+        "화재 감지": {
+          "HIGH": 4
         },
-        "보호구 미착용": {
-          "MEDIUM": 2
+        "적재물": {
+          "MEDIUM": 3
         },
-        "전기실 주변 적치": {
-          "CRITICAL": 2
-        },
-        "지게차 동선 침범": {
-          "HIGH": 2
-        },
-        "바닥 장애물 방치": {
-          "LOW": 2
+        "충돌": {
+          "MEDIUM": 5
         }
       }
     },
     "high_risk_items": [
       {
-        "source_id": "1103",
-        "inspection_history_id": 1103,
-        "action_history_id": 2003,
-        "category_name": "전기실 주변 적치",
-        "risk": "CRITICAL",
-        "risk_band": "CRITICAL",
-        "location": "지하 전기실",
-        "inspection_date": "2026-07-08T13:30:00",
-        "inspection_name": "전기실 화재위험 점검",
-        "inspection_content": "분전반 앞 청소도구 방치 확인.",
-        "action_name": "전기실 주변 정리",
-        "action_date": "2026-07-08T14:00:00",
-        "action_content": "청소도구를 지정 보관함으로 이동하고 접근 공간 확보.",
-        "action_completed": true,
-        "approval_completed": true,
-        "approval_name": "박승인"
-      },
-      {
-        "source_id": "1003",
-        "inspection_history_id": 1003,
+        "source_id": "2026-08-03T09:00:00",
+        "inspection_history_id": null,
         "action_history_id": null,
-        "category_name": "전기실 주변 적치",
-        "risk": "CRITICAL",
-        "risk_band": "CRITICAL",
-        "location": "지하 전기실",
-        "inspection_date": "2026-07-03T14:00:00",
-        "inspection_name": "전기실 화재위험 점검",
-        "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
+        "category_name": "화재 감지",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "location": "집",
+        "inspection_date": "2026-08-03T09:00:00",
+        "inspection_name": "소방안전",
+        "inspection_content": "Action is required for this inspection.",
         "action_name": null,
         "action_date": null,
         "action_content": null,
@@ -157,52 +124,34 @@
         "approval_name": null
       },
       {
-        "source_id": "1104",
-        "inspection_history_id": 1104,
-        "action_history_id": 2004,
-        "category_name": "지게차 동선 침범",
-        "risk": "HIGH",
-        "risk_band": "HIGH",
-        "location": "3층 포장라인",
-        "inspection_date": "2026-07-09T15:20:00",
-        "inspection_name": "지게차 동선 안전 점검",
-        "inspection_content": "보행자 통로 일부에 팔레트 방치 확인.",
-        "action_name": "팔레트 이동 조치",
-        "action_date": "2026-07-09T15:45:00",
-        "action_content": "팔레트를 적재 구역으로 이동하여 보행 통로를 재확보함.",
-        "action_completed": true,
-        "approval_completed": true,
-        "approval_name": "정승인"
-      },
-      {
-        "source_id": "1101",
-        "inspection_history_id": 1101,
-        "action_history_id": 2001,
-        "category_name": "피난통로 적치",
-        "risk": "HIGH",
-        "risk_band": "HIGH",
-        "location": "2층 A구역",
-        "inspection_date": "2026-07-06T09:00:00",
-        "inspection_name": "피난통로 적치물 정기 점검",
-        "inspection_content": "피난통로에 박스 적치 확인. 조치 필요.",
-        "action_name": "피난통로 적치물 제거",
-        "action_date": "2026-07-06T10:10:00",
-        "action_content": "박스 6개를 이동 보관하여 피난통로 폭을 확보함.",
-        "action_completed": true,
-        "approval_completed": true,
-        "approval_name": "박승인"
-      },
-      {
-        "source_id": "1004",
-        "inspection_history_id": 1004,
+        "source_id": "2026-08-03T09:00:00",
+        "inspection_history_id": null,
         "action_history_id": null,
-        "category_name": "지게차 동선 침범",
-        "risk": "HIGH",
+        "category_name": "화재 감지",
+        "risk": "상",
         "risk_band": "HIGH",
-        "location": "3층 포장라인",
-        "inspection_date": "2026-07-04T11:20:00",
-        "inspection_name": "지게차 동선 안전 점검",
-        "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
+        "location": "운동장",
+        "inspection_date": "2026-08-03T09:00:00",
+        "inspection_name": "소방안전",
+        "inspection_content": "점검자 메모프로세스 확인용",
+        "action_name": "점검조치프로세스 항목",
+        "action_date": "2026-08-03T10:33:50",
+        "action_content": null,
+        "action_completed": true,
+        "approval_completed": true,
+        "approval_name": "판교관리자"
+      },
+      {
+        "source_id": "2026-08-03T09:00:00",
+        "inspection_history_id": null,
+        "action_history_id": null,
+        "category_name": "화재 감지",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "location": "기석님 집",
+        "inspection_date": "2026-08-03T09:00:00",
+        "inspection_name": "소방안전",
+        "inspection_content": "Action is required for this inspection.",
         "action_name": null,
         "action_date": null,
         "action_content": null,
@@ -211,36 +160,36 @@
         "approval_name": null
       },
       {
-        "source_id": "1001",
-        "inspection_history_id": 1001,
+        "source_id": "2026-07-28T08:43:54",
+        "inspection_history_id": null,
         "action_history_id": null,
-        "category_name": "피난통로 적치",
-        "risk": "HIGH",
+        "category_name": "화재 감지",
+        "risk": "상",
         "risk_band": "HIGH",
-        "location": "2층 A구역",
-        "inspection_date": "2026-07-01T09:00:00",
-        "inspection_name": "피난통로 적치물 정기 점검",
-        "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
-        "action_name": null,
-        "action_date": null,
+        "location": "B동 2층",
+        "inspection_date": "2026-07-28T08:43:54",
+        "inspection_name": "소방안전",
+        "inspection_content": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
+        "action_name": "소화기 배치 상태 점검",
+        "action_date": "2026-07-29T02:43:54",
         "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null
+        "action_completed": true,
+        "approval_completed": true,
+        "approval_name": "현수"
       }
     ],
     "unaddressed_high_risk_items": [
       {
-        "source_id": "1001",
-        "inspection_history_id": 1001,
+        "source_id": "2026-08-03T09:00:00",
+        "inspection_history_id": null,
         "action_history_id": null,
-        "category_name": "피난통로 적치",
-        "risk": "HIGH",
+        "category_name": "화재 감지",
+        "risk": "상",
         "risk_band": "HIGH",
-        "location": "2층 A구역",
-        "inspection_date": "2026-07-01T09:00:00",
-        "inspection_name": "피난통로 적치물 정기 점검",
-        "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
+        "location": "집",
+        "inspection_date": "2026-08-03T09:00:00",
+        "inspection_name": "소방안전",
+        "inspection_content": "Action is required for this inspection.",
         "action_name": null,
         "action_date": null,
         "action_content": null,
@@ -249,34 +198,16 @@
         "approval_name": null
       },
       {
-        "source_id": "1003",
-        "inspection_history_id": 1003,
+        "source_id": "2026-08-03T09:00:00",
+        "inspection_history_id": null,
         "action_history_id": null,
-        "category_name": "전기실 주변 적치",
-        "risk": "CRITICAL",
-        "risk_band": "CRITICAL",
-        "location": "지하 전기실",
-        "inspection_date": "2026-07-03T14:00:00",
-        "inspection_name": "전기실 화재위험 점검",
-        "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
-        "action_name": null,
-        "action_date": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null
-      },
-      {
-        "source_id": "1004",
-        "inspection_history_id": 1004,
-        "action_history_id": null,
-        "category_name": "지게차 동선 침범",
-        "risk": "HIGH",
+        "category_name": "화재 감지",
+        "risk": "상",
         "risk_band": "HIGH",
-        "location": "3층 포장라인",
-        "inspection_date": "2026-07-04T11:20:00",
-        "inspection_name": "지게차 동선 안전 점검",
-        "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
+        "location": "기석님 집",
+        "inspection_date": "2026-08-03T09:00:00",
+        "inspection_name": "소방안전",
+        "inspection_content": "Action is required for this inspection.",
         "action_name": null,
         "action_date": null,
         "action_content": null,
@@ -287,78 +218,39 @@
     ],
     "source_ids": {
       "inspection_history_ids": [
-        1001,
-        1002,
-        1003,
-        1004,
-        1005,
-        1101,
-        1102,
-        1103,
-        1104,
-        1105
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "action_history_ids": [
-        2001,
-        2002,
-        2003,
-        2004,
-        2005,
-        2101,
-        2102,
-        2103,
-        2104,
-        2105,
-        2201,
-        2202,
-        2203,
-        2204,
-        2205
+        null,
+        null,
+        null
       ],
-      "event_ids": [
-        4001,
-        4002,
-        4003,
-        4004,
-        4005,
-        5001,
-        5002,
-        5003,
-        5004,
-        5005
-      ]
+      "event_ids": []
     },
     "source_samples": {
       "high_risk_items": [
         {
-          "source_id": "1103",
-          "inspection_history_id": 1103,
-          "action_history_id": 2003,
-          "category_name": "전기실 주변 적치",
-          "risk": "CRITICAL",
-          "risk_band": "CRITICAL",
-          "location": "지하 전기실",
-          "inspection_date": "2026-07-08T13:30:00",
-          "inspection_name": "전기실 화재위험 점검",
-          "inspection_content": "분전반 앞 청소도구 방치 확인.",
-          "action_name": "전기실 주변 정리",
-          "action_date": "2026-07-08T14:00:00",
-          "action_content": "청소도구를 지정 보관함으로 이동하고 접근 공간 확보.",
-          "action_completed": true,
-          "approval_completed": true,
-          "approval_name": "박승인"
-        },
-        {
-          "source_id": "1003",
-          "inspection_history_id": 1003,
+          "source_id": "2026-08-03T09:00:00",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "전기실 주변 적치",
-          "risk": "CRITICAL",
-          "risk_band": "CRITICAL",
-          "location": "지하 전기실",
-          "inspection_date": "2026-07-03T14:00:00",
-          "inspection_name": "전기실 화재위험 점검",
-          "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
+          "category_name": "화재 감지",
+          "risk": "상",
+          "risk_band": "HIGH",
+          "location": "집",
+          "inspection_date": "2026-08-03T09:00:00",
+          "inspection_name": "소방안전",
+          "inspection_content": "Action is required for this inspection.",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -367,52 +259,34 @@
           "approval_name": null
         },
         {
-          "source_id": "1104",
-          "inspection_history_id": 1104,
-          "action_history_id": 2004,
-          "category_name": "지게차 동선 침범",
-          "risk": "HIGH",
-          "risk_band": "HIGH",
-          "location": "3층 포장라인",
-          "inspection_date": "2026-07-09T15:20:00",
-          "inspection_name": "지게차 동선 안전 점검",
-          "inspection_content": "보행자 통로 일부에 팔레트 방치 확인.",
-          "action_name": "팔레트 이동 조치",
-          "action_date": "2026-07-09T15:45:00",
-          "action_content": "팔레트를 적재 구역으로 이동하여 보행 통로를 재확보함.",
-          "action_completed": true,
-          "approval_completed": true,
-          "approval_name": "정승인"
-        },
-        {
-          "source_id": "1101",
-          "inspection_history_id": 1101,
-          "action_history_id": 2001,
-          "category_name": "피난통로 적치",
-          "risk": "HIGH",
-          "risk_band": "HIGH",
-          "location": "2층 A구역",
-          "inspection_date": "2026-07-06T09:00:00",
-          "inspection_name": "피난통로 적치물 정기 점검",
-          "inspection_content": "피난통로에 박스 적치 확인. 조치 필요.",
-          "action_name": "피난통로 적치물 제거",
-          "action_date": "2026-07-06T10:10:00",
-          "action_content": "박스 6개를 이동 보관하여 피난통로 폭을 확보함.",
-          "action_completed": true,
-          "approval_completed": true,
-          "approval_name": "박승인"
-        },
-        {
-          "source_id": "1004",
-          "inspection_history_id": 1004,
+          "source_id": "2026-08-03T09:00:00",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "지게차 동선 침범",
-          "risk": "HIGH",
+          "category_name": "화재 감지",
+          "risk": "상",
           "risk_band": "HIGH",
-          "location": "3층 포장라인",
-          "inspection_date": "2026-07-04T11:20:00",
-          "inspection_name": "지게차 동선 안전 점검",
-          "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
+          "location": "운동장",
+          "inspection_date": "2026-08-03T09:00:00",
+          "inspection_name": "소방안전",
+          "inspection_content": "점검자 메모프로세스 확인용",
+          "action_name": "점검조치프로세스 항목",
+          "action_date": "2026-08-03T10:33:50",
+          "action_content": null,
+          "action_completed": true,
+          "approval_completed": true,
+          "approval_name": "판교관리자"
+        },
+        {
+          "source_id": "2026-08-03T09:00:00",
+          "inspection_history_id": null,
+          "action_history_id": null,
+          "category_name": "화재 감지",
+          "risk": "상",
+          "risk_band": "HIGH",
+          "location": "기석님 집",
+          "inspection_date": "2026-08-03T09:00:00",
+          "inspection_name": "소방안전",
+          "inspection_content": "Action is required for this inspection.",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -421,36 +295,36 @@
           "approval_name": null
         },
         {
-          "source_id": "1001",
-          "inspection_history_id": 1001,
+          "source_id": "2026-07-28T08:43:54",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "피난통로 적치",
-          "risk": "HIGH",
+          "category_name": "화재 감지",
+          "risk": "상",
           "risk_band": "HIGH",
-          "location": "2층 A구역",
-          "inspection_date": "2026-07-01T09:00:00",
-          "inspection_name": "피난통로 적치물 정기 점검",
-          "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
-          "action_name": null,
-          "action_date": null,
+          "location": "B동 2층",
+          "inspection_date": "2026-07-28T08:43:54",
+          "inspection_name": "소방안전",
+          "inspection_content": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
+          "action_name": "소화기 배치 상태 점검",
+          "action_date": "2026-07-29T02:43:54",
           "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null
+          "action_completed": true,
+          "approval_completed": true,
+          "approval_name": "현수"
         }
       ],
       "unaddressed_items": [
         {
-          "source_id": "1001",
-          "inspection_history_id": 1001,
+          "source_id": "2026-08-03T09:00:00",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "피난통로 적치",
-          "risk": "HIGH",
+          "category_name": "화재 감지",
+          "risk": "상",
           "risk_band": "HIGH",
-          "location": "2층 A구역",
-          "inspection_date": "2026-07-01T09:00:00",
-          "inspection_name": "피난통로 적치물 정기 점검",
-          "inspection_content": "피난통로에 적치물 없음. 비상구 접근 상태 양호.",
+          "location": "집",
+          "inspection_date": "2026-08-03T09:00:00",
+          "inspection_name": "소방안전",
+          "inspection_content": "Action is required for this inspection.",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -459,16 +333,34 @@
           "approval_name": null
         },
         {
-          "source_id": "1002",
-          "inspection_history_id": 1002,
+          "source_id": "2026-08-03T09:00:00",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "보호구 미착용",
-          "risk": "MEDIUM",
+          "category_name": "화재 감지",
+          "risk": "상",
+          "risk_band": "HIGH",
+          "location": "기석님 집",
+          "inspection_date": "2026-08-03T09:00:00",
+          "inspection_name": "소방안전",
+          "inspection_content": "Action is required for this inspection.",
+          "action_name": null,
+          "action_date": null,
+          "action_content": null,
+          "action_completed": false,
+          "approval_completed": false,
+          "approval_name": null
+        },
+        {
+          "source_id": "2026-08-03T00:00:00",
+          "inspection_history_id": null,
+          "action_history_id": null,
+          "category_name": "적재물",
+          "risk": "중",
           "risk_band": "MEDIUM",
-          "location": "1층 상하차장",
-          "inspection_date": "2026-07-02T10:30:00",
-          "inspection_name": "상하차장 보호구 착용 점검",
-          "inspection_content": "작업자 전원 안전모 및 안전화 착용 확인.",
+          "location": "B동 자재창고",
+          "inspection_date": "2026-08-03T00:00:00",
+          "inspection_name": "시설안전",
+          "inspection_content": "[매월] 정기 점검 자동 생성 건입니다.",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -477,16 +369,16 @@
           "approval_name": null
         },
         {
-          "source_id": "1003",
-          "inspection_history_id": 1003,
+          "source_id": "2026-08-01T11:45:00",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "전기실 주변 적치",
-          "risk": "CRITICAL",
-          "risk_band": "CRITICAL",
-          "location": "지하 전기실",
-          "inspection_date": "2026-07-03T14:00:00",
-          "inspection_name": "전기실 화재위험 점검",
-          "inspection_content": "분전반 주변 이물질 없음. 소화기 압력 정상.",
+          "category_name": "충돌",
+          "risk": "중",
+          "risk_band": "MEDIUM",
+          "location": "C동 하역장",
+          "inspection_date": "2026-08-01T11:45:00",
+          "inspection_name": "산업안전",
+          "inspection_content": "보호구 불량",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -495,16 +387,16 @@
           "approval_name": null
         },
         {
-          "source_id": "1004",
-          "inspection_history_id": 1004,
+          "source_id": "2026-08-01T11:45:00",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "지게차 동선 침범",
-          "risk": "HIGH",
-          "risk_band": "HIGH",
-          "location": "3층 포장라인",
-          "inspection_date": "2026-07-04T11:20:00",
-          "inspection_name": "지게차 동선 안전 점검",
-          "inspection_content": "보행자 통로와 지게차 이동 동선 분리 상태 양호.",
+          "category_name": "충돌",
+          "risk": "중",
+          "risk_band": "MEDIUM",
+          "location": "C동 하역장",
+          "inspection_date": "2026-08-01T11:45:00",
+          "inspection_name": "산업안전",
+          "inspection_content": "Action is required for this inspection.",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -513,16 +405,70 @@
           "approval_name": null
         },
         {
-          "source_id": "1005",
-          "inspection_history_id": 1005,
+          "source_id": "2026-07-31T11:45:52",
+          "inspection_history_id": null,
           "action_history_id": null,
-          "category_name": "바닥 장애물 방치",
-          "risk": "LOW",
-          "risk_band": "LOW",
-          "location": "1층 출고 대기구역",
-          "inspection_date": "2026-07-05T16:10:00",
-          "inspection_name": "바닥 장애물 정리 점검",
-          "inspection_content": "출고 대기구역 바닥 장애물 없음. 통행로 확보.",
+          "category_name": "충돌",
+          "risk": "중",
+          "risk_band": "MEDIUM",
+          "location": "C동 하역장",
+          "inspection_date": "2026-07-31T11:45:52",
+          "inspection_name": "산업안전",
+          "inspection_content": "[매일] 정기 점검 자동 생성 건입니다.",
+          "action_name": null,
+          "action_date": null,
+          "action_content": null,
+          "action_completed": false,
+          "approval_completed": false,
+          "approval_name": null
+        },
+        {
+          "source_id": "2026-07-30T15:52:16",
+          "inspection_history_id": null,
+          "action_history_id": null,
+          "category_name": "충돌",
+          "risk": "중",
+          "risk_band": "MEDIUM",
+          "location": "D동 정문",
+          "inspection_date": "2026-07-30T15:52:16",
+          "inspection_name": "산업안전",
+          "inspection_content": "[매일] 정기 점검 자동 생성 건입니다.",
+          "action_name": null,
+          "action_date": null,
+          "action_content": null,
+          "action_completed": false,
+          "approval_completed": false,
+          "approval_name": null
+        },
+        {
+          "source_id": "2026-07-30T15:52:16",
+          "inspection_history_id": null,
+          "action_history_id": null,
+          "category_name": "충돌",
+          "risk": "중",
+          "risk_band": "MEDIUM",
+          "location": "C동 하역장",
+          "inspection_date": "2026-07-30T15:52:16",
+          "inspection_name": "산업안전",
+          "inspection_content": "조치",
+          "action_name": null,
+          "action_date": null,
+          "action_content": null,
+          "action_completed": false,
+          "approval_completed": false,
+          "approval_name": null
+        },
+        {
+          "source_id": "2026-07-29T05:43:54",
+          "inspection_history_id": null,
+          "action_history_id": null,
+          "category_name": "적재물",
+          "risk": "중",
+          "risk_band": "MEDIUM",
+          "location": "B동 자재창고",
+          "inspection_date": "2026-07-29T05:43:54",
+          "inspection_name": "시설안전",
+          "inspection_content": "비상 통로 확보 양호",
           "action_name": null,
           "action_date": null,
           "action_content": null,
@@ -541,158 +487,100 @@
   },
   "analysis_result": {
     "executive_insights": [
-      "2026년 7월 1일부터 10일까지 총 10건의 위험성 평가가 수행되었으며, 이 중 60%에 해당하는 6건이 고위험 또는 중대위험으로 분류됨.",
-      "평가 건수 및 고위험 평가 건수 모두 기간 내 일별 및 주별로 안정적인 추세를 보임(변동 없음).",
-      "고위험 항목 중 '전기실 주변 적치'와 '지게차 동선 침범', '피난통로 적치'가 주요 위험 요소로 나타남.",
-      "고위험 항목 중 3건은 아직 조치되지 않은 상태이며, 이들은 모두 승인도 완료되지 않음.",
-      "전체 조치 완료율과 승인 완료율은 100%로, 조치된 항목에 대해서는 신속하고 완전한 대응이 이루어지고 있음."
+      "전체 위험성평가 건수는 17건이며, 이 중 12건이 실제 평가 건수임.",
+      "고위험 및 중대위험 비율은 33.3%로, 전체 위험 중 상당 부분을 차지함.",
+      "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 4건 모두 고위험으로 분류됨.",
+      "평가 기준 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 편임.",
+      "최근 일별 평가 건수 및 고위험 건수가 증가하는 추세를 보임(일별 평가 건수 300% 증가, 고위험 건수 200% 증가)."
     ],
     "findings": [
       {
         "finding_type": "KPI",
         "title": "평가 건수 및 위험도 분포",
-        "description": "총 10건의 위험성 평가 중 고위험 4건, 중대위험 2건, 중간위험 2건, 저위험 2건으로 고위험 및 중대위험 비율이 60%에 달함.",
-        "related_event_ids": [
-          "1001",
-          "1003",
-          "1004",
-          "1101",
-          "1103",
-          "1104"
-        ],
-        "evidence_ids": [
-          "2001",
-          "2003",
-          "2004"
-        ],
+        "description": "총 17건의 위험성평가 중 12건이 평가되었으며, 고위험 및 중대위험 건수는 4건으로 전체의 33.3%를 차지함.",
+        "related_event_ids": [],
+        "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "TREND",
-        "title": "평가 및 고위험 항목 추세",
-        "description": "일별 평가 건수는 매일 1건으로 일정하며, 주별 평가 건수도 5건으로 변동이 없어 안정적인 위험성 평가 활동이 유지되고 있음. 고위험 평가 건수 역시 일별 1건 수준으로 변동이 없음.",
-        "related_event_ids": [
-          "1001",
-          "1003",
-          "1004",
-          "1101",
-          "1103",
-          "1104"
-        ],
+        "title": "평가 건수 및 고위험 건수 증가 추세",
+        "description": "일별 평가 건수는 1건에서 4건으로 300% 증가하였고, 고위험 건수도 1건에서 3건으로 200% 증가하는 상승 추세를 보임.",
+        "related_event_ids": [],
         "evidence_ids": [],
         "severity": "MEDIUM"
       },
       {
         "finding_type": "RISK_ASSESSMENT",
-        "title": "주요 고위험 항목 및 위치",
-        "description": "고위험 및 중대위험 항목은 '전기실 주변 적치'(중대위험, 지하 전기실), '지게차 동선 침범'(고위험, 3층 포장라인), '피난통로 적치'(고위험, 2층 A구역)로 집중되어 있음.",
+        "title": "고위험 항목 집중 현상",
+        "description": "고위험 항목 4건 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 집, 운동장, 기석님 집, B동 2층으로 분포됨.",
         "related_event_ids": [
-          "1001",
-          "1003",
-          "1004",
-          "1101",
-          "1103",
-          "1104"
+          "2026-08-03T09:00:00",
+          "2026-07-28T08:43:54"
         ],
-        "evidence_ids": [
-          "1103",
-          "1104",
-          "1101"
-        ],
+        "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "UNRESOLVED",
-        "title": "미조치 고위험 항목 현황",
-        "description": "고위험 및 중대위험 항목 중 3건이 아직 조치 및 승인 완료되지 않은 상태임. 해당 항목은 '피난통로 적치'(2층 A구역), '전기실 주변 적치'(지하 전기실), '지게차 동선 침범'(3층 포장라인)임.",
+        "title": "미조치 고위험 항목 존재",
+        "description": "고위험 항목 중 2건이 조치 및 승인 완료되지 않은 상태로, 위치는 집과 기석님 집임.",
         "related_event_ids": [
-          "1001",
-          "1003",
-          "1004"
+          "2026-08-03T09:00:00"
         ],
         "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "PRIORITY",
-        "title": "조치 및 승인 완료율",
-        "description": "전체 조치 건수 15건 중 15건이 완료되어 조치 완료율 100%이며, 승인 완료율도 100%로 조치된 항목에 대해서는 신속하고 완전한 대응이 이루어지고 있음.",
-        "related_event_ids": [
-          "1103",
-          "1104",
-          "1101"
-        ],
-        "evidence_ids": [
-          "2001",
-          "2003",
-          "2004"
-        ],
-        "severity": "HIGH"
+        "title": "조치 및 승인 완료율 저조",
+        "description": "전체 조치 완료율과 승인 완료율이 각각 25.0%로 낮아 위험성평가 결과 관리에 개선이 필요함.",
+        "related_event_ids": [],
+        "evidence_ids": [],
+        "severity": "MEDIUM"
       }
     ],
     "recommended_actions": [],
     "data_limitations": []
   },
   "report": {
-    "title": "2026년 7월 1일~10일 위험성평가보고서",
+    "title": "위험성평가보고서",
     "audience": "RISK_ASSESSMENT_REPORT",
-    "period": "2026-07-01 ~ 2026-07-10",
-    "summary": "본 기간 동안 총 10건의 위험성 평가가 수행되었으며, 이 중 고위험 및 중대위험 건수는 6건으로 전체의 60%를 차지합니다. 조치 건수는 총 15건이며, 조치 완료율과 승인 완료율은 각각 100%로 나타났습니다. 미조치 평가 건수는 5건이며, 이 중 고위험 미조치 건수는 3건입니다.",
+    "period": "2026-07-28 ~ 2026-08-03",
+    "summary": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
     "sections": [
       {
+        "section_code": "EXECUTIVE_SUMMARY",
+        "heading": "요약",
+        "content": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
+        "related_event_ids": [],
+        "evidence_ids": []
+      },
+      {
         "section_code": "RISK_DISTRIBUTION",
-        "heading": "위험도 분포 및 평가 추세",
-        "content": "위험도 분포는 고위험 4건, 중대위험 2건, 중간위험 2건, 저위험 2건으로 나타났습니다. 일별 평가 건수는 매일 1건으로 일정하며, 주별 평가 건수도 5건으로 변동이 없어 안정적인 위험성 평가 활동이 유지되고 있습니다. 고위험 평가 건수 역시 일별 1건 수준으로 변동이 없으며, 기간 내 위험도 및 평가 건수는 전반적으로 안정적인 추세를 보이고 있습니다.",
-        "related_event_ids": [
-          "1001",
-          "1003",
-          "1004",
-          "1101",
-          "1103",
-          "1104"
-        ],
+        "heading": "위험도 분포 및 관리 현황",
+        "content": "위험도 분포는 중대위험 0건, 고위험 4건, 중간위험 8건, 저위험 0건으로 확인됐다. 고위험 및 중대위험 항목은 총 4건으로 전체 평가 항목 12건의 33.3%를 차지했다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%, 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건으로 확인됐다.",
+        "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "HIGH_RISK_ITEMS",
         "heading": "주요 고위험 항목",
-        "content": "1. 검사 ID: 1103, 위치: 지하 전기실, 위험유형: 전기실 주변 적치, 위험도: 중대위험, 조치 상태: 완료, 승인 상태: 완료(박승인)\n- 점검 내용: 분전반 앞 청소도구 방치 확인.\n- 조치 내용: 청소도구를 지정 보관함으로 이동하고 접근 공간 확보.\n\n2. 검사 ID: 1003, 위치: 지하 전기실, 위험유형: 전기실 주변 적치, 위험도: 중대위험, 조치 상태: 미완료, 승인 상태: 미완료\n- 점검 내용: 분전반 주변 이물질 없음. 소화기 압력 정상.\n\n3. 검사 ID: 1104, 위치: 3층 포장라인, 위험유형: 지게차 동선 침범, 위험도: 고위험, 조치 상태: 완료, 승인 상태: 완료(정승인)\n- 점검 내용: 보행자 통로 일부에 팔레트 방치 확인.\n- 조치 내용: 팔레트를 적재 구역으로 이동하여 보행 통로를 재확보함.\n\n4. 검사 ID: 1101, 위치: 2층 A구역, 위험유형: 피난통로 적치, 위험도: 고위험, 조치 상태: 완료, 승인 상태: 완료(박승인)\n- 점검 내용: 피난통로에 박스 적치 확인. 조치 필요.\n- 조치 내용: 박스 6개를 이동 보관하여 피난통로 폭을 확보함.\n\n5. 검사 ID: 1004, 위치: 3층 포장라인, 위험유형: 지게차 동선 침범, 위험도: 고위험, 조치 상태: 미완료, 승인 상태: 미완료\n- 점검 내용: 보행자 통로와 지게차 이동 동선 분리 상태 양호.\n\n6. 검사 ID: 1001, 위치: 2층 A구역, 위험유형: 피난통로 적치, 위험도: 고위험, 조치 상태: 미완료, 승인 상태: 미완료\n- 점검 내용: 피난통로에 적치물 없음. 비상구 접근 상태 양호.",
+        "content": "1. 위치: 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n2. 위치: 운동장, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 점검자 메모프로세스 확인용\n- 조치 내용: -\n\n3. 위치: 기석님 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n4. 위치: B동 2층, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 소화기 앞 박스 적치물 발견 -> 제거 조치 필요\n- 조치 내용: -",
         "related_event_ids": [
-          "1001",
-          "1003",
-          "1004",
-          "1101",
-          "1103",
-          "1104"
+          "2026-08-03T09:00:00",
+          "2026-07-28T08:43:54"
         ],
-        "evidence_ids": [
-          "1103",
-          "1104",
-          "1101",
-          "1003",
-          "1004",
-          "1001"
-        ]
+        "evidence_ids": []
       }
     ],
-    "conclusion": "2026년 7월 1일부터 10일까지 수행된 위험성평가 결과, 총 10건 중 60%에 해당하는 6건이 고위험 또는 중대위험으로 분류되었습니다. 평가 건수 및 고위험 평가 건수는 기간 내 일별 및 주별로 변동 없이 안정적인 수준을 유지하였습니다. 조치 완료율과 승인 완료율은 모두 100%로, 조치된 항목에 대해서는 신속하고 완전한 대응이 이루어지고 있음을 확인하였습니다. 다만, 고위험 및 중대위험 항목 중 3건은 아직 조치 및 승인이 완료되지 않은 상태로 남아 있습니다. 전반적으로 위험성평가 활동은 체계적으로 수행되고 있으나, 일부 미조치 고위험 항목에 대한 지속적인 관리가 필요한 상황입니다.",
+    "conclusion": "위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이며, 미조치 평가 항목은 9건으로 확인됐다. 특히 고위험 또는 중대위험 미조치 항목 2건은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.",
     "limitations": []
   },
   "review": {
     "passed": true,
     "score": 100,
-    "issues": [
-      {
-        "severity": "WARNING",
-        "category": "REPEATED_RISKS",
-        "message": "요약, 위험도 분포 및 평가 추세, 결론 섹션에서 '평가 건수 및 고위험 평가 건수 모두 기간 내 일별 및 주별로 안정적인 추세'와 유사한 문장이 반복되어 나타납니다. 문장 반복으로 인한 가독성 저하 우려가 있으니 표현을 다양화하거나 중복을 줄이도록 수정 바랍니다.",
-        "section_code": "EXECUTIVE_SUMMARY"
-      }
-    ],
-    "revision_instructions": [
-      "요약, 위험도 분포 및 평가 추세, 결론 섹션에서 '평가 건수 및 고위험 평가 건수 모두 기간 내 일별 및 주별로 안정적인 추세'와 유사한 문장이 2회 이상 반복되고 있습니다.",
-      "중복된 표현 대신 각 섹션별로 차별화된 문장으로 변경하거나, 한 번만 명확히 언급하고 다른 섹션에서는 간략히 요약하는 방식으로 수정해 주세요.",
-      "예를 들어, 요약에서는 전체적인 안정적 추세를 간략히 언급하고, 위험도 분포 및 평가 추세 섹션에서는 구체적 수치와 변동 없음에 초점을 맞추며, 결론에서는 평가 활동의 지속성과 안정성에 대한 종합적 평가로 표현을 달리하는 방안을 권장합니다."
-    ]
+    "issues": [],
+    "revision_instructions": []
   }
 }

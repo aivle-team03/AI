@@ -9,6 +9,9 @@ RISK_SCORE = {
     "HIGH": 3,
     "MEDIUM": 2,
     "LOW": 1,
+    "상": 3,
+    "중": 2,
+    "하": 1,
 }
 
 
@@ -19,7 +22,7 @@ def _row_dict(row: Any) -> dict[str, Any]:
 
 
 def _rows(req: SiteAnomalyReportRequest) -> list[dict[str, Any]]:
-    return [_row_dict(row) for row in req.corrected_rows]
+    return [_row_dict(row) for row in req.final_history_rows]
 
 
 def _parse_datetime(value: Any) -> datetime | None:
@@ -75,15 +78,15 @@ def _risk_band(value: Any) -> str:
 
 
 def _has_action(row: dict[str, Any]) -> bool:
-    return bool(row.get("action_history_id"))
+    return bool(row.get("action_name") or row.get("completed_at") or row.get("content"))
 
 
 def _action_completed(row: dict[str, Any]) -> bool:
-    return _has_action(row) and bool(row.get("action_date") or row.get("action_content"))
+    return _has_action(row) and bool(row.get("completed_at") or row.get("content"))
 
 
 def _approval_completed(row: dict[str, Any]) -> bool:
-    return bool(row.get("approval_name"))
+    return bool(row.get("approver_name"))
 
 
 def _source_id(row: dict[str, Any]) -> str:
@@ -92,6 +95,8 @@ def _source_id(row: dict[str, Any]) -> str:
         or row.get("inspection_history_id")
         or row.get("action_history_id")
         or row.get("case")
+        or row.get("inspection_date")
+        or row.get("completed_at")
         or "-"
     )
 
@@ -109,14 +114,14 @@ def _record_context(row: dict[str, Any]) -> dict[str, Any]:
         "risk_type": row.get("category_name") or "-",
         "risk": row.get("risk"),
         "risk_band": _risk_band(row.get("risk")),
-        "inspection_name": row.get("inspection_name"),
+        "inspection_name": row.get("category"),
         "inspection_content": row.get("inspection_content"),
         "action_name": row.get("action_name"),
-        "action_content": row.get("action_content"),
+        "action_content": row.get("content"),
         "action_completed": _action_completed(row),
         "approval_completed": _approval_completed(row),
-        "approval_name": row.get("approval_name"),
-        "before_image_url": row.get("before_image_url"),
+        "approval_name": row.get("approver_name"),
+        "before_image_url": row.get("image_url"),
     }
 
 
@@ -142,7 +147,10 @@ def _severity_for_group(
 
 def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]:
     rows = _rows(req)
-    inspection_rows = [row for row in rows if row.get("inspection_history_id")]
+    inspection_rows = [
+        row for row in rows
+        if row.get("inspection_content")
+    ]
     contexts = [_record_context(row) for row in inspection_rows]
 
     grouped_records: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
@@ -217,9 +225,9 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
                 "recurrence_after_action_count": recurrence_after_action_count,
                 "why_flagged": "; ".join(reasons),
                 "field_check_points": [
-                    "Confirm whether the same hazard remains at the same location.",
-                    "Check whether previous corrective action prevented recurrence.",
-                    "Confirm delayed action or approval items with the site manager.",
+                    "동일 장소에 동일 위험요인이 남아 있는지 확인합니다.",
+                    "기존 조치 이후 재발 방지 효과가 있었는지 확인합니다.",
+                    "지연된 조치 또는 승인 대기 항목을 담당자와 확인합니다.",
                 ],
             }
         )
@@ -253,9 +261,9 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         "site_context": {
             "company": req.company or {},
             "period": _period(inspection_rows),
-            "audience": "SITE_MANAGER",
-            "report_type": "ANOMALY_IMPROVEMENT_RECOMMENDATION",
-            "data_source": "final_history_table_corrected.corrected_rows",
+            "audience": "MANAGEMENT_RESPONSIBLE",
+            "report_type": "MANAGEMENT_REVIEW_ORDER",
+            "data_source": "preprocessed_final_history_rows.final_history_rows",
         },
         "summary_counts": {
             "total_records": len(rows),
@@ -295,7 +303,8 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         },
         "constraints": {
             "do_not_infer_root_cause": True,
-            "recommend_only_site_level_actions": True,
+            "recommend_management_level_directives": True,
             "require_source_id_basis": True,
         },
     }
+

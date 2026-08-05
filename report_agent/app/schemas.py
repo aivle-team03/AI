@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 class Audience(str, Enum):
     HEADQUARTERS = "HEADQUARTERS"
     SITE_MANAGER = "SITE_MANAGER"
+    MANAGEMENT_RESPONSIBLE = "MANAGEMENT_RESPONSIBLE"
     EVIDENCE = "EVIDENCE"
     RISK_ASSESSMENT_REPORT = "RISK_ASSESSMENT_REPORT"
 
@@ -27,6 +28,10 @@ class SectionCode(str, Enum):
     APPROVAL_RECORDS = "APPROVAL_RECORDS"
     RISK_ASSESSMENT_SUMMARY = "RISK_ASSESSMENT_SUMMARY"
     HIGH_RISK_ITEMS = "HIGH_RISK_ITEMS"
+    MANAGEMENT_REVIEW_CONTENT = "MANAGEMENT_REVIEW_CONTENT"
+    MANAGEMENT_DIRECTIVES = "MANAGEMENT_DIRECTIVES"
+    OVERALL_OPINION = "OVERALL_OPINION"
+    APPROVAL_SIGNOFF = "APPROVAL_SIGNOFF"
 
 
 class AnalysisFinding(BaseModel):
@@ -87,33 +92,21 @@ class ReviewResult(BaseModel):
 
 
 class FinalHistoryRow(BaseModel):
-    type: str | None = None
-    source_type: str | None = None
-    source_id: int | str | None = None
-    inspection_history_id: int | None = None
-    inspection_id: int | None = None
-    inspection_name: str | None = None
-    category_id: int | None = None
-    category_name: str | None = None
+    category: str | None = None
     risk: str | int | None = None
+    category_name: str | None = None
     inspection_location: str | None = None
     inspection_date: str | None = None
-    inspection_user_id: int | None = None
     inspection_user_name: str | None = None
     inspection_content: str | None = None
-    before_image_url: str | None = None
-    action_history_id: int | None = None
+    image_url: str | None = None
     action_name: str | None = None
     action_location: str | None = None
-    action_date: str | None = None
-    action_user_id: int | None = None
-    action_user_name: str | None = None
-    action_content: str | None = None
-    action_status: str | None = None
-    approval_status: str | None = None
-    approval_name: str | None = None
-    board_id: int | None = None
-    event_id: str | int | None = None
+    completed_at: str | None = None
+    handler_name: str | None = None
+    content: str | None = None
+    approver_name: str | None = None
+    type: str | None = None
 
 class DataCorrectionNote(BaseModel):
     row_index: int
@@ -208,25 +201,47 @@ class RiskAssessmentFormResponse(BaseModel):
     csv_output_path: str | None = None
     xlsx_output_path: str | None = None
 
-class HeadquartersReportRequest(EvidenceContentRequest):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 class SiteAnomalyReportRequest(EvidenceContentRequest):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 class RiskAssessmentReportRequest(EvidenceContentRequest):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
-class HeadquartersReportResponse(BaseModel):
+
+
+ReportType = Literal[
+    "risk_assessment_form",
+    "risk_assessment_report",
+    "site_anomaly_improvement",
+    "management_review_order",
+]
+
+
+class UnifiedReportRequest(EvidenceContentRequest):
+    report_type: ReportType
+    form_path: str | None = None
+    output_path: str | None = None
+
+
+class UnifiedReportResponse(BaseModel):
     status: Literal["COMPLETED", "FAILED"]
+    report_type: ReportType
     retry_count: int
-    aggregated_data: dict[str, Any]
-    analysis_result: AnalysisResult
-    report: GeneratedReport
-    review: ReviewResult
+    preprocessing_retry_count: int
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    correction_result: RiskDataCorrectionResult
+    correction_review: RiskDataCorrectionReviewResult
+    aggregated_data: dict[str, Any] | None = None
+    analysis_result: AnalysisResult | None = None
+    report: GeneratedReport | None = None
+    review: ReviewResult | None = None
+    csv_output_path: str | None = None
+    xlsx_output_path: str | None = None
+
 
 
 class SiteAnomalyReportResponse(BaseModel):
@@ -246,3 +261,18 @@ class RiskAssessmentReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

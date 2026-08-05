@@ -63,6 +63,7 @@ def _action_part(
             "action_location": None,
             "completed_at": None,
             "handler_name": None,
+            "content": None,
             "approver_name": None,
             "type": row_type,
         }
@@ -72,6 +73,7 @@ def _action_part(
         "action_location": action.get("location"),
         "completed_at": action.get("completed_at"),
         "handler_name": action.get("handler_name"),
+        "content": action.get("content"),
         "approver_name": action.get("approver_name"),
         "type": action.get("type") or action.get("source_type"),
     }
