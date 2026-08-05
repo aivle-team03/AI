@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.schemas import (
+from app.worker_feedback.schemas import (
     WorkerFeedbackCorrectionNote,
     WorkerFeedbackCorrectionResult,
     WorkerFeedbackRow,

@@ -13,8 +13,8 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.graph import worker_feedback_improvement_graph
-from app.schemas import (
+from app.worker_feedback.graph import worker_feedback_improvement_graph
+from app.worker_feedback.schemas import (
     WorkerFeedbackImprovementReportRequest,
     WorkerFeedbackImprovementReportResponse,
 )

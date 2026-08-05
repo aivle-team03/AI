@@ -9,7 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app.build_worker_feedback_table import build_worker_feedback_table
+from app.worker_feedback.table_builder import build_worker_feedback_table
 
 
 def main() -> None:
