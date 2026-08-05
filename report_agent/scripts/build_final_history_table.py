@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from app.Report_data import _get_json
+from app.common.Report_data import _get_json
 
 
 def _index_by(items: list[dict[str, Any]], key: str) -> dict[Any, dict[str, Any]]:

@@ -5,7 +5,7 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from app.Report_data import BACKEND_AUTH_TOKEN, BACKEND_BASE_URL
+from app.common.Report_data import BACKEND_AUTH_TOKEN, BACKEND_BASE_URL
 
 def _index_by(items: list[dict[str, Any]], key: str) -> dict[Any, dict[str, Any]]:
     return {item.get(key): item for item in items}

@@ -3,6 +3,7 @@ from typing import Literal
 
 from langgraph.graph import END, START, StateGraph
 
+from app.common.Report_data import build_backend_source_data, has_backend_table_data
 from app.worker_feedback.agents import (
     worker_feedback_correction_agent,
     worker_feedback_correction_review_agent,
@@ -24,6 +25,19 @@ from app.worker_feedback.word_writer import fill_worker_feedback_word_reports
 
 def retry_node(state):
     return {"retry_count": state.get("retry_count", 0) + 1}
+
+
+def backend_data_fetch_node(state):
+    request = state["request"]
+    request_data = request.model_dump(mode="json")
+    if has_backend_table_data(request_data):
+        return {"backend_data": request_data}
+
+    backend_data = build_backend_source_data()
+    return {
+        "request": request.model_copy(update=backend_data),
+        "backend_data": backend_data,
+    }
 
 
 def worker_feedback_table_node(state):
@@ -88,6 +102,7 @@ def worker_feedback_word_node(state):
 
 def build_worker_feedback_improvement_graph():
     graph = StateGraph(WorkerFeedbackImprovementReportState)
+    graph.add_node("fetch_backend_data", backend_data_fetch_node)
     graph.add_node("build_worker_feedback_table", worker_feedback_table_node)
     graph.add_node("worker_feedback_correction_agent", worker_feedback_correction_node)
     graph.add_node(
@@ -97,7 +112,8 @@ def build_worker_feedback_improvement_graph():
     graph.add_node("retry", retry_node)
     graph.add_node("fill_worker_feedback_word", worker_feedback_word_node)
 
-    graph.add_edge(START, "build_worker_feedback_table")
+    graph.add_edge(START, "fetch_backend_data")
+    graph.add_edge("fetch_backend_data", "build_worker_feedback_table")
     graph.add_edge("build_worker_feedback_table", "worker_feedback_correction_agent")
     graph.add_edge(
         "worker_feedback_correction_agent",

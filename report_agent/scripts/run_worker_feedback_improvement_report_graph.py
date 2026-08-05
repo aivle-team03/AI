@@ -31,7 +31,7 @@ async def run_graph(request):
         "errors": [],
     }
 
-    print("[1/4] 종사자 의견청취 테이블 생성 시작", flush=True)
+    print("[0/5] 백엔드 데이터 확인 시작", flush=True)
     async for event in worker_feedback_improvement_graph.astream(
         state,
         stream_mode="updates",
@@ -40,19 +40,22 @@ async def run_graph(request):
             if isinstance(update, dict):
                 state.update(update)
 
-            if node_name == "build_worker_feedback_table":
-                print("[1/4] 종사자 의견청취 테이블 생성 완료", flush=True)
-                print("[2/4] 데이터 수정 agent 실행 중", flush=True)
+            if node_name == "fetch_backend_data":
+                print("[0/5] 백엔드 데이터 확인 완료", flush=True)
+                print("[1/5] 종사자 의견청취 테이블 생성 시작", flush=True)
+            elif node_name == "build_worker_feedback_table":
+                print("[1/5] 종사자 의견청취 테이블 생성 완료", flush=True)
+                print("[2/5] 데이터 수정 agent 실행 중", flush=True)
             elif node_name == "worker_feedback_correction_agent":
-                print("[2/4] 데이터 수정 agent 완료", flush=True)
-                print("[3/4] 데이터 검토 agent 실행 중", flush=True)
+                print("[2/5] 데이터 수정 agent 완료", flush=True)
+                print("[3/5] 데이터 검토 agent 실행 중", flush=True)
             elif node_name == "worker_feedback_correction_review_agent":
-                print("[3/4] 데이터 검토 agent 완료", flush=True)
-                print("[4/4] 워드 보고서 생성 중", flush=True)
+                print("[3/5] 데이터 검토 agent 완료", flush=True)
+                print("[4/5] 워드 보고서 생성 중", flush=True)
             elif node_name == "retry":
                 print("검토 결과 수정 필요: 데이터 수정 agent 재실행", flush=True)
             elif node_name == "fill_worker_feedback_word":
-                print("[4/4] 워드 보고서 생성 완료", flush=True)
+                print("[4/5] 워드 보고서 생성 완료", flush=True)
 
     return state
 
@@ -96,7 +99,8 @@ async def main() -> None:
             },
             ensure_ascii=False,
             indent=2,
-        )
+        ),
+        flush=True,
     )
 
 

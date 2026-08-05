@@ -9,6 +9,7 @@ from app.worker_feedback.schemas import (
 
 class WorkerFeedbackImprovementReportState(TypedDict, total=False):
     request: WorkerFeedbackImprovementReportRequest
+    backend_data: dict
     worker_feedback_rows: list[dict]
     correction_result: WorkerFeedbackCorrectionResult
     correction_review: WorkerFeedbackCorrectionReviewResult

@@ -28,7 +28,7 @@ from app.state import (
     RiskAssessmentReportState,
     SiteAnomalyReportState,
 )
-from scripts.build_final_history_table_14 import build_final_history_table_14
+from scripts.build_final_history_table import build_final_history_table
 
 
 def retry_node(state):
@@ -105,7 +105,7 @@ async def site_anomaly_review_node(state):
 
 def risk_assessment_table_node(state):
     source_data = state["request"].model_dump(mode="json")
-    return {"final_history_rows": build_final_history_table_14(source_data)}
+    return {"final_history_rows": build_final_history_table(source_data)}
 
 
 async def risk_data_correction_node(state):

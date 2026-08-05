@@ -85,7 +85,22 @@ def _load_backend_item(name: str, loader) -> list[dict[str, Any]]:
     return items
 
 
-def build_worker_feedback_source_data() -> dict[str, Any]:
+BACKEND_TABLE_FIELDS = [
+    "board",
+    "action_history",
+    "event_category",
+    "inspection",
+    "inspection_history",
+    "event",
+    "checklist",
+]
+
+
+def has_backend_table_data(data: dict[str, Any]) -> bool:
+    return any(isinstance(data.get(field), list) and data[field] for field in BACKEND_TABLE_FIELDS)
+
+
+def build_backend_source_data() -> dict[str, Any]:
     loaders = {
         "board": get_boards,
         "action_history": get_action_history,
@@ -110,11 +125,15 @@ def build_worker_feedback_source_data() -> dict[str, Any]:
     return data
 
 
+def build_worker_feedback_source_data() -> dict[str, Any]:
+    return build_backend_source_data()
+
+
 def save_backend_data(
     output_path: str | Path = "output/BackendData.json",
 ) -> dict[str, Any]:
     output_path = Path(output_path)
-    data = build_worker_feedback_source_data()
+    data = build_backend_source_data()
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8-sig") as file:
