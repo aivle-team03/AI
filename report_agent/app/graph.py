@@ -4,9 +4,6 @@ from typing import Literal
 from langgraph.graph import END, START, StateGraph
 
 from app.agents import (
-    headquarters_analyze_agent,
-    headquarters_review_agent,
-    headquarters_writer_agent,
     risk_data_correction_agent,
     risk_data_correction_review_agent,
     risk_assessment_report_analyze_agent,
@@ -16,17 +13,22 @@ from app.agents import (
     site_anomaly_review_agent,
     site_anomaly_writer_agent,
 )
-from app.headquarters_aggregation import aggregate_headquarters_data
 from app.risk_assessment_form import DEFAULT_FORM_PATH, DEFAULT_OUTPUT_PATH
 from app.risk_assessment_form import fill_risk_assessment_form, resolved_xlsx_path_for
 from app.risk_assessment_report_aggregation import aggregate_risk_assessment_report_data
 from app.risk_data_correction import PROTECTED_FIELDS, enforce_history_table_invariants
 from app.site_anomaly_aggregation import aggregate_site_anomaly_data
+from app.schemas import (
+    ReportSection,
+    RiskAssessmentReportRequest,
+    SectionCode,
+    SiteAnomalyReportRequest,
+)
 from app.state import (
-    HeadquartersReportState,
     RiskAssessmentFormState,
     RiskAssessmentReportState,
     SiteAnomalyReportState,
+    UnifiedReportState,
 )
 from scripts.build_final_history_table import build_final_history_table
 
@@ -39,37 +41,6 @@ def route(state) -> Literal["finish", "retry"]:
     review_passed = state["review_result"].passed
     retry_limit_reached = state.get("retry_count", 0) >= state.get("max_retry_count", 2)
     return "finish" if review_passed or retry_limit_reached else "retry"
-
-
-def headquarters_aggregate_node(state):
-    return {"aggregated_data": aggregate_headquarters_data(state["request"])}
-
-
-async def headquarters_analyze_node(state):
-    return {
-        "analysis_result": await headquarters_analyze_agent(state["aggregated_data"])
-    }
-
-
-async def headquarters_write_node(state):
-    return {
-        "generated_report": await headquarters_writer_agent(
-            state["aggregated_data"],
-            state["analysis_result"],
-            state.get("generated_report"),
-            state.get("review_result"),
-        )
-    }
-
-
-async def headquarters_review_node(state):
-    return {
-        "review_result": await headquarters_review_agent(
-            state["aggregated_data"],
-            state["analysis_result"],
-            state["generated_report"],
-        )
-    }
 
 
 def site_anomaly_aggregate_node(state):
@@ -94,11 +65,16 @@ async def site_anomaly_write_node(state):
 
 
 async def site_anomaly_review_node(state):
+    normalized_report = _normalize_management_review_order(
+        state["generated_report"],
+        state["aggregated_data"],
+    )
     return {
+        "generated_report": normalized_report,
         "review_result": await site_anomaly_review_agent(
             state["aggregated_data"],
             state["analysis_result"],
-            state["generated_report"],
+            normalized_report,
         )
     }
 
@@ -204,44 +180,267 @@ def _dedupe_stability_text(text: str, seen: set[str] | None = None) -> str:
     return ". ".join(sentences)
 
 
-def _normalize_risk_assessment_report(report):
-    allowed = [
-        ("EXECUTIVE_SUMMARY", "요약"),
-        ("RISK_DISTRIBUTION", "위험도 분포 및 평가 추세"),
-        ("HIGH_RISK_ITEMS", "주요 고위험 항목"),
-    ]
-    allowed_codes = {code for code, _ in allowed}
+def _risk_rate(value):
+    return f"{value:.1f}%" if isinstance(value, float) else f"{value}%"
+
+
+def _risk_summary_text(aggregated_data):
+    kpi = aggregated_data.get("kpi") or {}
+    total = kpi.get("assessment_records", 0)
+    high_or_critical = kpi.get("high_or_critical_risk_records", 0)
+    high_rate = _risk_rate(kpi.get("high_or_critical_risk_rate", 0))
+    action_total = kpi.get("action_total", 0)
+    action_rate = _risk_rate(kpi.get("action_completion_rate", 0))
+    approval_completed = kpi.get("approval_completed", 0)
+    approval_rate = _risk_rate(kpi.get("approval_completion_rate", 0))
+    unaddressed = kpi.get("unaddressed_assessment_records", 0)
+    unaddressed_high = kpi.get("unaddressed_high_risk_records", 0)
+    return (
+        f"평가기간 동안 총 {total}건의 위험성평가가 수행됐다. "
+        f"고위험 및 중대위험 항목은 {high_or_critical}건으로 전체의 {high_rate}이다. "
+        f"조치가 연결된 평가 항목은 {action_total}건이며, 전체 평가 항목 기준 조치 완료율은 {action_rate}이다. "
+        f"승인 완료 평가 항목은 {approval_completed}건이며, 전체 평가 항목 기준 승인 완료율은 {approval_rate}이다. "
+        f"미조치 평가 항목은 {unaddressed}건이고, 이 중 고위험 또는 중대위험 미조치 항목은 {unaddressed_high}건이다."
+    )
+
+
+
+def _risk_management_status_text(aggregated_data):
+    risk_counts = (aggregated_data.get("risk_distribution") or {}).get("risk_band_counts") or {}
+    kpi = aggregated_data.get("kpi") or {}
+    total = kpi.get("assessment_records", 0)
+    high_or_critical = kpi.get("high_or_critical_risk_records", 0)
+    high_rate = _risk_rate(kpi.get("high_or_critical_risk_rate", 0))
+    action_total = kpi.get("action_total", 0)
+    action_rate = _risk_rate(kpi.get("action_completion_rate", 0))
+    approval_rate = _risk_rate(kpi.get("approval_completion_rate", 0))
+    unaddressed = kpi.get("unaddressed_assessment_records", 0)
+    unaddressed_high = kpi.get("unaddressed_high_risk_records", 0)
+    return (
+        "위험도 분포는 "
+        f"중대위험 {risk_counts.get('CRITICAL', 0)}건, "
+        f"고위험 {risk_counts.get('HIGH', 0)}건, "
+        f"중간위험 {risk_counts.get('MEDIUM', 0)}건, "
+        f"저위험 {risk_counts.get('LOW', 0)}건으로 확인됐다. "
+        f"고위험 및 중대위험 항목은 총 {high_or_critical}건으로 전체 평가 항목 {total}건의 {high_rate}를 차지했다. "
+        f"조치가 연결된 평가 항목은 {action_total}건이며, 전체 평가 항목 기준 조치 완료율은 {action_rate}, 승인 완료율은 {approval_rate}이다. "
+        f"미조치 평가 항목은 {unaddressed}건이고, 이 중 고위험 또는 중대위험 미조치 항목은 {unaddressed_high}건으로 확인됐다."
+    )
+
+
+def _risk_high_items_text(aggregated_data):
+    items = aggregated_data.get("high_risk_items") or []
+    if not items:
+        return "주요 고위험 항목은 확인되지 않았다."
+    lines = []
+    for idx, item in enumerate(items[:10], start=1):
+        action_state = "조치 완료" if item.get("action_completed") else "미조치"
+        approval_state = "승인 완료" if item.get("approval_completed") else "승인 미완료"
+        lines.append(
+            f"{idx}. 위치: {item.get('location') or '-'}, "
+            f"위험유형: {item.get('category_name') or '-'}, "
+            f"위험도: {item.get('risk_band') or item.get('risk') or '-'}, "
+            f"조치 상태: {action_state}, 승인 상태: {approval_state}\n"
+            f"- 점검 내용: {item.get('inspection_content') or '-'}\n"
+            f"- 조치 내용: {item.get('action_content') or '-'}"
+        )
+    return "\n\n".join(lines)
+
+
+def _risk_conclusion_text(aggregated_data):
+    kpi = aggregated_data.get("kpi") or {}
+    return (
+        f"위험성평가 결과 총 {kpi.get('assessment_records', 0)}건 중 "
+        f"{kpi.get('high_or_critical_risk_records', 0)}건이 고위험 또는 중대위험으로 분류됐다. "
+        f"조치가 연결된 평가 항목은 {kpi.get('action_total', 0)}건이며, "
+        f"미조치 평가 항목은 {kpi.get('unaddressed_assessment_records', 0)}건으로 확인됐다. "
+        f"특히 고위험 또는 중대위험 미조치 항목 {kpi.get('unaddressed_high_risk_records', 0)}건은 우선 관리 대상으로 분류된다. "
+        "본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다."
+    )
+
+
+def _normalize_risk_assessment_report(report, aggregated_data):
     section_by_code = {section.section_code.value: section for section in report.sections}
 
-    summary_parts = []
-    kpi_section = section_by_code.get("KPI")
-    executive_section = section_by_code.get("EXECUTIVE_SUMMARY")
-    if executive_section:
-        summary_parts.append(executive_section.content)
-    if kpi_section:
-        summary_parts.append(kpi_section.content)
+    summary_section = section_by_code.get("EXECUTIVE_SUMMARY") or ReportSection(
+        section_code=SectionCode.EXECUTIVE_SUMMARY,
+        heading="요약",
+        content="",
+    )
+    distribution_section = section_by_code.get("RISK_DISTRIBUTION") or ReportSection(
+        section_code=SectionCode.RISK_DISTRIBUTION,
+        heading="위험도 분포 및 관리 현황",
+        content="",
+    )
+    high_items_section = section_by_code.get("HIGH_RISK_ITEMS") or ReportSection(
+        section_code=SectionCode.HIGH_RISK_ITEMS,
+        heading="주요 고위험 항목",
+        content="",
+    )
 
-    normalized_sections = []
-    seen_stability_sentences: set[str] = set()
-    for code, heading in allowed:
-        section = section_by_code.get(code)
-        if not section:
-            continue
-        if code == "EXECUTIVE_SUMMARY" and summary_parts:
-            section.content = "\n\n".join(summary_parts)
-        section.heading = heading
-        section.content = _dedupe_stability_text(section.content, seen_stability_sentences)
-        normalized_sections.append(section)
-
-    report.conclusion = _dedupe_stability_text(report.conclusion, seen_stability_sentences)
-    report.sections = [
-        section for section in normalized_sections
-        if section.section_code.value in allowed_codes
-    ]
+    report.summary = _risk_summary_text(aggregated_data)
+    summary_section.heading = "요약"
+    summary_section.content = report.summary
+    distribution_section.heading = "위험도 분포 및 관리 현황"
+    distribution_section.content = _risk_management_status_text(aggregated_data)
+    high_items_section.heading = "주요 고위험 항목"
+    high_items_section.content = _risk_high_items_text(aggregated_data)
+    report.conclusion = _risk_conclusion_text(aggregated_data)
+    report.sections = [summary_section, distribution_section, high_items_section]
     return report
 
+def _management_risk_label(candidate):
+    score = candidate.get("max_risk_score")
+    if isinstance(score, int):
+        if score >= 4:
+            return "CRITICAL"
+        if score >= 3:
+            return "HIGH"
+        if score >= 2:
+            return "MEDIUM"
+        if score >= 1:
+            return "LOW"
+    return str(candidate.get("severity") or "UNKNOWN")
+
+
+def _management_judgment(candidate):
+    parts = []
+    severity = str(candidate.get("severity") or "").upper()
+    if severity == "HIGH":
+        parts.append("경영책임자 우선 검토 필요")
+    elif severity == "MEDIUM":
+        parts.append("관리 수준 점검 필요")
+    else:
+        parts.append("정기 모니터링 필요")
+    if candidate.get("pending_source_ids"):
+        parts.append("미조치 또는 승인 대기 현황 확인 필요")
+    if candidate.get("recurrence_after_action_count"):
+        parts.append("조치 이후 동일 유형 기록 재확인 필요")
+    if candidate.get("count", 0) >= 3:
+        parts.append("반복 발생 관리 기준 보완 필요")
+    return ", ".join(parts)
+
+
+def _management_review_table(aggregated_data):
+    rows = [
+        "| 구역 | 반복 위험 유형 | 위험도 | 경영책임자 판단 |",
+        "|---|---|---|---|",
+    ]
+    candidates = aggregated_data.get("anomaly_candidates") or []
+    if not candidates:
+        rows.append("| - | - | - | 반복 위험 후보 없음 |")
+        return "\n".join(rows)
+
+    for candidate in candidates[:10]:
+        rows.append(
+            "| {location} | {risk_type} | {risk} | {judgment} |".format(
+                location=str(candidate.get("location") or "-"),
+                risk_type=str(candidate.get("risk_type") or "-"),
+                risk=_management_risk_label(candidate),
+                judgment=_management_judgment(candidate),
+            )
+        )
+    return "\n".join(rows)
+
+
+def _find_section(report, code):
+    for section in report.sections:
+        if section.section_code == code or section.section_code.value == code.value:
+            return section
+    return None
+
+
+def _clean_management_text(text):
+    replacements = {
+        "책임 소재 명확화": "관리 기준 보완 필요",
+        "책임소재 명확화": "관리 기준 보완 필요",
+        "책임 소재": "관리 기준",
+        "원인 분석": "발생 경위 확인 필요",
+        "원인분석": "발생 경위 확인 필요",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
+
+
+
+def _management_default_directives(aggregated_data):
+    counts = aggregated_data.get("summary_counts") or {}
+    repeated = counts.get("repeated_risk_groups", 0)
+    high = counts.get("high_risk_records", 0)
+    pending = counts.get("pending_or_unapproved_records", 0)
+    return (
+        f"1. 안전관리부서는 반복 위험 그룹 {repeated}건에 대해 구역별 관리 기준을 재점검하고, 동일 위험 유형이 반복되지 않도록 예방관리 절차를 보완할 것.\n"
+        f"2. 현장관리자는 고위험 기록 {high}건을 우선 관리 대상으로 지정하고, 조치 완료 여부와 승인 상태를 정기적으로 확인할 것.\n"
+        f"3. 담당 부서는 미조치 또는 승인 대기 기록 {pending}건의 처리 현황을 확인하고, 지연 항목을 해소한 뒤 결과를 보고할 것.\n"
+        "4. 안전관리부서와 현장관리자는 조치 이후 동일 유형 기록이 재확인되는 구역의 조치 효과성을 점검하고 후속 관리 결과를 보고할 것."
+    )
+
+
+def _management_default_opinion(aggregated_data):
+    counts = aggregated_data.get("summary_counts") or {}
+    return (
+        "본 검토 결과, 일부 구역에서 동일 위험 유형이 반복적으로 확인됐다. "
+        f"반복 위험 그룹 {counts.get('repeated_risk_groups', 0)}건과 고위험 기록 {counts.get('high_risk_records', 0)}건은 우선 관리 대상으로 분류됐다. "
+        "각 부서는 미조치 또는 승인 대기 항목의 처리 현황을 명확히 확인하고, 반복 위험 관리 기준과 조치 이행 점검 절차를 보완할 것. "
+        "후속 조치 결과는 정해진 보고 체계에 따라 확인할 예정이다."
+    )
+def _normalize_management_review_order(report, aggregated_data):
+    review_content = _find_section(report, SectionCode.MANAGEMENT_REVIEW_CONTENT)
+    directives = _find_section(report, SectionCode.MANAGEMENT_DIRECTIVES)
+    opinion = _find_section(report, SectionCode.OVERALL_OPINION)
+    signoff = _find_section(report, SectionCode.APPROVAL_SIGNOFF)
+
+    if review_content is None:
+        review_content = ReportSection(
+            section_code=SectionCode.MANAGEMENT_REVIEW_CONTENT,
+            heading="경영책임자 검토내용",
+            content="",
+        )
+    if directives is None:
+        directives = ReportSection(
+            section_code=SectionCode.MANAGEMENT_DIRECTIVES,
+            heading="경영책임자 지시사항",
+            content="",
+        )
+    if opinion is None:
+        opinion = ReportSection(
+            section_code=SectionCode.OVERALL_OPINION,
+            heading="종합의견",
+            content=report.conclusion or "검토 결과를 종합하여 후속 관리가 필요하다.",
+        )
+    if signoff is None:
+        signoff = ReportSection(
+            section_code=SectionCode.APPROVAL_SIGNOFF,
+            heading="결재",
+            content="",
+        )
+
+    summary_counts = aggregated_data.get("summary_counts") or {}
+    detail = (
+        "\n\n위 표는 동일 구역과 동일 위험 유형이 반복 기록된 후보를 기준으로 정리한 것이다. "
+        f"반복 위험 그룹은 {summary_counts.get('repeated_risk_groups', 0)}건, "
+        f"고위험 기록은 {summary_counts.get('high_risk_records', 0)}건, "
+        f"미조치 또는 승인 대기 기록은 {summary_counts.get('pending_or_unapproved_records', 0)}건이다. "
+       
+    )
+    review_content.heading = "경영책임자 검토내용"
+    review_content.content = _management_review_table(aggregated_data) + detail
+
+    directives.heading = "경영책임자 지시사항"
+    directives.content = _management_default_directives(aggregated_data)
+    opinion.heading = "종합의견"
+    opinion.content = _management_default_opinion(aggregated_data)
+    signoff.heading = "결재"
+    signoff.content = "경영책임자: ______________________ / 검토일: ______________________ / 서명: ______________________"
+
+    report.sections = [review_content, directives, opinion, signoff]
+    report.summary = _clean_management_text(report.summary).replace("해야 한다", "할 것").replace("필요하다", "필요")
+    report.conclusion = opinion.content
+    report.title = "경영책임자 검토지시서"
+    return report
 async def risk_assessment_report_review_node(state):
-    normalized_report = _normalize_risk_assessment_report(state["generated_report"])
+    normalized_report = _normalize_risk_assessment_report(state["generated_report"], state["aggregated_data"])
     review_result = await risk_assessment_report_review_agent(
         state["aggregated_data"],
         state["analysis_result"],
@@ -252,45 +451,24 @@ async def risk_assessment_report_review_node(state):
         "review_result": review_result,
     }
 
-def build_headquarters_full():
-    graph = StateGraph(HeadquartersReportState)
-    graph.add_node("headquarters_aggregation", headquarters_aggregate_node)
-    graph.add_node("data_analysis_agent", headquarters_analyze_node)
-    graph.add_node("report_writer_agent", headquarters_write_node)
-    graph.add_node("report_review_agent", headquarters_review_node)
-    graph.add_node("retry", retry_node)
-
-    graph.add_edge(START, "headquarters_aggregation")
-    graph.add_edge("headquarters_aggregation", "data_analysis_agent")
-    graph.add_edge("data_analysis_agent", "report_writer_agent")
-    graph.add_edge("report_writer_agent", "report_review_agent")
-    graph.add_conditional_edges(
-        "report_review_agent",
-        route,
-        {"finish": END, "retry": "retry"},
-    )
-    graph.add_edge("retry", "report_writer_agent")
-    return graph.compile()
-
-
 def build_site_anomaly_full():
     graph = StateGraph(SiteAnomalyReportState)
     graph.add_node("site_anomaly_aggregation", site_anomaly_aggregate_node)
-    graph.add_node("anomaly_analysis_agent", site_anomaly_analyze_node)
-    graph.add_node("improvement_writer_agent", site_anomaly_write_node)
-    graph.add_node("site_manager_review_agent", site_anomaly_review_node)
+    graph.add_node("detailed_anomaly_analysis_agent", site_anomaly_analyze_node)
+    graph.add_node("management_review_order_writer_agent", site_anomaly_write_node)
+    graph.add_node("management_order_review_agent", site_anomaly_review_node)
     graph.add_node("retry", retry_node)
 
     graph.add_edge(START, "site_anomaly_aggregation")
-    graph.add_edge("site_anomaly_aggregation", "anomaly_analysis_agent")
-    graph.add_edge("anomaly_analysis_agent", "improvement_writer_agent")
-    graph.add_edge("improvement_writer_agent", "site_manager_review_agent")
+    graph.add_edge("site_anomaly_aggregation", "detailed_anomaly_analysis_agent")
+    graph.add_edge("detailed_anomaly_analysis_agent", "management_review_order_writer_agent")
+    graph.add_edge("management_review_order_writer_agent", "management_order_review_agent")
     graph.add_conditional_edges(
-        "site_manager_review_agent",
+        "management_order_review_agent",
         route,
         {"finish": END, "retry": "retry"},
     )
-    graph.add_edge("retry", "improvement_writer_agent")
+    graph.add_edge("retry", "management_review_order_writer_agent")
     return graph.compile()
 
 
@@ -341,10 +519,235 @@ def build_risk_assessment_report_graph():
     graph.add_edge("retry", "risk_assessment_report_writer_agent")
     return graph.compile()
 
-headquarters_full_graph = build_headquarters_full()
+
+
+def unified_preprocessing_retry_node(state):
+    return {"preprocessing_retry_count": state.get("preprocessing_retry_count", 0) + 1}
+
+
+def reset_report_retry_node(state):
+    return {"retry_count": 0}
+
+
+def route_after_unified_correction_review(
+    state,
+) -> Literal["route_report", "retry_preprocessing", "finish"]:
+    review = state["correction_review"]
+    if review.approved:
+        return "route_report"
+    if state.get("preprocessing_retry_count", 0) < state.get("max_retry_count", 2):
+        return "retry_preprocessing"
+    return "finish"
+
+
+def route_unified_report_type(
+    state,
+) -> Literal[
+    "risk_assessment_form",
+    "risk_assessment_report",
+    "site_anomaly_improvement",
+    "management_review_order",
+]:
+    report_type = state["request"].report_type
+    if report_type == "site_anomaly_improvement":
+        return "management_review_order"
+    return report_type
+
+
+def unified_report_router_node(state):
+    return {}
+
+
+def _request_with_corrected_rows(state, request_cls):
+    data = state["request"].model_dump(mode="json")
+    data["corrected_rows"] = [
+        row.model_dump(mode="json") if hasattr(row, "model_dump") else row
+        for row in state["correction_result"].corrected_rows
+    ]
+    return request_cls(**data)
+
+
+def unified_risk_assessment_form_node(state):
+    request = state["request"]
+    source_data = request.model_dump(mode="json")
+    form_path = Path(request.form_path) if request.form_path else DEFAULT_FORM_PATH
+    output_path = Path(request.output_path) if request.output_path else DEFAULT_OUTPUT_PATH
+    csv_output_path = fill_risk_assessment_form(
+        source_data,
+        state["correction_result"],
+        form_path=form_path,
+        output_path=output_path,
+    )
+    return {
+        "csv_output_path": csv_output_path,
+        "xlsx_output_path": str(resolved_xlsx_path_for(csv_output_path)),
+    }
+
+
+def unified_risk_assessment_report_aggregate_node(state):
+    request = _request_with_corrected_rows(state, RiskAssessmentReportRequest)
+    return {"aggregated_data": aggregate_risk_assessment_report_data(request)}
+
+
+def unified_site_anomaly_aggregate_node(state):
+    request = _request_with_corrected_rows(state, SiteAnomalyReportRequest)
+    return {"aggregated_data": aggregate_site_anomaly_data(request)}
+
+
+async def unified_site_anomaly_analyze_node(state):
+    return {"analysis_result": await site_anomaly_analyze_agent(state["aggregated_data"])}
+
+
+async def unified_site_anomaly_write_node(state):
+    return {
+        "generated_report": await site_anomaly_writer_agent(
+            state["aggregated_data"],
+            state["analysis_result"],
+            state.get("generated_report"),
+            state.get("review_result"),
+        )
+    }
+
+
+async def unified_site_anomaly_review_node(state):
+    normalized_report = _normalize_management_review_order(
+        state["generated_report"],
+        state["aggregated_data"],
+    )
+    return {
+        "generated_report": normalized_report,
+        "review_result": await site_anomaly_review_agent(
+            state["aggregated_data"],
+            state["analysis_result"],
+            normalized_report,
+        )
+    }
+
+
+async def unified_risk_assessment_report_analyze_node(state):
+    return {
+        "analysis_result": await risk_assessment_report_analyze_agent(
+            state["aggregated_data"]
+        )
+    }
+
+
+async def unified_risk_assessment_report_write_node(state):
+    return {
+        "generated_report": await risk_assessment_report_writer_agent(
+            state["aggregated_data"],
+            state["analysis_result"],
+            state.get("generated_report"),
+            state.get("review_result"),
+        )
+    }
+
+
+async def unified_risk_assessment_report_review_node(state):
+    normalized_report = _normalize_risk_assessment_report(state["generated_report"], state["aggregated_data"])
+    review_result = await risk_assessment_report_review_agent(
+        state["aggregated_data"],
+        state["analysis_result"],
+        normalized_report,
+    )
+    return {
+        "generated_report": normalized_report,
+        "review_result": review_result,
+    }
+
+
+def build_unified_report_graph():
+    graph = StateGraph(UnifiedReportState)
+    graph.add_node("build_final_history_table", risk_assessment_table_node)
+    graph.add_node("data_correction_agent", risk_data_correction_node)
+    graph.add_node("data_correction_review_agent", risk_data_correction_review_node)
+    graph.add_node("preprocessing_retry", unified_preprocessing_retry_node)
+    graph.add_node("reset_report_retry", reset_report_retry_node)
+    graph.add_node("report_router", unified_report_router_node)
+
+    graph.add_node("risk_assessment_form", unified_risk_assessment_form_node)
+
+    graph.add_node("risk_assessment_report_aggregation", unified_risk_assessment_report_aggregate_node)
+    graph.add_node("risk_assessment_report_analysis", unified_risk_assessment_report_analyze_node)
+    graph.add_node("risk_assessment_report_writer", unified_risk_assessment_report_write_node)
+    graph.add_node("risk_assessment_report_review", unified_risk_assessment_report_review_node)
+    graph.add_node("risk_assessment_report_retry", retry_node)
+
+    graph.add_node("site_anomaly_aggregation", unified_site_anomaly_aggregate_node)
+    graph.add_node("management_anomaly_analysis", unified_site_anomaly_analyze_node)
+    graph.add_node("management_review_order_writer", unified_site_anomaly_write_node)
+    graph.add_node("management_review_order_review", unified_site_anomaly_review_node)
+    graph.add_node("site_anomaly_retry", retry_node)
+
+    graph.add_edge(START, "build_final_history_table")
+    graph.add_edge("build_final_history_table", "data_correction_agent")
+    graph.add_edge("data_correction_agent", "data_correction_review_agent")
+    graph.add_conditional_edges(
+        "data_correction_review_agent",
+        route_after_unified_correction_review,
+        {
+            "route_report": "reset_report_retry",
+            "retry_preprocessing": "preprocessing_retry",
+            "finish": END,
+        },
+    )
+    graph.add_edge("preprocessing_retry", "data_correction_agent")
+    graph.add_edge("reset_report_retry", "report_router")
+    graph.add_conditional_edges(
+        "report_router",
+        route_unified_report_type,
+        {
+            "risk_assessment_form": "risk_assessment_form",
+            "risk_assessment_report": "risk_assessment_report_aggregation",
+            "site_anomaly_improvement": "site_anomaly_aggregation",
+            "management_review_order": "site_anomaly_aggregation",
+        },
+    )
+
+    graph.add_edge("risk_assessment_form", END)
+
+    graph.add_edge("risk_assessment_report_aggregation", "risk_assessment_report_analysis")
+    graph.add_edge("risk_assessment_report_analysis", "risk_assessment_report_writer")
+    graph.add_edge("risk_assessment_report_writer", "risk_assessment_report_review")
+    graph.add_conditional_edges(
+        "risk_assessment_report_review",
+        route,
+        {"finish": END, "retry": "risk_assessment_report_retry"},
+    )
+    graph.add_edge("risk_assessment_report_retry", "risk_assessment_report_writer")
+
+    graph.add_edge("site_anomaly_aggregation", "management_anomaly_analysis")
+    graph.add_edge("management_anomaly_analysis", "management_review_order_writer")
+    graph.add_edge("management_review_order_writer", "management_review_order_review")
+    graph.add_conditional_edges(
+        "management_review_order_review",
+        route,
+        {"finish": END, "retry": "site_anomaly_retry"},
+    )
+    graph.add_edge("site_anomaly_retry", "management_review_order_writer")
+
+    return graph.compile()
+
 site_anomaly_full_graph = build_site_anomaly_full()
 risk_assessment_form_graph = build_risk_assessment_form_graph()
 risk_assessment_report_graph = build_risk_assessment_report_graph()
+unified_report_graph = build_unified_report_graph()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

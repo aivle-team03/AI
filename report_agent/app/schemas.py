@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 class Audience(str, Enum):
     HEADQUARTERS = "HEADQUARTERS"
     SITE_MANAGER = "SITE_MANAGER"
+    MANAGEMENT_RESPONSIBLE = "MANAGEMENT_RESPONSIBLE"
     EVIDENCE = "EVIDENCE"
     RISK_ASSESSMENT_REPORT = "RISK_ASSESSMENT_REPORT"
 
@@ -27,6 +28,10 @@ class SectionCode(str, Enum):
     APPROVAL_RECORDS = "APPROVAL_RECORDS"
     RISK_ASSESSMENT_SUMMARY = "RISK_ASSESSMENT_SUMMARY"
     HIGH_RISK_ITEMS = "HIGH_RISK_ITEMS"
+    MANAGEMENT_REVIEW_CONTENT = "MANAGEMENT_REVIEW_CONTENT"
+    MANAGEMENT_DIRECTIVES = "MANAGEMENT_DIRECTIVES"
+    OVERALL_OPINION = "OVERALL_OPINION"
+    APPROVAL_SIGNOFF = "APPROVAL_SIGNOFF"
 
 
 class AnalysisFinding(BaseModel):
@@ -204,8 +209,6 @@ class RiskAssessmentFormResponse(BaseModel):
     csv_output_path: str | None = None
     xlsx_output_path: str | None = None
 
-class HeadquartersReportRequest(EvidenceContentRequest):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 class SiteAnomalyReportRequest(EvidenceContentRequest):
@@ -216,13 +219,37 @@ class RiskAssessmentReportRequest(EvidenceContentRequest):
     corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
-class HeadquartersReportResponse(BaseModel):
+
+
+ReportType = Literal[
+    "risk_assessment_form",
+    "risk_assessment_report",
+    "site_anomaly_improvement",
+    "management_review_order",
+]
+
+
+class UnifiedReportRequest(EvidenceContentRequest):
+    report_type: ReportType
+    form_path: str | None = None
+    output_path: str | None = None
+
+
+class UnifiedReportResponse(BaseModel):
     status: Literal["COMPLETED", "FAILED"]
+    report_type: ReportType
     retry_count: int
-    aggregated_data: dict[str, Any]
-    analysis_result: AnalysisResult
-    report: GeneratedReport
-    review: ReviewResult
+    preprocessing_retry_count: int
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    correction_result: RiskDataCorrectionResult
+    correction_review: RiskDataCorrectionReviewResult
+    aggregated_data: dict[str, Any] | None = None
+    analysis_result: AnalysisResult | None = None
+    report: GeneratedReport | None = None
+    review: ReviewResult | None = None
+    csv_output_path: str | None = None
+    xlsx_output_path: str | None = None
+
 
 
 class SiteAnomalyReportResponse(BaseModel):
@@ -241,6 +268,9 @@ class RiskAssessmentReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
+
+
 
 
 

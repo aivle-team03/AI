@@ -15,10 +15,12 @@ if str(PROJECT_ROOT) not in sys.path:
 from app.config import MAX_RETRY_COUNT
 from app.graph import risk_assessment_report_graph
 from app.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
+from scripts.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 
 INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_corrected.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_response.json"
 REPORT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.md"
+DOCX_REPORT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.docx"
 
 
 def _dedupe_repeated_sentences(text: str) -> str:
@@ -40,12 +42,7 @@ def _markdown(response: RiskAssessmentReportResponse) -> str:
     lines = [
         f"# {report.title}",
         "",
-        f"- 상태: {response.status}",
         f"- 기간: {report.period}",
-        f"- 검토 점수: {response.review.score}",
-        "",
-        "## 요약",
-        _dedupe_repeated_sentences(report.summary),
         "",
     ]
     for section in report.sections:
@@ -95,6 +92,11 @@ async def main() -> None:
     with RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
         json.dump(response.model_dump(mode="json"), file, ensure_ascii=False, indent=2)
     REPORT_PATH.write_text(_markdown(response), encoding="utf-8-sig")
+    docx_report_path = fill_docx_template(
+        response.model_dump(mode="json"),
+        DEFAULT_TEMPLATE_PATH,
+        DOCX_REPORT_PATH,
+    )
 
     print(json.dumps({
         "status": response.status,
@@ -103,10 +105,10 @@ async def main() -> None:
         "review_score": response.review.score,
         "response_path": str(RESPONSE_PATH),
         "report_path": str(REPORT_PATH),
+        "docx_report_path": str(docx_report_path),
     }, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     asyncio.run(main())
-
 

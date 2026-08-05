@@ -4,9 +4,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.llm import create_llm
 from app.prompts import (
-    HEADQUARTERS_DATA_ANALYSIS_PROMPT,
-    HEADQUARTERS_REPORT_REVIEW_PROMPT,
-    HEADQUARTERS_REPORT_WRITER_PROMPT,
+    COMMON_REPORT_STYLE_GUIDE,
     SITE_ANOMALY_DATA_ANALYSIS_PROMPT,
     SITE_ANOMALY_REPORT_REVIEW_PROMPT,
     SITE_ANOMALY_REPORT_WRITER_PROMPT,
@@ -26,66 +24,10 @@ from app.schemas import (
 )
 
 
-async def headquarters_analyze_agent(aggregated_data):
-    llm = create_llm().with_structured_output(AnalysisResult)
-    payload = {
-        "audience": Audience.HEADQUARTERS.value,
-        "aggregated_data": aggregated_data,
-    }
-    return await llm.ainvoke(
-        [
-            SystemMessage(content=HEADQUARTERS_DATA_ANALYSIS_PROMPT),
-            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
-        ]
-    )
-
-
-async def headquarters_writer_agent(aggregated_data, analysis, previous=None, review=None):
-    llm = create_llm().with_structured_output(GeneratedReport)
-    payload = {
-        "audience": Audience.HEADQUARTERS.value,
-        "aggregated_data": aggregated_data,
-        "analysis_result": analysis.model_dump(mode="json"),
-        "previous_report": previous.model_dump(mode="json") if previous else None,
-        "review_result": review.model_dump(mode="json") if review else None,
-    }
-    return await llm.ainvoke(
-        [
-            SystemMessage(content=HEADQUARTERS_REPORT_WRITER_PROMPT),
-            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
-        ]
-    )
-
-
-async def headquarters_review_agent(aggregated_data, analysis, report):
-    llm = create_llm().with_structured_output(ReviewResult)
-    payload = {
-        "audience": Audience.HEADQUARTERS.value,
-        "aggregated_data": aggregated_data,
-        "analysis_result": analysis.model_dump(mode="json"),
-        "report": report.model_dump(mode="json"),
-        "valid_event_ids": aggregated_data.get("source_ids", {}).get("event_ids", []),
-        "valid_inspection_history_ids": aggregated_data.get("source_ids", {}).get(
-            "inspection_history_ids",
-            [],
-        ),
-        "valid_action_history_ids": aggregated_data.get("source_ids", {}).get(
-            "action_history_ids",
-            [],
-        ),
-    }
-    return await llm.ainvoke(
-        [
-            SystemMessage(content=HEADQUARTERS_REPORT_REVIEW_PROMPT),
-            HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
-        ]
-    )
-
-
 async def site_anomaly_analyze_agent(aggregated_data):
     llm = create_llm().with_structured_output(AnalysisResult)
     payload = {
-        "audience": Audience.SITE_MANAGER.value,
+        "audience": Audience.MANAGEMENT_RESPONSIBLE.value,
         "aggregated_data": aggregated_data,
     }
     return await llm.ainvoke(
@@ -104,7 +46,7 @@ async def site_anomaly_writer_agent(
 ):
     llm = create_llm().with_structured_output(GeneratedReport)
     payload = {
-        "audience": Audience.SITE_MANAGER.value,
+        "audience": Audience.MANAGEMENT_RESPONSIBLE.value,
         "aggregated_data": aggregated_data,
         "analysis_result": analysis.model_dump(mode="json"),
         "previous_report": previous.model_dump(mode="json") if previous else None,
@@ -112,16 +54,40 @@ async def site_anomaly_writer_agent(
     }
     return await llm.ainvoke(
         [
-            SystemMessage(content=SITE_ANOMALY_REPORT_WRITER_PROMPT),
+            SystemMessage(content=COMMON_REPORT_STYLE_GUIDE + "\n\n" + SITE_ANOMALY_REPORT_WRITER_PROMPT),
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
 
 
+
+def _strip_internal_ids(value):
+    if isinstance(value, list):
+        return [_strip_internal_ids(item) for item in value]
+    if isinstance(value, dict):
+        blocked_keys = {
+            "source_ids",
+            "source_id",
+            "inspection_history_ids",
+            "inspection_history_id",
+            "action_history_ids",
+            "action_history_id",
+            "event_ids",
+            "event_id",
+            "checklist_ids",
+            "checklist_id",
+            "pending_source_ids",
+        }
+        return {
+            key: _strip_internal_ids(item)
+            for key, item in value.items()
+            if key not in blocked_keys
+        }
+    return value
 async def site_anomaly_review_agent(aggregated_data, analysis, report):
     llm = create_llm().with_structured_output(ReviewResult)
     payload = {
-        "audience": Audience.SITE_MANAGER.value,
+        "audience": Audience.MANAGEMENT_RESPONSIBLE.value,
         "aggregated_data": aggregated_data,
         "analysis_result": analysis.model_dump(mode="json"),
         "report": report.model_dump(mode="json"),
@@ -145,7 +111,7 @@ async def site_anomaly_review_agent(aggregated_data, analysis, report):
     }
     return await llm.ainvoke(
         [
-            SystemMessage(content=SITE_ANOMALY_REPORT_REVIEW_PROMPT),
+            SystemMessage(content=COMMON_REPORT_STYLE_GUIDE + "\n\n" + SITE_ANOMALY_REPORT_REVIEW_PROMPT),
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
@@ -223,7 +189,7 @@ async def risk_assessment_report_writer_agent(
     }
     return await llm.ainvoke(
         [
-            SystemMessage(content=RISK_ASSESSMENT_REPORT_WRITER_PROMPT),
+            SystemMessage(content=COMMON_REPORT_STYLE_GUIDE + "\n\n" + RISK_ASSESSMENT_REPORT_WRITER_PROMPT),
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
@@ -248,7 +214,13 @@ async def risk_assessment_report_review_agent(aggregated_data, analysis, report)
     }
     return await llm.ainvoke(
         [
-            SystemMessage(content=RISK_ASSESSMENT_REPORT_REVIEW_PROMPT),
+            SystemMessage(content=COMMON_REPORT_STYLE_GUIDE + "\n\n" + RISK_ASSESSMENT_REPORT_REVIEW_PROMPT),
             HumanMessage(content=json.dumps(payload, ensure_ascii=False, indent=2)),
         ]
     )
+
+
+
+
+
+

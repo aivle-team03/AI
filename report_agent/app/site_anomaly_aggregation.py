@@ -217,9 +217,9 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
                 "recurrence_after_action_count": recurrence_after_action_count,
                 "why_flagged": "; ".join(reasons),
                 "field_check_points": [
-                    "Confirm whether the same hazard remains at the same location.",
-                    "Check whether previous corrective action prevented recurrence.",
-                    "Confirm delayed action or approval items with the site manager.",
+                    "동일 장소에 동일 위험요인이 남아 있는지 확인합니다.",
+                    "기존 조치 이후 재발 방지 효과가 있었는지 확인합니다.",
+                    "지연된 조치 또는 승인 대기 항목을 담당자와 확인합니다.",
                 ],
             }
         )
@@ -253,9 +253,9 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         "site_context": {
             "company": req.company or {},
             "period": _period(inspection_rows),
-            "audience": "SITE_MANAGER",
-            "report_type": "ANOMALY_IMPROVEMENT_RECOMMENDATION",
-            "data_source": "final_history_table_corrected.corrected_rows",
+            "audience": "MANAGEMENT_RESPONSIBLE",
+            "report_type": "MANAGEMENT_REVIEW_ORDER",
+            "data_source": "preprocessed_final_history_rows.corrected_rows",
         },
         "summary_counts": {
             "total_records": len(rows),
@@ -295,7 +295,8 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         },
         "constraints": {
             "do_not_infer_root_cause": True,
-            "recommend_only_site_level_actions": True,
+            "recommend_management_level_directives": True,
             "require_source_id_basis": True,
         },
     }
+

@@ -157,9 +157,11 @@ def _high_risk_item(row: dict[str, Any]) -> dict[str, Any]:
 def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> dict[str, Any]:
     rows = _rows(req)
     inspection_rows = [row for row in rows if row.get("inspection_history_id")]
-    action_rows = [row for row in rows if _has_action(row)]
-    completed_action_rows = [row for row in action_rows if _action_completed(row)]
-    approved_action_rows = [row for row in action_rows if _approval_completed(row)]
+    # 위험성평가보고서는 평가 항목 기준으로 KPI를 계산한다.
+    # board/event 조치 이력 행을 섞으면 평가 10건보다 조치 건수가 커지는 모순이 생긴다.
+    action_rows = [row for row in inspection_rows if _has_action(row)]
+    completed_action_rows = [row for row in inspection_rows if _action_completed(row)]
+    approved_action_rows = [row for row in inspection_rows if _approval_completed(row)]
     unaddressed_inspection_rows = [row for row in inspection_rows if not _has_action(row)]
 
     daily_counts: Counter = Counter()
@@ -227,9 +229,9 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             "high_or_critical_risk_rate": _round_rate(len(high_risk_rows), len(inspection_rows)),
             "action_total": len(action_rows),
             "action_completed": len(completed_action_rows),
-            "action_completion_rate": _round_rate(len(completed_action_rows), len(action_rows)),
+            "action_completion_rate": _round_rate(len(completed_action_rows), len(inspection_rows)),
             "approval_completed": len(approved_action_rows),
-            "approval_completion_rate": _round_rate(len(approved_action_rows), len(action_rows)),
+            "approval_completion_rate": _round_rate(len(approved_action_rows), len(inspection_rows)),
             "unaddressed_assessment_records": len(unaddressed_inspection_rows),
             "unaddressed_high_risk_records": len(unresolved_high_risk_rows),
         },
@@ -273,3 +275,4 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             "do_not_infer_root_cause": True,
         },
     }
+
