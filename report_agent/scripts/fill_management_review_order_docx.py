@@ -102,6 +102,18 @@ def _value_map(response: dict) -> dict[str, str]:
 def _xml_text(value: str) -> str:
     return escape(str(value)).replace("\n", "</w:t><w:br/><w:t>")
 
+def _plain_xml_text(xml: str) -> str:
+    return re.sub(r"<[^>]+>", "", xml)
+
+
+def _normalize_split_placeholders(document_xml: str) -> str:
+    def replace(match: re.Match) -> str:
+        key = _plain_xml_text(match.group(0)).replace("{{", "").replace("}}", "")
+        key = re.sub(r"\s+", "", key)
+        return "{{" + key + "}}"
+
+    return re.sub(r"\{\{[\s\S]*?\}\}", replace, document_xml)
+
 
 def _anomaly_value(item: dict, key: str) -> str:
     if key == "severity":
@@ -160,6 +172,7 @@ def fill_docx_template(response: dict, template_path: Path, output_path: Path) -
             data = zin.read(item.filename)
             if item.filename.startswith("word/") and item.filename.endswith(".xml"):
                 text = data.decode("utf-8", errors="ignore")
+                text = _normalize_split_placeholders(text)
                 if item.filename == "word/document.xml":
                     text = _expand_repeated_rows(text, response)
 
@@ -188,5 +201,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
