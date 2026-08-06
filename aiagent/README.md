@@ -26,7 +26,7 @@
 Windows PowerShell에서 프로젝트 폴더로 이동한 후 가상환경을 생성합니다.
 
 ```powershell
-cd ai
+cd ai\aiagent
 
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -48,7 +48,7 @@ Copy-Item .env.example .env
 OPENAI_API_KEY="실제 OpenAI API 키"
 OPENAI_MODEL="gpt-4o-mini"
 AGENT_READ_DATABASE_URL="팀 공용 AI 읽기 전용 DB URL"
-AGENT_READ_DB_SSL_CA="../backend/ca.pem"
+AGENT_READ_DB_SSL_CA="../../backend/ca.pem"
 LAW_API_OC="실제 국가법령정보 API 인증값"
 ```
 
