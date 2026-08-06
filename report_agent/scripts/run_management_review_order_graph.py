@@ -13,14 +13,15 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.graph import unified_report_graph
+from app.management.graph import management_review_order_graph
 from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
-from app.schemas import UnifiedReportRequest, UnifiedReportResponse
+from app.management.schemas import UnifiedReportRequest, UnifiedReportResponse
 
 INPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_graph_response.json"
-RESPONSE_PATH = PROJECT_ROOT / "output" / "management_review_order_response.json"
-REPORT_PATH = PROJECT_ROOT / "output" / "management_review_order.md"
-DOCX_REPORT_PATH = PROJECT_ROOT / "output" / "management_review_order.docx"
+OUTPUT_DIR = PROJECT_ROOT / "output" / "management_reports"
+RESPONSE_PATH = OUTPUT_DIR / "management_review_order_response.json"
+REPORT_PATH = OUTPUT_DIR / "management_review_order.md"
+DOCX_REPORT_PATH = OUTPUT_DIR / "management_review_order.docx"
 
 
 def _markdown(response: UnifiedReportResponse) -> str:
@@ -52,7 +53,7 @@ async def main() -> None:
         payload = json.load(file)
 
     request = UnifiedReportRequest(**payload, report_type="management_review_order")
-    result = await unified_report_graph.ainvoke(
+    result = await management_review_order_graph.ainvoke(
         {
             "request": request,
             "retry_count": 0,

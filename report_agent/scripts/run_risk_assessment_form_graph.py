@@ -12,14 +12,19 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.graph import risk_assessment_form_graph
-from app.schemas import RiskAssessmentFormRequest, RiskAssessmentFormResponse
+from app.risk_assessment_form_graph.graph import risk_assessment_form_graph
+from app.risk_assessment_form_graph.schemas import (
+    RiskAssessmentFormRequest,
+    RiskAssessmentFormResponse,
+)
 
 # INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
 INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
-DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_graph_response.json"
-DEFAULT_CSV_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_filled.csv"
-TIMEOUT_SECONDS = 180
+OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_form"
+DEFAULT_RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_form_graph_response.json"
+DEFAULT_CSV_PATH = OUTPUT_DIR / "risk_assessment_form_filled.csv"
+TIMEOUT_SECONDS = int(os.getenv("RISK_FORM_TIMEOUT_SECONDS", "1200"))
+CORRECTION_BATCH_SIZE = int(os.getenv("RISK_FORM_CORRECTION_BATCH_SIZE", "10"))
 
 
 async def run_graph(request):
@@ -65,6 +70,7 @@ async def main():
 
     request = RiskAssessmentFormRequest(
         **payload,
+        correction_batch_size=CORRECTION_BATCH_SIZE,
         output_path=str(DEFAULT_CSV_PATH),
     )
 
@@ -81,6 +87,8 @@ async def main():
     response = RiskAssessmentFormResponse(
         status="COMPLETED" if review_result.approved and csv_output_path else "FAILED",
         retry_count=result.get("retry_count", 0),
+        correction_batch_size=result.get("correction_batch_size"),
+        correction_batch_count=result.get("correction_batch_count"),
         final_history_rows=result.get("final_history_rows", []),
         correction_result=result["correction_result"],
         correction_review=review_result,
@@ -95,6 +103,8 @@ async def main():
     print(json.dumps({
         "status": response.status,
         "retry_count": response.retry_count,
+        "correction_batch_size": response.correction_batch_size,
+        "correction_batch_count": response.correction_batch_count,
         "rows": len(response.correction_result.corrected_rows),
         "corrections": len(response.correction_result.correction_notes),
         "review_approved": response.correction_review.approved,
