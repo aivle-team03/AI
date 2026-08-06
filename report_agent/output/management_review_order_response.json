@@ -1,7 +1,7 @@
 ﻿{
   "status": "COMPLETED",
   "report_type": "management_review_order",
-  "retry_count": 1,
+  "retry_count": 0,
   "preprocessing_retry_count": 0,
   "final_history_rows": [
     {
@@ -685,7 +685,138 @@
     "approved": true,
     "final_decision": "APPROVED",
     "score": 100,
-    "issues": [],
+    "issues": [
+      {
+        "row_index": 0,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "Action is required for this inspection.",
+        "corrected_text": "본 점검에 대해 조치가 필요합니다.",
+        "message": "수정문이 원문 의미를 유지하였으나, 문체를 더 공식적이고 간결하게 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 1,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "점검자 메모프로세스 확인용",
+        "corrected_text": "점검자 메모 프로세스 확인용입니다.",
+        "message": "띄어쓰기 및 문장 종결 표현을 정리하여 문체를 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 1,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "점검조치프로세스 항목",
+        "corrected_text": "점검 조치 프로세스 항목",
+        "message": "띄어쓰기를 추가하여 문체를 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 2,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "Action is required for this inspection.",
+        "corrected_text": "본 점검에 대해 조치가 필요합니다.",
+        "message": "문체를 공식적이고 간결하게 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 4,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "보호구 불량",
+        "corrected_text": "보호구 불량입니다.",
+        "message": "문장 종결 표현을 추가하여 문체를 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 5,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "Action is required for this inspection.",
+        "corrected_text": "본 점검에 대해 조치가 필요합니다.",
+        "message": "문체를 공식적이고 간결하게 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 8,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치",
+        "corrected_text": "조치가 필요합니다.",
+        "message": "문장 종결 표현을 추가하여 문체를 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 9,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "비상 통로 확보 양호",
+        "corrected_text": "비상 통로 확보 상태가 양호합니다.",
+        "message": "문장 종결 표현과 상태 설명을 추가하여 문체를 개선함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 10,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치 필요합니다.",
+        "corrected_text": "조치가 필요합니다.",
+        "message": "문장 종결 표현을 더 자연스럽게 수정함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 11,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
+        "corrected_text": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요합니다.",
+        "message": "문장 종결 표현과 문장 구조를 개선하여 문체를 공식적으로 만듦.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 12,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "리포트가 이상해요",
+        "corrected_text": "리포트가 이상합니다.",
+        "message": "구어체 표현을 공식적 문체로 수정함.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 13,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "게시판-조치테이블-담당자배정-report 생성",
+        "corrected_text": "게시판 - 조치 테이블 담당자 배정 및 리포트 생성",
+        "message": "띄어쓰기 및 문장 연결을 개선하여 문체를 공식적으로 만듦.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      },
+      {
+        "row_index": 14,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
+        "corrected_text": "조치 이름이 Action_name에 들어가는지 확인",
+        "message": "띄어쓰기 및 문장 연결을 개선하여 문체를 공식적으로 만듦.",
+        "recommendation": "수정은 적절하며 안전 보고서 문체에 부합함."
+      }
+    ],
     "items_requiring_revision": []
   },
   "aggregated_data": {
@@ -1161,7 +1292,7 @@
       "B동 자재창고 구역에서 '적재물' 위험유형이 2회 반복 발생하였고, 이 또한 미조치 및 미승인 상태로 남아 있음.",
       "고위험 등급인 '화재 감지' 위험이 집과 기석님 집에서 각각 발생하였으나, 두 건 모두 조치 및 승인 절차가 완료되지 않아 즉각적인 대응 필요.",
       "전체 17건 중 9건이 조치 완료 또는 승인 대기 상태로, 미완료 조치가 다수 존재하여 위험 관리 체계의 신속한 개선이 요구됨.",
-      "동일 장소 및 위험유형 반복 발생에도 불구하고 조치가 이루어지지 않아 재발 가능성이 높으며, 관리 체계 전반에 대한 점검과 개선 지시가 필요함."
+      "동일 위험유형 및 장소에서 반복 발생하는 이상패턴은 기존 조치의 실효성 부족과 관리 체계 점검 필요성을 시사함."
     ],
     "findings": [
       {
@@ -1185,12 +1316,12 @@
           "2026-07-29T05:43:54|B동 자재창고|적재물"
         ],
         "evidence_ids": [],
-        "severity": "LOW"
+        "severity": "MEDIUM"
       },
       {
         "finding_type": "PRIORITY",
         "title": "고위험 화재 감지 위험 미조치 및 미승인 상태",
-        "description": "집과 기석님 집에서 발생한 '화재 감지' 위험 2건이 고위험으로 분류되었으나, 조치 및 승인 절차가 모두 완료되지 않아 즉각적인 경영진 개입이 필요함.",
+        "description": "집과 기석님 집에서 발생한 '화재 감지' 위험 2건이 고위험으로 분류되었으나, 조치 및 승인 절차가 모두 완료되지 않아 즉각적인 경영책임자 검토 및 지시가 필요함.",
         "related_event_ids": [
           "2026-08-03T09:00:00|집|화재 감지",
           "2026-08-03T09:00:00|기석님 집|화재 감지"
@@ -1201,7 +1332,7 @@
       {
         "finding_type": "UNRESOLVED",
         "title": "미완료 조치 및 승인 대기 다수 존재",
-        "description": "전체 17건 중 9건이 조치 완료 또는 승인 대기 상태로, 특히 반복 위험 발생 구역에서 미조치 사례가 집중되어 있어 위험 관리 체계의 신속한 개선이 요구됨.",
+        "description": "전체 17건 중 9건이 조치 완료 또는 승인 대기 상태로, 특히 반복 위험 발생 구역에서 미조치 사례가 집중되어 있어 위험 노출 기간이 길어지고 있음.",
         "related_event_ids": [
           "2026-08-01T11:45:00|C동 하역장|충돌",
           "2026-08-03T00:00:00|B동 자재창고|적재물",
@@ -1213,14 +1344,14 @@
       }
     ],
     "recommended_actions": [
-      "C동 하역장과 B동 자재창고에서 반복 발생하는 위험 유형에 대해 즉각적인 조치 및 승인 절차를 완료하도록 지시하고, 재발 방지 대책 수립을 요구할 것.",
-      "고위험 화재 감지 위험에 대해 신속한 대응 체계를 마련하고, 조치 및 승인 지연 원인을 분석하여 개선 방안을 마련할 것.",
-      "미조치 및 미승인 상태인 점검 건에 대해 전사적 관리 체계 점검을 실시하고, 조치 이행 및 승인 프로세스의 효율성 강화를 위한 관리 감독을 강화할 것.",
-      "동일 위험 유형 및 장소에서 반복 발생하는 사례에 대해 근본적 원인 분석 없이도 관리 체계 개선을 위한 경영진 차원의 지시 및 점검 강화가 필요함.",
-      "정기 점검 및 조치 이력에 대한 모니터링 시스템을 강화하여 조치 완료 후 재발 여부를 지속적으로 확인하고, 미조치 사례에 대한 신속한 후속 조치를 지시할 것."
+      "C동 하역장과 B동 자재창고에서 반복 발생하는 위험 유형에 대해 조치 및 승인 절차를 신속히 완료하도록 지시하고, 재발 방지 대책의 실효성을 검토하라.",
+      "고위험 화재 감지 위험에 대해 즉각적인 조치 및 승인 절차를 완료하고, 관련 안전관리 프로세스의 점검 및 보완을 지시하라.",
+      "미조치 및 승인 대기 상태인 위험 항목에 대해 우선순위를 부여하여 신속한 대응을 독려하고, 조치 지연 원인에 대한 관리 체계 점검을 실시하라.",
+      "동일 위험유형 및 장소에서 반복 발생하는 이상패턴을 근본적으로 해소하기 위한 위험 관리 체계 개선 방안을 마련하고, 정기적인 모니터링 체계를 강화하라.",
+      "경영책임자 주관으로 위험 발생 구역별 조치 현황 및 승인 절차 이행 상태를 주기적으로 검토하는 관리 프로세스를 수립하라."
     ],
     "data_limitations": [
-      "조치명과 조치내용이 대부분 미기재되어 있어 구체적인 조치 상태 및 내용 분석에 한계가 있음.",
+      "조치명과 조치내용이 대부분 미기재되어 있어 구체적인 조치 이행 상태 및 효과 분석에 한계가 있음.",
       "승인자 정보가 부재하여 승인 지연 원인 및 책임 소재 파악이 어려움.",
       "일부 기록에 event_id, action_history_id, inspection_history_id가 제공되지 않아 상세 추적에 제한이 있음."
     ]
@@ -1229,7 +1360,7 @@
     "title": "경영책임자 검토지시서",
     "audience": "MANAGEMENT_RESPONSIBLE",
     "period": "2026-07-28 ~ 2026-08-03",
-    "summary": "C동 하역장과 B동 자재창고에서 동일 위험 유형이 반복 발생하고 있으며, 모두 미조치 및 미승인 상태로 위험 노출이 지속되고 있다. 집과 기석님 집에서 발생한 고위험 화재 감지 위험도 조치 및 승인 절차가 완료되지 않아 즉각적인 대응이 필요. 전체 점검 건 중 다수가 조치 및 승인 대기 상태로, 전사적 관리 체계의 신속한 개선과 점검 강화가 요구된다.",
+    "summary": "C동 하역장과 B동 자재창고에서 동일 위험유형이 반복 발생하고 있으며, 모두 미조치 및 미승인 상태로 위험 노출이 지속되고 있다. 특히 집과 기석님 집에서 발생한 고위험 화재 감지 위험도 즉각적인 조치가 필요. 전체 17건 중 9건이 조치 및 승인 대기 상태로 신속한 위험 관리 체계 개선이 요구된다. 반복 위험 발생 구역에 대한 조치 실효성 검토와 관리 프로세스 강화가 필요.",
     "sections": [
       {
         "section_code": "MANAGEMENT_REVIEW_CONTENT",
@@ -1241,14 +1372,14 @@
       {
         "section_code": "MANAGEMENT_DIRECTIVES",
         "heading": "경영책임자 지시사항",
-        "content": "1. C동 하역장과 B동 자재창고에서 반복 발생하는 위험 유형에 대해 즉각적인 조치 및 승인 절차를 완료할 것.\n\n2. 고위험 화재 감지 위험에 대해 신속한 대응 체계를 마련하고, 조치 및 승인 절차를 지체 없이 이행할 것.\n\n3. 미조치 및 미승인 상태인 점검 건에 대해 전사적 관리 체계를 점검하고, 조치 이행 및 승인 프로세스의 효율성을 강화할 것.\n\n4. 동일 위험 유형 및 장소에서 반복 발생하는 사례에 대해 관리 체계 개선과 점검을 강화할 것.\n\n5. 정기 점검 및 조치 이력에 대한 모니터링 시스템을 강화하여 조치 완료 후 재발 여부를 지속적으로 확인하고, 미조치 사례에 대해 신속한 후속 조치를 실시할 것.",
+        "content": "1. C동 하역장과 B동 자재창고에서 반복 발생하는 위험 유형에 대해 조치 및 승인 절차를 신속히 완료할 것.\n2. 고위험 화재 감지 위험에 대해 즉각적인 조치 및 승인 절차를 완료하고, 관련 안전관리 프로세스의 점검 및 보완을 실시할 것.\n3. 미조치 및 승인 대기 상태인 위험 항목에 대해 우선순위를 부여하여 신속한 대응을 독려할 것.\n4. 동일 위험유형 및 장소에서 반복 발생하는 이상패턴 해소를 위한 위험 관리 체계 개선 방안을 마련하고, 정기적인 모니터링 체계를 강화할 것.\n5. 위험 발생 구역별 조치 현황 및 승인 절차 이행 상태를 주기적으로 검토하는 관리 프로세스를 수립할 것.",
         "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "OVERALL_OPINION",
         "heading": "종합의견",
-        "content": "C동 하역장과 B동 자재창고에서 동일 위험 유형이 반복 발생하고 있으며, 미조치 및 미승인 상태가 지속되어 위험 노출이 심각하다. 고위험 화재 감지 위험도 조치 및 승인 절차가 완료되지 않아 즉각적인 대응이 필요하다. 전체 점검 건 중 다수가 조치 및 승인 대기 상태임을 확인하였다. 반복 위험 발생 구역에 대해 관리 체계 개선과 재발 방지 대책 수립을 최우선 과제로 삼는다. 정기 점검 및 조치 이력 모니터링을 강화하여 재발 방지를 위한 관리 감독을 지속한다.",
+        "content": "본 검토 결과 C동 하역장과 B동 자재창고에서 반복적으로 발생하는 위험 유형에 대해 조치 및 승인 절차가 미완료되어 위험 노출이 지속되고 있다. 고위험 화재 감지 위험도 즉각적인 대응이 필요하다. 미조치 및 승인 대기 항목이 다수 존재하는 점을 고려하여 위험 관리 체계의 신속한 개선과 재발 방지 대책의 실효성 검토를 우선 추진한다. 반복 위험 발생 구역에 대한 정기적인 모니터링과 관리 프로세스 수립을 통해 위험 노출을 최소화하겠다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
@@ -1260,9 +1391,9 @@
         "evidence_ids": []
       }
     ],
-    "conclusion": "C동 하역장과 B동 자재창고에서 동일 위험 유형이 반복 발생하고 있으며, 미조치 및 미승인 상태가 지속되어 위험 노출이 심각하다. 고위험 화재 감지 위험도 조치 및 승인 절차가 완료되지 않아 즉각적인 대응이 필요하다. 전체 점검 건 중 다수가 조치 및 승인 대기 상태임을 확인하였다. 반복 위험 발생 구역에 대해 관리 체계 개선과 재발 방지 대책 수립을 최우선 과제로 삼는다. 정기 점검 및 조치 이력 모니터링을 강화하여 재발 방지를 위한 관리 감독을 지속한다.",
+    "conclusion": "본 검토 결과 C동 하역장과 B동 자재창고에서 반복적으로 발생하는 위험 유형에 대해 조치 및 승인 절차가 미완료되어 위험 노출이 지속되고 있다. 고위험 화재 감지 위험도 즉각적인 대응이 필요하다. 미조치 및 승인 대기 항목이 다수 존재하는 점을 고려하여 위험 관리 체계의 신속한 개선과 재발 방지 대책의 실효성 검토를 우선 추진한다. 반복 위험 발생 구역에 대한 정기적인 모니터링과 관리 프로세스 수립을 통해 위험 노출을 최소화하겠다.",
     "limitations": [
-      "조치명과 조치내용이 대부분 미기재되어 있어 구체적인 조치 상태 및 내용 분석에 한계가 있음.",
+      "조치명과 조치내용이 대부분 미기재되어 구체적인 조치 이행 상태 및 효과 분석에 한계가 있음.",
       "승인자 정보가 부재하여 승인 지연 원인 및 책임 소재 파악이 어려움.",
       "일부 기록에 event_id, action_history_id, inspection_history_id가 제공되지 않아 상세 추적에 제한이 있음."
     ]
