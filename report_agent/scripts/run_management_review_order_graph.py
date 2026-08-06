@@ -17,7 +17,7 @@ from app.graph import unified_report_graph
 from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 from app.schemas import UnifiedReportRequest, UnifiedReportResponse
 
-INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_graph_response.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "management_review_order_response.json"
 REPORT_PATH = PROJECT_ROOT / "output" / "management_review_order.md"
 DOCX_REPORT_PATH = PROJECT_ROOT / "output" / "management_review_order.docx"

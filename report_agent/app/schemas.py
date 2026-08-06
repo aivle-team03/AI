@@ -223,6 +223,7 @@ ReportType = Literal[
 
 class UnifiedReportRequest(EvidenceContentRequest):
     report_type: ReportType
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
     form_path: str | None = None
     output_path: str | None = None
 
