@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 snapshots/
 .venv/
+.DS_Store
+test5.mp4
+test6.mp4
