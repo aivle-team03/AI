@@ -75,7 +75,7 @@ CAMERAS = {
     # 💡 1대의 카메라로 소화기와 소화전 모델을 각각 적용하는 설정 예시
     "extinguisher-01": CameraConfig(
         camera_id="extinguisher-01",
-        source=BASE_DIR / "test3.mp4",
+        source=BASE_DIR / "test6.mp4",
         category_name="소화장비 점검",
         detector="extinguisher",
         cctv_id=1,           # 실제 DB에 존재하는 cctv_id
