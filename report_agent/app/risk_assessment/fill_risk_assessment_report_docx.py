@@ -9,10 +9,10 @@ from datetime import datetime
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_template.docx"
-DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_response.json"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.docx"
+DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_reports" / "risk_assessment_report_response.json"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_reports" / "risk_assessment_report.docx"
 
 
 def _section_content(report: dict, section_code: str) -> str:
@@ -211,6 +211,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
 

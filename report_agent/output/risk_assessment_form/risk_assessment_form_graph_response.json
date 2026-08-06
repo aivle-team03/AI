@@ -1,6 +1,6 @@
 ﻿{
   "status": "COMPLETED",
-  "retry_count": 0,
+  "retry_count": 1,
   "correction_batch_size": 10,
   "correction_batch_count": 2,
   "final_history_rows": [
@@ -561,7 +561,7 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_21_20260803101823659726_cdfaccd8.png",
         "action_name": "worker10 조치",
-        "action_location": ",",
+        "action_location": null,
         "completed_at": "2026-08-03T10:18:24",
         "handler_name": "작업자10",
         "content": null,
@@ -705,7 +705,7 @@
   "correction_review": {
     "approved": true,
     "final_decision": "APPROVED",
-    "score": 95,
+    "score": 100,
     "issues": [
       {
         "row_index": 4,
@@ -714,28 +714,8 @@
         "category": "REPORT_STYLE",
         "original_text": "보호구 불량",
         "corrected_text": "보호구 불량으로 확인됐다.",
-        "message": "원문에 없는 '확인됐다'라는 표현이 추가되어 사실을 추측하거나 판단하는 뉘앙스를 줄 수 있습니다.",
-        "recommendation": "객관적이고 간결한 보고서 문체를 위해 '확인됐다'를 삭제하거나 원문과 동일한 표현으로 수정하는 것이 좋습니다."
-      },
-      {
-        "row_index": 10,
-        "field": "inspection_content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "조치 필요합니다.",
-        "corrected_text": "조치가 필요하다.",
-        "message": "수정된 문장은 원문의 의미를 유지하면서 보고서 문체에 더 적합한 간결한 표현으로 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 유지하세요."
-      },
-      {
-        "row_index": 11,
-        "field": "inspection_content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
-        "corrected_text": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요하다.",
-        "message": "수정된 문장은 원문의 의미를 보존하며, 보고서 문체에 적합한 문장으로 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 유지하세요."
+        "message": "원문에 없는 '확인됐다'라는 표현이 추가되어 다소 추측성 또는 판단이 포함된 문장으로 보일 수 있습니다. 위험성평가표에는 간결하고 객관적인 표현이 더 적합합니다.",
+        "recommendation": "원문의 간결한 표현을 유지하거나 '확인됐다' 대신 더 객관적인 표현으로 수정하는 것이 좋습니다."
       },
       {
         "row_index": 12,
@@ -744,8 +724,8 @@
         "category": "REPORT_STYLE",
         "original_text": "리포트가 이상해요",
         "corrected_text": "리포트가 이상하다",
-        "message": "수정된 문장은 구어체를 제거하고 보고서 문체에 적합한 표현으로 변경되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 유지하세요."
+        "message": "구어체 '이상해요'를 더 공식적인 '이상하다'로 수정한 점은 적절하나, '이상하다' 표현이 다소 모호하여 위험성평가표 문서에 적합한지 검토 필요.",
+        "recommendation": "가능하면 '이상하다' 대신 구체적인 문제점을 명확히 기술하는 것이 바람직합니다."
       },
       {
         "row_index": 13,
@@ -754,8 +734,8 @@
         "category": "REPORT_STYLE",
         "original_text": "게시판-조치테이블-담당자배정-report 생성",
         "corrected_text": "게시판-조치테이블-담당자 배정 리포트 생성",
-        "message": "띄어쓰기 및 문장 구성 개선으로 보고서 문체에 적합하게 수정되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 유지하세요."
+        "message": "띄어쓰기 및 문장 구성 개선은 적절하나, '게시판-조치테이블-담당자 배정 리포트 생성' 문구가 다소 비공식적이고 모호할 수 있음.",
+        "recommendation": "더 명확하고 간결한 표현으로 수정하는 것을 권장합니다."
       },
       {
         "row_index": 14,
@@ -764,12 +744,12 @@
         "category": "REPORT_STYLE",
         "original_text": "조치 이름 Action_name에 들어가는 지 확인",
         "corrected_text": "조치 이름이 Action_name에 들어가는지 확인",
-        "message": "띄어쓰기 및 문장 구성 개선으로 보고서 문체에 적합하게 수정되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 유지하세요."
+        "message": "띄어쓰기 및 문장 종결 표현 개선은 적절하나, 문장이 다소 구어체 느낌이 남아 있음.",
+        "recommendation": "더 공식적이고 간결한 문장으로 다듬는 것을 권장합니다."
       }
     ],
     "items_requiring_revision": []
   },
-  "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
-  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
+  "csv_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
+  "xlsx_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
 }

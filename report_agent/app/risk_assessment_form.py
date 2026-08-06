@@ -18,7 +18,7 @@ DATA_START_ROW_INDEX = 8
 COLUMN_COUNT = 25
 DEFAULT_FORM_PATH = Path(r"C:\Users\User\Downloads\위험성평가표 - 시트1.csv")
 DEFAULT_XLSX_TEMPLATE_PATH = Path(r"C:\Users\User\Downloads\위험성평가표_양식.xlsx")
-DEFAULT_OUTPUT_PATH = Path("output/risk_assessment_form_filled.csv")
+DEFAULT_OUTPUT_PATH = Path("output/risk_assessment_form/risk_assessment_form_filled.csv")
 
 COLUMN_WIDTHS = {
     1: 18,

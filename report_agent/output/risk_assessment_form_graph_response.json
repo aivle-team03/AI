@@ -686,6 +686,6 @@
     "issues": [],
     "items_requiring_revision": []
   },
-  "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form_filled.csv",
-  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form_filled.xlsx"
+  "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
+  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
 }
