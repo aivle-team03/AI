@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+python-dotenv
+redis
+tenacity
+cloudinary
+google-auth
+PyMuPDF
+pypdf
+python-pptx
+imageio-ffmpeg
