@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from urllib.error import URLError
-from urllib.request import Request, urlopen
+from urllib.request import Request as UrlRequest, urlopen
 
 import cv2
 import numpy as np
@@ -34,9 +34,9 @@ SNAPSHOT_DIR = BASE_DIR / "snapshots"
 EVENT_STATE_PATH = SNAPSHOT_DIR / "event_cooldowns.json"
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
-EVENT_COOLDOWN_SECONDS = int(os.getenv("AI_EVENT_COOLDOWN_SECONDS", "300"))
+EVENT_COOLDOWN_SECONDS = int(os.getenv("AI_EVENT_COOLDOWN_SECONDS", "60"))
 # 💡 소화장비 자동 점검 주기 (기본 7200초 = 2시간 / 테스트 시 짧게 변경 가능)
-INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "7200"))
+INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "60"))
 
 
 @dataclass(frozen=True)
@@ -63,8 +63,8 @@ CAMERAS = {
     ),
     # 💡 소화기/소화전 점검용 카메라 추가
     "extinguisher-01": CameraConfig(
-        "extinguisher-01", BASE_DIR / "test3.mp4", BASE_DIR / "extinguisher_best.pt",
-        "소화장비 미감지", "extinguisher", 3, 1000008, sample_fps=1.0,
+        "extinguisher-01", BASE_DIR / "test3.mp4", BASE_DIR / "fire extinguisher_best_v1.pt",
+        "소화장비 미감지", "extinguisher", 1, 1000008, sample_fps=1.0,
     ),
 }
 
@@ -124,16 +124,19 @@ def send_backend_event(config: CameraConfig, snapshot_url: str) -> None:
         '{"cctv_id": %d, "category_id": %d, "image_url": "%s"}'
         % (config.cctv_id, config.category_id, snapshot_url)
     ).encode("utf-8")
-    request = Request(
-        f"{BACKEND_URL}/api/ai/events", data=payload,
-        headers={"Content-Type": "application/json"}, method="POST",
+    
+    # 💡 Request -> UrlRequest 로 변경
+    request = UrlRequest(
+        f"{BACKEND_URL}/api/monitoring/events", 
+        data=payload,
+        headers={"Content-Type": "application/json"}, 
+        method="POST"
     )
     try:
         with urlopen(request, timeout=5) as response:
             print(f"백엔드 이벤트 저장 완료: {config.camera_id} ({response.status})", flush=True)
     except (URLError, TimeoutError) as error:
         print(f"백엔드 이벤트 저장 실패 [{config.camera_id}]: {error}", flush=True)
-
 
 def publish_event(config: CameraConfig, confidence: float, source_time: float, snapshot: bytes) -> None:
     global _next_event_id
