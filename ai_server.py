@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import os
+import asyncio
 import threading
 import time
 import json
@@ -21,7 +22,8 @@ from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import cv2
-from fastapi import FastAPI, HTTPException, Query
+import numpy as np
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, StreamingResponse
 from ultralytics import YOLO
@@ -233,6 +235,7 @@ def annotate_forklift(frame: Any, result: Any) -> tuple[Any, bool]:
 class CameraWorker:
     config: CameraConfig
     latest_jpeg: bytes | None = None
+    frame_version: int = 0
     running: bool = False
     thread: threading.Thread | None = None
     lock: threading.Lock = field(default_factory=threading.Lock)
@@ -250,7 +253,8 @@ class CameraWorker:
 
     def reset(self) -> None:
         with self.lock:
-            self.latest_jpeg = None
+            # 현재 프레임은 새 첫 프레임이 준비될 때까지 유지한다. 상세 화면에서
+            # 돌아오거나 데모를 재시작할 때 검은 화면이 보이지 않게 하기 위함이다.
             self.consecutive_hits = 0
             self.emitted_in_session = False
             self.reset_requested = True
@@ -290,6 +294,7 @@ class CameraWorker:
             if ok:
                 with self.lock:
                     self.latest_jpeg = encoded.tobytes()
+                    self.frame_version += 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
         model = get_model(self.config.model_path)
         frame_step = max(1, round(fps / self.config.sample_fps))
@@ -330,6 +335,7 @@ class CameraWorker:
             if jpeg:
                 with self.lock:
                     self.latest_jpeg = jpeg
+                    self.frame_version += 1
             time.sleep(max(0, 1 / self.config.sample_fps - (time.perf_counter() - started_at)))
         capture.release()
 
@@ -338,25 +344,58 @@ workers = {camera_id: CameraWorker(config) for camera_id, config in CAMERAS.item
 _load_event_cooldowns()
 
 
+@app.on_event("startup")
+def preload_models() -> None:
+    """Warm model runtime at startup; CCTV video inference still starts per stream request."""
+    unique_model_paths = {config.model_path for config in CAMERAS.values()}
+    for model_path in unique_model_paths:
+        model = get_model(model_path)
+        # 가중치만 읽어 둬도 PyTorch/CPU(또는 GPU) 런타임 초기화는 첫 predict에서
+        # 발생한다. 실제 CCTV 영상을 읽지 않는 빈 프레임 워밍업으로 그 지연을 서버
+        # 시작 단계로 옮긴다.
+        model.predict(source=np.zeros((640, 640, 3), dtype=np.uint8), verbose=False)
+        print(f"AI 모델 워밍업 완료: {model_path.name}", flush=True)
+    print("AI 모델 사전 로드 완료. CCTV 스트림 요청을 기다립니다.", flush=True)
+
+
 @app.get("/health")
 def health() -> dict[str, Any]:
     return {"status": "ok", "cameras": list(CAMERAS), "backendUrl": BACKEND_URL}
 
 
 @app.get("/streams/{camera_id}")
-def stream(camera_id: str) -> StreamingResponse:
+async def stream(camera_id: str, request: Request) -> StreamingResponse:
     worker = workers.get(camera_id)
     if worker is None:
         raise HTTPException(status_code=404, detail="알 수 없는 카메라입니다")
     worker.start()
-    def frames():
-        while True:
+    async def frames():
+        last_sent_version = -1
+        while not await request.is_disconnected():
             with worker.lock:
                 jpeg = worker.latest_jpeg
-            if jpeg:
+                frame_version = worker.frame_version
+            # 같은 JPEG를 매 0.02초마다 재전송하지 않는다. 클라이언트마다
+            # 새 분석 프레임이 만들어졌을 때 한 번만 전송한다.
+            if jpeg and frame_version != last_sent_version:
                 yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n"
-            time.sleep(0.02)
+                last_sent_version = frame_version
+            await asyncio.sleep(0.02)
     return StreamingResponse(frames(), media_type="multipart/x-mixed-replace; boundary=frame")
+
+
+@app.get("/frames/{camera_id}")
+def latest_frame(camera_id: str) -> Response:
+    """Return the most recent image immediately while a new MJPEG client connects."""
+    worker = workers.get(camera_id)
+    if worker is None:
+        raise HTTPException(status_code=404, detail="camera not found")
+    worker.start()
+    with worker.lock:
+        jpeg = worker.latest_jpeg
+    if not jpeg:
+        raise HTTPException(status_code=503, detail="frame is warming up")
+    return Response(content=jpeg, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
 
 
 @app.get("/events")
