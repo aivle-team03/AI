@@ -13,6 +13,7 @@ from app.agents import (
     site_anomaly_review_agent,
     site_anomaly_writer_agent,
 )
+from app.common.Report_data import build_backend_source_data, has_backend_table_data
 from app.risk_assessment_form import DEFAULT_FORM_PATH, DEFAULT_OUTPUT_PATH
 from app.risk_assessment_form import fill_risk_assessment_form, resolved_xlsx_path_for
 from app.risk_assessment_report_aggregation import aggregate_risk_assessment_report_data
@@ -30,11 +31,24 @@ from app.state import (
     SiteAnomalyReportState,
     UnifiedReportState,
 )
-from scripts.build_final_history_table import build_final_history_table
+from scripts.build_final_history_table_14 import build_final_history_table_14
 
 
 def retry_node(state):
     return {"retry_count": state.get("retry_count", 0) + 1}
+
+
+def risk_assessment_backend_data_fetch_node(state):
+    request = state["request"]
+    request_data = request.model_dump(mode="json")
+    if has_backend_table_data(request_data):
+        return {"backend_data": request_data}
+
+    backend_data = build_backend_source_data()
+    return {
+        "request": request.model_copy(update=backend_data),
+        "backend_data": backend_data,
+    }
 
 
 def route(state) -> Literal["finish", "retry"]:
@@ -81,7 +95,7 @@ async def site_anomaly_review_node(state):
 
 def risk_assessment_table_node(state):
     source_data = state["request"].model_dump(mode="json")
-    return {"final_history_rows": build_final_history_table(source_data)}
+    return {"final_history_rows": build_final_history_table_14(source_data)}
 
 
 async def risk_data_correction_node(state):
@@ -135,7 +149,23 @@ def risk_assessment_form_node(state):
 
 
 def risk_assessment_report_aggregate_node(state):
-    return {"aggregated_data": aggregate_risk_assessment_report_data(state["request"])}
+    request = state["request"]
+    if not request.final_history_rows:
+        final_history_rows = build_final_history_table_14(request.model_dump(mode="json"))
+        request = request.model_copy(update={"final_history_rows": final_history_rows})
+        return {
+            "request": request,
+            "final_history_rows": final_history_rows,
+            "aggregated_data": aggregate_risk_assessment_report_data(request),
+        }
+
+    return {
+        "final_history_rows": [
+            row.model_dump(mode="json") if hasattr(row, "model_dump") else row
+            for row in request.final_history_rows
+        ],
+        "aggregated_data": aggregate_risk_assessment_report_data(request),
+    }
 
 
 async def risk_assessment_report_analyze_node(state):
@@ -382,8 +412,8 @@ def _management_default_opinion(aggregated_data):
     return (
         "본 검토 결과, 일부 구역에서 동일 위험 유형이 반복적으로 확인됐다. "
         f"반복 위험 그룹 {counts.get('repeated_risk_groups', 0)}건과 고위험 기록 {counts.get('high_risk_records', 0)}건은 우선 관리 대상으로 분류됐다. "
-        "각 부서는 미조치 또는 승인 대기 항목의 처리 현황을 명확히 확인하고, 반복 위험 관리 기준과 조치 이행 점검 절차를 보완할 것. "
-        "후속 조치 결과는 정해진 보고 체계에 따라 확인할 예정이다."
+        "미조치 또는 승인 대기 항목의 처리 현황을 우선 확인 대상으로 정하고, 반복 위험 관리 기준과 조치 이행 점검 절차를 보완하도록 지시한다. "
+        "정해진 보고 체계에 따라 후속 관리 결과를 확인하겠다."
     )
 def _normalize_management_review_order(report, aggregated_data):
     review_content = _find_section(report, SectionCode.MANAGEMENT_REVIEW_CONTENT)
@@ -474,13 +504,15 @@ def build_site_anomaly_full():
 
 def build_risk_assessment_form_graph():
     graph = StateGraph(RiskAssessmentFormState)
+    graph.add_node("fetch_backend_data", risk_assessment_backend_data_fetch_node)
     graph.add_node("build_final_history_table", risk_assessment_table_node)
     graph.add_node("data_correction_agent", risk_data_correction_node)
     graph.add_node("data_correction_review_agent", risk_data_correction_review_node)
     graph.add_node("retry", retry_node)
     graph.add_node("fill_csv_form", risk_assessment_form_node)
 
-    graph.add_edge(START, "build_final_history_table")
+    graph.add_edge(START, "fetch_backend_data")
+    graph.add_edge("fetch_backend_data", "build_final_history_table")
     graph.add_edge("build_final_history_table", "data_correction_agent")
     graph.add_edge("data_correction_agent", "data_correction_review_agent")
     graph.add_conditional_edges(
@@ -567,6 +599,15 @@ def _request_with_corrected_rows(state, request_cls):
     return request_cls(**data)
 
 
+def _request_with_final_history_rows(state, request_cls):
+    data = state["request"].model_dump(mode="json")
+    data["final_history_rows"] = [
+        row.model_dump(mode="json") if hasattr(row, "model_dump") else row
+        for row in state["correction_result"].corrected_rows
+    ]
+    return request_cls(**data)
+
+
 def unified_risk_assessment_form_node(state):
     request = state["request"]
     source_data = request.model_dump(mode="json")
@@ -585,12 +626,12 @@ def unified_risk_assessment_form_node(state):
 
 
 def unified_risk_assessment_report_aggregate_node(state):
-    request = _request_with_corrected_rows(state, RiskAssessmentReportRequest)
+    request = _request_with_final_history_rows(state, RiskAssessmentReportRequest)
     return {"aggregated_data": aggregate_risk_assessment_report_data(request)}
 
 
 def unified_site_anomaly_aggregate_node(state):
-    request = _request_with_corrected_rows(state, SiteAnomalyReportRequest)
+    request = _request_with_final_history_rows(state, SiteAnomalyReportRequest)
     return {"aggregated_data": aggregate_site_anomaly_data(request)}
 
 

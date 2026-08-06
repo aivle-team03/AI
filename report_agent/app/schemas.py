@@ -92,30 +92,21 @@ class ReviewResult(BaseModel):
 
 
 class FinalHistoryRow(BaseModel):
-    case: str | None = None
-    type: str | None = None
-    inspection_history_id: int | None = None
-    inspection_id: int | None = None
-    inspection_name: str | None = None
-    category_id: int | None = None
-    category_name: str | None = None
+    category: str | None = None
     risk: str | int | None = None
+    category_name: str | None = None
     inspection_location: str | None = None
     inspection_date: str | None = None
-    inspection_user_id: int | None = None
     inspection_user_name: str | None = None
     inspection_content: str | None = None
-    before_image_url: str | None = None
-    action_history_id: int | None = None
+    image_url: str | None = None
     action_name: str | None = None
     action_location: str | None = None
-    action_date: str | None = None
-    action_user_id: int | None = None
-    action_user_name: str | None = None
-    action_content: str | None = None
-    approval_name: str | None = None
-    board_id: int | None = None
-    event_id: str | int | None = None
+    completed_at: str | None = None
+    handler_name: str | None = None
+    content: str | None = None
+    approver_name: str | None = None
+    type: str | None = None
 
 class DataCorrectionNote(BaseModel):
     row_index: int
@@ -165,6 +156,7 @@ class RiskDataCorrectionReviewResult(BaseModel):
     issues: list[DataCorrectionReviewIssue] = Field(default_factory=list)
     items_requiring_revision: list[str] = Field(default_factory=list)
 
+
 class EvidenceContentRequest(BaseModel):
     company: dict[str, Any] | None = None
     user: list[dict[str, Any]] = Field(default_factory=list)
@@ -212,11 +204,11 @@ class RiskAssessmentFormResponse(BaseModel):
 
 
 class SiteAnomalyReportRequest(EvidenceContentRequest):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 class RiskAssessmentReportRequest(EvidenceContentRequest):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
 
@@ -259,6 +251,7 @@ class SiteAnomalyReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
 
 
 class RiskAssessmentReportResponse(BaseModel):

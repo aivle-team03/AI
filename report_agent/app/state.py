@@ -26,6 +26,7 @@ class SiteAnomalyReportState(TypedDict, total=False):
     errors: list[str]
 class RiskAssessmentFormState(TypedDict, total=False):
     request: RiskAssessmentFormRequest
+    backend_data: dict
     final_history_rows: list[dict]
     correction_result: RiskDataCorrectionResult
     correction_review: RiskDataCorrectionReviewResult
@@ -40,6 +41,7 @@ class RiskAssessmentFormState(TypedDict, total=False):
 
 class RiskAssessmentReportState(TypedDict, total=False):
     request: RiskAssessmentReportRequest
+    final_history_rows: list[dict]
     aggregated_data: dict
     analysis_result: AnalysisResult
     generated_report: GeneratedReport

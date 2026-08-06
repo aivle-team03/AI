@@ -98,19 +98,19 @@ def _form_row(row: FinalHistoryRow | dict[str, Any]) -> list[str]:
     output = [""] * COLUMN_COUNT
     output[0] = _value(data.get("category_name"))
     output[1] = _value(data.get("risk"))
-    output[2] = _value(data.get("inspection_name"))
+    output[2] = _value(data.get("category"))
     output[4] = _value(data.get("inspection_location"))
     output[5] = _date_text(data.get("inspection_date"))
     output[7] = _value(data.get("inspection_user_name"))
     output[8] = _value(data.get("inspection_content"))
-    output[10] = _value(data.get("before_image_url"))
+    output[10] = _value(data.get("image_url"))
     output[12] = _value(data.get("action_name"))
     output[14] = _value(data.get("action_location"))
-    output[15] = _date_text(data.get("action_date"))
-    output[17] = _value(data.get("action_user_name"))
-    output[19] = _value(data.get("action_content"))
-    output[21] = ""
-    output[23] = _value(data.get("approval_name"))
+    output[15] = _date_text(data.get("completed_at"))
+    output[17] = _value(data.get("handler_name"))
+    output[19] = _value(data.get("content"))
+    output[21] = _value(data.get("image_url"))
+    output[23] = _value(data.get("approver_name"))
     output[24] = _value(data.get("type"))
     return output
 

@@ -154,11 +154,6 @@ async def risk_data_correction_review_agent(original_rows, correction_result):
         ]
     )
 
-
-
-
-
-
 async def risk_assessment_report_analyze_agent(aggregated_data):
     llm = create_llm().with_structured_output(AnalysisResult)
     payload = {

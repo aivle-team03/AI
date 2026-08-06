@@ -17,7 +17,7 @@ from app.graph import risk_assessment_report_graph
 from app.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
 from scripts.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 
-INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_corrected.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_response.json"
 REPORT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.md"
 DOCX_REPORT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.docx"

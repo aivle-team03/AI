@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from app.common.Report_data import _get_json
+
 
 def _index_by(items: list[dict[str, Any]], key: str) -> dict[Any, dict[str, Any]]:
     return {item.get(key): item for item in items}
@@ -70,11 +72,39 @@ def _empty_action_part() -> dict[str, Any]:
         "action_user_id": None,
         "action_user_name": None,
         "action_content": None,
+        "action_status": None,
+        "approval_status": None,
         "approval_name": None,
     }
 
 
+def _unwrap_item(data: Any) -> dict[str, Any]:
+    if isinstance(data, dict) and isinstance(data.get("data"), dict):
+        return data["data"]
+    if isinstance(data, dict):
+        return data
+    return {}
+
+
+def _action_detail(action_history_id: int) -> dict[str, Any]:
+    return _unwrap_item(_get_json(f"/api/action-histories/{action_history_id}"))
+
+
+def _merge_approved_action_detail(action: dict[str, Any]) -> dict[str, Any]:
+    if action.get("approval_status") != "승인 완료":
+        return action
+
+    action_history_id = action.get("action_history_id")
+    if action_history_id is None:
+        return action
+
+    detail = _action_detail(int(action_history_id))
+    return {**action, **detail}
+
+
 def _action_part(action: dict[str, Any]) -> dict[str, Any]:
+    action = _merge_approved_action_detail(action)
+
     return {
         "action_history_id": action.get("action_history_id"),
         "action_name": action.get("action_name"),
@@ -83,6 +113,8 @@ def _action_part(action: dict[str, Any]) -> dict[str, Any]:
         "action_user_id": action.get("handler_uid"),
         "action_user_name": action.get("handler_name"),
         "action_content": action.get("content"),
+        "action_status": action.get("action_status"),
+        "approval_status": action.get("approval_status"),
         "approval_name": action.get("approver_name"),
     }
 
@@ -126,6 +158,7 @@ def _source_context_for_action(
         "board_id": board.get("board_id"),
         "event_id": event.get("event_id") or action.get("event_id"),
         "source_type": source_type or None,
+        "source_id": action.get("source_id"),
     }
 
 
@@ -155,7 +188,6 @@ def build_final_history_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
 
         rows.append(
             {
-                "case": "Case 1",
                 "type": "inspection",
                 **_inspection_part(
                     inspection_history,
@@ -176,7 +208,6 @@ def build_final_history_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
             )
             rows.append(
                 {
-                    "case": "Case 2",
                     "type": "조치이력",
                     **_inspection_part(
                         inspection_history,
@@ -184,6 +215,8 @@ def build_final_history_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
                         category_by_id,
                     ),
                     "before_image_url": None,
+                    "source_type": source_type or None,
+                    "source_id": action.get("source_id"),
                     **_action_part(action),
                 }
             )
@@ -200,8 +233,9 @@ def build_final_history_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
 
         rows.append(
             {
-                "case": case_name,
                 "type": row_type,
+                "source_type": source["source_type"],
+                "source_id": source["source_id"],
                 **_inspection_part(None, inspection_by_id, category_by_id),
                 "category_id": source["category_id"],
                 "category_name": source["category_name"],
@@ -216,7 +250,7 @@ def build_final_history_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
     return sorted(
         rows,
         key=lambda row: (
-            row.get("case") or "",
+            row.get("type") or "",
             row.get("inspection_date") or row.get("action_date") or "",
             row.get("action_history_id") or 0,
         ),
@@ -242,7 +276,7 @@ def main() -> None:
     input_path = Path(args.input)
     output_path = Path(args.output)
 
-    with input_path.open("r", encoding="utf-8") as file:
+    with input_path.open("r", encoding="utf-8-sig") as file:
         tables = json.load(file)
 
     rows = build_final_history_table(tables)
@@ -254,12 +288,13 @@ def main() -> None:
 
     counts: dict[str, int] = {}
     for row in rows:
-        counts[row["case"]] = counts.get(row["case"], 0) + 1
+        row_type = row.get("type") or "-"
+        counts[row_type] = counts.get(row_type, 0) + 1
 
     print(f"wrote: {output_path}")
     print(f"total: {len(rows)}")
-    for case_name in sorted(counts):
-        print(f"{case_name}: {counts[case_name]}")
+    for row_type in sorted(counts):
+        print(f"{row_type}: {counts[row_type]}")
 
 
 if __name__ == "__main__":

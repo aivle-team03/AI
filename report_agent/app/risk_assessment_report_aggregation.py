@@ -9,6 +9,9 @@ RISK_SCORE = {
     "HIGH": 3,
     "MEDIUM": 2,
     "LOW": 1,
+    "상": 3,
+    "중": 2,
+    "하": 1,
 }
 
 
@@ -19,7 +22,7 @@ def _row_dict(row: Any) -> dict[str, Any]:
 
 
 def _rows(req: RiskAssessmentReportRequest) -> list[dict[str, Any]]:
-    return [_row_dict(row) for row in req.corrected_rows]
+    return [_row_dict(row) for row in req.final_history_rows]
 
 
 def _parse_datetime(value: Any) -> datetime | None:
@@ -112,15 +115,15 @@ def _trend_delta(series: dict[str, int]) -> dict[str, Any]:
 
 
 def _has_action(row: dict[str, Any]) -> bool:
-    return bool(row.get("action_history_id"))
+    return bool(row.get("action_name") or row.get("completed_at") or row.get("content"))
 
 
 def _action_completed(row: dict[str, Any]) -> bool:
-    return _has_action(row) and bool(row.get("action_date") or row.get("action_content"))
+    return _has_action(row) and bool(row.get("completed_at") or row.get("content"))
 
 
 def _approval_completed(row: dict[str, Any]) -> bool:
-    return bool(row.get("approval_name"))
+    return bool(row.get("approver_name"))
 
 
 def _source_id(row: dict[str, Any]) -> str:
@@ -129,6 +132,8 @@ def _source_id(row: dict[str, Any]) -> str:
         or row.get("inspection_history_id")
         or row.get("action_history_id")
         or row.get("case")
+        or row.get("inspection_date")
+        or row.get("completed_at")
         or "-"
     )
 
@@ -143,20 +148,20 @@ def _high_risk_item(row: dict[str, Any]) -> dict[str, Any]:
         "risk_band": _risk_band(row.get("risk")),
         "location": row.get("inspection_location") or row.get("action_location"),
         "inspection_date": row.get("inspection_date"),
-        "inspection_name": row.get("inspection_name"),
+        "inspection_name": row.get("category"),
         "inspection_content": row.get("inspection_content"),
         "action_name": row.get("action_name"),
-        "action_date": row.get("action_date"),
-        "action_content": row.get("action_content"),
+        "action_date": row.get("completed_at"),
+        "action_content": row.get("content"),
         "action_completed": _action_completed(row),
         "approval_completed": _approval_completed(row),
-        "approval_name": row.get("approval_name"),
+        "approval_name": row.get("approver_name"),
     }
 
 
 def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> dict[str, Any]:
     rows = _rows(req)
-    inspection_rows = [row for row in rows if row.get("inspection_history_id")]
+    inspection_rows = [row for row in rows if row.get("inspection_content")]
     # 위험성평가보고서는 평가 항목 기준으로 KPI를 계산한다.
     # board/event 조치 이력 행을 섞으면 평가 10건보다 조치 건수가 커지는 모순이 생긴다.
     action_rows = [row for row in inspection_rows if _has_action(row)]
@@ -212,7 +217,7 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             "period": _period(inspection_rows),
             "audience": "RISK_ASSESSMENT_REPORT",
             "report_type": "RISK_ASSESSMENT_REPORT",
-            "data_source": "final_history_table_corrected.corrected_rows",
+            "data_source": "preprocessed_final_history_rows.final_history_rows",
             "excluded_scope": [
                 "anomaly_pattern_analysis",
                 "improvement_recommendation_report",
