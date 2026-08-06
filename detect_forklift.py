@@ -395,9 +395,10 @@ def main():
                     state["minimum_distance"] = distance
 
                 # 1초 이상 위험 거리 유지
-                if True:
-                    state["danger_frames"] = True
-                    danger_count += 1
+                if (
+                    state["danger_frames"]
+                    >= danger_hold_frames
+                ):
                 
                     state["danger_active"] = True
                     danger_count += 1
