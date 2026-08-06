@@ -12,13 +12,12 @@ import os
 import asyncio
 import threading
 import time
-import json
 from uuid import uuid4
 from collections import deque
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 import cv2
@@ -31,11 +30,8 @@ from ultralytics import YOLO
 
 BASE_DIR = Path(__file__).resolve().parent
 SNAPSHOT_DIR = BASE_DIR / "snapshots"
-EVENT_STATE_PATH = SNAPSHOT_DIR / "event_cooldowns.json"
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
-# 동일 테스트 영상을 재시작해도 같은 위험을 DB에 무한 적재하지 않는다.
-EVENT_COOLDOWN_SECONDS = int(os.getenv("AI_EVENT_COOLDOWN_SECONDS", "300"))
 
 
 @dataclass(frozen=True)
@@ -77,34 +73,7 @@ _model_lock = threading.Lock()
 _events: deque[dict[str, Any]] = deque(maxlen=200)
 _event_lock = threading.Lock()
 _next_event_id = 1
-_last_persisted_events: dict[str, float] = {}
-
-
-def _load_event_cooldowns() -> None:
-    if not EVENT_STATE_PATH.is_file():
-        return
-    try:
-        _last_persisted_events.update(json.loads(EVENT_STATE_PATH.read_text(encoding="utf-8")))
-    except (OSError, ValueError):
-        # 상태 파일이 깨져도 실시간 감지는 계속 동작한다.
-        return
-
-
-def _save_event_cooldowns() -> None:
-    SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
-    EVENT_STATE_PATH.write_text(json.dumps(_last_persisted_events), encoding="utf-8")
-
-
-def should_persist_event(camera_id: str) -> bool:
-    now = time.time()
-    last_persisted_at = _last_persisted_events.get(camera_id, 0)
-    if now - last_persisted_at < EVENT_COOLDOWN_SECONDS:
-        return False
-    _last_persisted_events[camera_id] = now
-    _save_event_cooldowns()
-    return True
-
-
+_server_instance_id = uuid4().hex
 def get_model(model_path: Path) -> YOLO:
     with _model_lock:
         if model_path not in _models:
@@ -116,20 +85,50 @@ def get_model(model_path: Path) -> YOLO:
 
 
 def send_backend_event(config: CameraConfig, snapshot_url: str) -> None:
-    """백엔드 장애가 AI 스트림을 멈추지 않도록 별도 스레드에서 전송한다."""
+    """백엔드가 늦게 준비돼도 감지 이벤트를 잃지 않도록 별도 스레드에서 전송한다."""
     payload = (
         '{"cctv_id": %d, "category_id": %d, "image_url": "%s"}'
         % (config.cctv_id, config.category_id, snapshot_url)
     ).encode("utf-8")
-    request = Request(
-        f"{BACKEND_URL}/api/ai/events", data=payload,
-        headers={"Content-Type": "application/json"}, method="POST",
-    )
-    try:
-        with urlopen(request, timeout=5) as response:
-            print(f"백엔드 이벤트 저장: {config.camera_id} ({response.status})", flush=True)
-    except (URLError, TimeoutError) as error:
-        print(f"백엔드 이벤트 저장 실패 [{config.camera_id}]: {error}", flush=True)
+    # AI를 먼저 켜고 백엔드를 이어서 실행하는 경우가 있다. 기존 3초 재시도는
+    # 백엔드 기동 전에 끝나서 화면의 임시 알림만 남고 DB 이벤트가 사라졌다.
+    # 스트림 처리는 막지 않되, 백엔드가 준비될 시간을 충분히 준다.
+    attempt = 0
+    while True:
+        attempt += 1
+        request = Request(
+            f"{BACKEND_URL}/api/ai/events", data=payload,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        try:
+            with urlopen(request, timeout=5) as response:
+                print(f"백엔드 이벤트 저장: {config.camera_id} ({response.status})", flush=True)
+                return
+        except HTTPError as error:
+            # 4xx/5xx의 본문을 출력해야 category_id, DB 제약조건 같은 실제 원인을
+            # AI 서버 콘솔에서 바로 확인할 수 있다.
+            try:
+                detail = error.read().decode("utf-8", errors="replace")
+            except OSError:
+                detail = ""
+            # 잘못된 요청(4xx)은 재시도해도 해결되지 않는다. 반면 5xx는 백엔드
+            # reload/DB 연결이 완료될 때까지 잠시 발생할 수 있으므로 이벤트를
+            # 버리지 말고 계속 재시도한다.
+            print(
+                f"백엔드 이벤트 저장 실패 [{config.camera_id}] "
+                f"HTTP {error.code} (시도 {attempt}): {detail}",
+                flush=True,
+            )
+            if 400 <= error.code < 500:
+                return
+            time.sleep(1)
+        except (URLError, TimeoutError) as error:
+            print(
+                f"백엔드 이벤트 저장 대기 [{config.camera_id}] "
+                f"(시도 {attempt}): {error}",
+                flush=True,
+            )
+            time.sleep(1)
 
 
 def publish_event(config: CameraConfig, confidence: float, source_time: float, snapshot: bytes) -> None:
@@ -153,12 +152,12 @@ def publish_event(config: CameraConfig, confidence: float, source_time: float, s
             "detectedAt": time.strftime("%Y-%m-%dT%H:%M:%S"),
             "snapshotUrl": snapshot_url,
         })
-    if should_persist_event(config.camera_id):
-        threading.Thread(
-            target=send_backend_event, args=(config, snapshot_url), daemon=True,
-        ).start()
-    else:
-        print(f"DB 이벤트 중복 저장 생략: {config.camera_id} ({EVENT_COOLDOWN_SECONDS}초 쿨다운)", flush=True)
+    # worker의 emitted_in_session이 한 서버 실행/데모 재시작 세션에서 한 번만
+    # publish_event를 호출하도록 보장한다. 따라서 과거 실행의 파일 쿨다운 없이
+    # 현재 세션 감지는 항상 DB에도 남긴다.
+    threading.Thread(
+        target=send_backend_event, args=(config, snapshot_url), daemon=True,
+    ).start()
 
 
 def _boxes_by_class(result: Any) -> tuple[list[tuple[tuple[int, int, int, int], float]], list[tuple[tuple[int, int, int, int], float]]]:
@@ -341,7 +340,6 @@ class CameraWorker:
 
 
 workers = {camera_id: CameraWorker(config) for camera_id, config in CAMERAS.items()}
-_load_event_cooldowns()
 
 
 @app.on_event("startup")
@@ -401,7 +399,10 @@ def latest_frame(camera_id: str) -> Response:
 @app.get("/events")
 def events(after: int = Query(0, ge=0)) -> dict[str, Any]:
     with _event_lock:
-        return {"events": [dict(event) for event in _events if event["id"] > after]}
+        return {
+            "serverInstanceId": _server_instance_id,
+            "events": [dict(event) for event in _events if event["id"] > after],
+        }
 
 
 @app.get("/snapshots/{snapshot_id}")
