@@ -403,27 +403,6 @@ def _clean_management_text(text):
 
 
 
-def _management_default_directives(aggregated_data):
-    counts = aggregated_data.get("summary_counts") or {}
-    repeated = counts.get("repeated_risk_groups", 0)
-    high = counts.get("high_risk_records", 0)
-    pending = counts.get("pending_or_unapproved_records", 0)
-    return (
-        f"1. 안전관리부서는 반복 위험 그룹 {repeated}건에 대해 구역별 관리 기준을 재점검하고, 동일 위험 유형이 반복되지 않도록 예방관리 절차를 보완할 것.\n"
-        f"2. 현장관리자는 고위험 기록 {high}건을 우선 관리 대상으로 지정하고, 조치 완료 여부와 승인 상태를 정기적으로 확인할 것.\n"
-        f"3. 담당 부서는 미조치 또는 승인 대기 기록 {pending}건의 처리 현황을 확인하고, 지연 항목을 해소한 뒤 결과를 보고할 것.\n"
-        "4. 안전관리부서와 현장관리자는 조치 이후 동일 유형 기록이 재확인되는 구역의 조치 효과성을 점검하고 후속 관리 결과를 보고할 것."
-    )
-
-
-def _management_default_opinion(aggregated_data):
-    counts = aggregated_data.get("summary_counts") or {}
-    return (
-        "본 검토 결과, 일부 구역에서 동일 위험 유형이 반복적으로 확인됐다. "
-        f"반복 위험 그룹 {counts.get('repeated_risk_groups', 0)}건과 고위험 기록 {counts.get('high_risk_records', 0)}건은 우선 관리 대상으로 분류됐다. "
-        "미조치 또는 승인 대기 항목의 처리 현황을 우선 확인 대상으로 정하고, 반복 위험 관리 기준과 조치 이행 점검 절차를 보완하도록 지시한다. "
-        "정해진 보고 체계에 따라 후속 관리 결과를 확인하겠다."
-    )
 def _normalize_management_review_order(report, aggregated_data):
     review_content = _find_section(report, SectionCode.MANAGEMENT_REVIEW_CONTENT)
     directives = _find_section(report, SectionCode.MANAGEMENT_DIRECTIVES)
@@ -467,9 +446,9 @@ def _normalize_management_review_order(report, aggregated_data):
     review_content.content = _management_review_table(aggregated_data) + detail
 
     directives.heading = "경영책임자 지시사항"
-    directives.content = _management_default_directives(aggregated_data)
+    directives.content = _clean_management_text(directives.content or "")
     opinion.heading = "종합의견"
-    opinion.content = _management_default_opinion(aggregated_data)
+    opinion.content = _clean_management_text(opinion.content or report.conclusion or "")
     signoff.heading = "결재"
     signoff.content = "경영책임자: ______________________ / 검토일: ______________________ / 서명: ______________________"
 
@@ -782,6 +761,7 @@ site_anomaly_full_graph = build_site_anomaly_full()
 risk_assessment_form_graph = build_risk_assessment_form_graph()
 risk_assessment_report_graph = build_risk_assessment_report_graph()
 unified_report_graph = build_unified_report_graph()
+
 
 
 
