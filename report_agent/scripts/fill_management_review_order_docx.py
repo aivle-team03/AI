@@ -16,7 +16,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from app.graph import _management_judgment, _management_risk_label
 
-DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "output" / "management_review_order_form_template.docx"
+DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "output" / "management_review_order_form.docx"
 DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "management_review_order_response.json"
 DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "management_review_order.docx"
 
@@ -44,17 +44,26 @@ def _review_detail(report: dict) -> str:
 
 def _directive_items(report: dict) -> list[dict[str, str]]:
     content = _section_content(report, "MANAGEMENT_DIRECTIVES")
+    content = re.sub(r"\s+", " ", content).strip()
+    if not content:
+        return []
+
+    numbered = list(re.finditer(r"(?:^|\s)(\d+)\.\s+", content))
     items = []
-    for line in content.splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        match = re.match(r"^(\d+)\.\s*(.+)$", line)
-        if match:
-            items.append({"no": match.group(1), "directive": match.group(2)})
-        else:
-            items.append({"no": str(len(items) + 1), "directive": line})
-    return items
+    if numbered:
+        for index, match in enumerate(numbered):
+            start = match.end()
+            end = numbered[index + 1].start() if index + 1 < len(numbered) else len(content)
+            directive = content[start:end].strip()
+            if directive:
+                items.append({"no": match.group(1), "directive": directive})
+        return items
+
+    sentences = [part.strip() for part in re.split(r"(?<=다\.)\s+|(?<=것\.)\s+", content) if part.strip()]
+    return [
+        {"no": str(index), "directive": directive}
+        for index, directive in enumerate(sentences, start=1)
+    ]
 
 
 def _period_text(context: dict) -> str:
@@ -179,3 +188,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
