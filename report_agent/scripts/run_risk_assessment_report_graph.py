@@ -13,14 +13,15 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.graph import risk_assessment_report_graph
+from app.risk_assessment.graph import risk_assessment_report_graph
 from app.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
 from scripts.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 
 INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
-RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_response.json"
-REPORT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.md"
-DOCX_REPORT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.docx"
+OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_reports"
+RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_report_response.json"
+REPORT_PATH = OUTPUT_DIR / "risk_assessment_report.md"
+DOCX_REPORT_PATH = OUTPUT_DIR / "risk_assessment_report.docx"
 
 
 def _dedupe_repeated_sentences(text: str) -> str:

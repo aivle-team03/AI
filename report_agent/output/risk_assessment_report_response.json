@@ -1,6 +1,6 @@
 ﻿{
-  "status": "COMPLETED",
-  "retry_count": 0,
+  "status": "FAILED",
+  "retry_count": 2,
   "aggregated_data": {
     "report_context": {
       "company": {},
@@ -10,7 +10,7 @@
       },
       "audience": "RISK_ASSESSMENT_REPORT",
       "report_type": "RISK_ASSESSMENT_REPORT",
-      "data_source": "preprocessed_final_history_rows.final_history_rows",
+      "data_source": "preprocessed_final_history_rows.vfinal_history_rows",
       "excluded_scope": [
         "anomaly_pattern_analysis",
         "improvement_recommendation_report"
@@ -24,7 +24,7 @@
       "medium_risk_records": 8,
       "low_risk_records": 0,
       "high_or_critical_risk_records": 4,
-      "high_or_critical_risk_rate": 33.3,
+      "high_or_critical_risk_rate": 0.0,
       "action_total": 3,
       "action_completed": 3,
       "action_completion_rate": 25.0,
@@ -487,54 +487,54 @@
   },
   "analysis_result": {
     "executive_insights": [
-      "전체 위험성평가 건수는 17건이며, 이 중 12건이 실제 평가 건수임.",
-      "고위험 및 중대위험 비율은 33.3%로, 전체 위험 중 상당 부분을 차지함.",
-      "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 4건 모두 고위험으로 분류됨.",
-      "평가 기준 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 편임.",
-      "최근 일별 평가 건수 및 고위험 건수가 증가하는 추세를 보임(일별 평가 건수 300% 증가, 고위험 건수 200% 증가)."
+      "전체 위험성평가 건수는 12건이며, 이 중 고위험 평가 건수는 4건으로 전체의 약 33.3%를 차지합니다.",
+      "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 이 중 2건은 아직 조치가 완료되지 않은 상태입니다.",
+      "평가 기준 조치 완료율은 25%로 낮은 편이며, 승인 완료율도 동일하게 25%에 머무르고 있습니다.",
+      "최근 일별 평가 건수는 증가 추세이며, 특히 고위험 평가 건수는 200% 증가하여 위험 관리에 주의가 필요합니다.",
+      "위험도 분포는 고위험 4건, 중위험 8건으로 중위험 이상 평가가 전체를 차지하고 있습니다."
     ],
     "findings": [
       {
         "finding_type": "KPI",
         "title": "평가 건수 및 위험도 분포",
-        "description": "총 17건의 위험성평가 중 12건이 평가되었으며, 고위험 및 중대위험 건수는 4건으로 전체의 33.3%를 차지함.",
+        "description": "전체 평가 건수는 12건이며, 고위험 건수는 4건, 중위험 건수는 8건으로 고위험 및 중위험이 전체의 100%를 차지함.",
         "related_event_ids": [],
         "evidence_ids": [],
         "severity": "HIGH"
       },
       {
-        "finding_type": "TREND",
-        "title": "평가 건수 및 고위험 건수 증가 추세",
-        "description": "일별 평가 건수는 1건에서 4건으로 300% 증가하였고, 고위험 건수도 1건에서 3건으로 200% 증가하는 상승 추세를 보임.",
-        "related_event_ids": [],
-        "evidence_ids": [],
-        "severity": "MEDIUM"
-      },
-      {
         "finding_type": "RISK_ASSESSMENT",
-        "title": "고위험 항목 집중 현상",
-        "description": "고위험 항목 4건 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 집, 운동장, 기석님 집, B동 2층으로 분포됨.",
-        "related_event_ids": [
+        "title": "고위험 항목 집중 현황",
+        "description": "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 집, 운동장, 기석님 집, B동 2층에 분포함.",
+        "related_event_ids": [],
+        "evidence_ids": [
           "2026-08-03T09:00:00",
           "2026-07-28T08:43:54"
         ],
-        "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "UNRESOLVED",
         "title": "미조치 고위험 항목 존재",
-        "description": "고위험 항목 중 2건이 조치 및 승인 완료되지 않은 상태로, 위치는 집과 기석님 집임.",
-        "related_event_ids": [
+        "description": "고위험 평가 4건 중 2건이 조치 및 승인 완료되지 않아 미조치 상태임.",
+        "related_event_ids": [],
+        "evidence_ids": [
           "2026-08-03T09:00:00"
         ],
-        "evidence_ids": [],
         "severity": "HIGH"
       },
       {
-        "finding_type": "PRIORITY",
+        "finding_type": "TREND",
+        "title": "평가 건수 및 고위험 건수 추세",
+        "description": "일별 평가 건수는 1건에서 4건으로 300% 증가, 고위험 건수는 1건에서 3건으로 200% 증가하는 상승 추세임.",
+        "related_event_ids": [],
+        "evidence_ids": [],
+        "severity": "MEDIUM"
+      },
+      {
+        "finding_type": "KPI",
         "title": "조치 및 승인 완료율 저조",
-        "description": "전체 조치 완료율과 승인 완료율이 각각 25.0%로 낮아 위험성평가 결과 관리에 개선이 필요함.",
+        "description": "전체 조치 완료율과 승인 완료율이 각각 25%로 낮아 위험성 평가 후 관리가 미흡함을 시사함.",
         "related_event_ids": [],
         "evidence_ids": [],
         "severity": "MEDIUM"
@@ -547,19 +547,19 @@
     "title": "위험성평가보고서",
     "audience": "RISK_ASSESSMENT_REPORT",
     "period": "2026-07-28 ~ 2026-08-03",
-    "summary": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
+    "summary": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 0.0%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
     "sections": [
       {
         "section_code": "EXECUTIVE_SUMMARY",
         "heading": "요약",
-        "content": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
+        "content": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 0.0%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "RISK_DISTRIBUTION",
         "heading": "위험도 분포 및 관리 현황",
-        "content": "위험도 분포는 중대위험 0건, 고위험 4건, 중간위험 8건, 저위험 0건으로 확인됐다. 고위험 및 중대위험 항목은 총 4건으로 전체 평가 항목 12건의 33.3%를 차지했다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%, 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건으로 확인됐다.",
+        "content": "위험도 분포는 중대위험 0건, 고위험 4건, 중간위험 8건, 저위험 0건으로 확인됐다. 고위험 및 중대위험 항목은 총 4건으로 전체 평가 항목 12건의 0.0%를 차지했다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%, 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건으로 확인됐다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
@@ -567,20 +567,74 @@
         "section_code": "HIGH_RISK_ITEMS",
         "heading": "주요 고위험 항목",
         "content": "1. 위치: 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n2. 위치: 운동장, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 점검자 메모프로세스 확인용\n- 조치 내용: -\n\n3. 위치: 기석님 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n4. 위치: B동 2층, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 소화기 앞 박스 적치물 발견 -> 제거 조치 필요\n- 조치 내용: -",
-        "related_event_ids": [
+        "related_event_ids": [],
+        "evidence_ids": [
           "2026-08-03T09:00:00",
           "2026-07-28T08:43:54"
-        ],
-        "evidence_ids": []
+        ]
       }
     ],
     "conclusion": "위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이며, 미조치 평가 항목은 9건으로 확인됐다. 특히 고위험 또는 중대위험 미조치 항목 2건은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.",
     "limitations": []
   },
   "review": {
-    "passed": true,
-    "score": 100,
-    "issues": [],
-    "revision_instructions": []
+    "passed": false,
+    "score": 70,
+    "issues": [
+      {
+        "severity": "ERROR",
+        "category": "KPI",
+        "message": "요약과 위험도 분포 및 관리 현황 섹션에서 고위험 및 중대위험 항목 비율이 0.0%로 표기되어 KPI 수치의 33.3%와 불일치함.",
+        "section_code": "EXECUTIVE_SUMMARY"
+      },
+      {
+        "severity": "ERROR",
+        "category": "KPI",
+        "message": "위험도 분포 및 관리 현황 섹션에서 고위험 및 중대위험 항목 비율이 0.0%로 표기되어 KPI 수치의 33.3%와 불일치함.",
+        "section_code": "RISK_DISTRIBUTION"
+      },
+      {
+        "severity": "ERROR",
+        "category": "KPI",
+        "message": "조치 완료율과 승인 완료율이 25.0%로 표기되었으나 KPI 내 action_completion_rate와 approval_completion_rate는 25.0%이나, 조치 완료 건수 3건 중 전체 평가 건수 12건 대비 25.0%로 일치하나, 요약 문장과 위험도 분포 문장 내 수치 표현이 혼동을 유발함.",
+        "section_code": "EXECUTIVE_SUMMARY"
+      },
+      {
+        "severity": "ERROR",
+        "category": "KPI",
+        "message": "조치 완료율과 승인 완료율이 25.0%로 표기되었으나 KPI 내 action_completion_rate와 approval_completion_rate는 25.0%이나, 조치 완료 건수 3건 중 전체 평가 건수 12건 대비 25.0%로 일치하나, 요약 문장과 위험도 분포 문장 내 수치 표현이 혼동을 유발함.",
+        "section_code": "RISK_DISTRIBUTION"
+      },
+      {
+        "severity": "ERROR",
+        "category": "UNRESOLVED_ITEMS",
+        "message": "보고서 내 모든 inspection_history_id, action_history_id가 null로 존재하나, 보고서 본문에서 존재하지 않는 ID를 언급하지는 않으나, null ID 사용은 부적절함.",
+        "section_code": null
+      },
+      {
+        "severity": "ERROR",
+        "category": "REPEATED_RISKS",
+        "message": "요약, 위험도 분포 및 결론 섹션에서 고위험 및 중대위험 항목 비율 0.0%라는 동일 문구가 반복되어 혼동을 유발함.",
+        "section_code": "EXECUTIVE_SUMMARY"
+      },
+      {
+        "severity": "ERROR",
+        "category": "REPEATED_RISKS",
+        "message": "요약, 위험도 분포 및 결론 섹션에서 고위험 및 중대위험 항목 비율 0.0%라는 동일 문구가 반복되어 혼동을 유발함.",
+        "section_code": "RISK_DISTRIBUTION"
+      },
+      {
+        "severity": "ERROR",
+        "category": "REPEATED_RISKS",
+        "message": "요약, 위험도 분포 및 결론 섹션에서 고위험 및 중대위험 항목 비율 0.0%라는 동일 문구가 반복되어 혼동을 유발함.",
+        "section_code": "OVERALL_OPINION"
+      }
+    ],
+    "revision_instructions": [
+      "요약과 위험도 분포 및 관리 현황, 결론 섹션 내 고위험 및 중대위험 항목 비율을 KPI 수치인 약 33.3%로 수정할 것.",
+      "조치 완료율과 승인 완료율 수치를 KPI와 일치하도록 명확히 표현할 것.",
+      "inspection_history_id와 action_history_id가 null인 경우, 보고서 내에서 해당 ID를 언급하지 않도록 수정할 것.",
+      "요약, 위험도 분포 및 결론 섹션에서 동일한 고위험 및 중대위험 항목 비율 문구가 반복되지 않도록 문장 구성 변경할 것."
+    ]
   }
 }
