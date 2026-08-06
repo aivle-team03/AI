@@ -54,11 +54,11 @@ class CameraConfig:
 CAMERAS = {
     "fire-01": CameraConfig(
         "fire-01", BASE_DIR / "test3.mp4", BASE_DIR / "fire_finetuned_v5.pt",
-        "화재 감지", "fire", 1, 1, sample_fps=2.0,
+        "화재 감지", "fire", 1, 1, sample_fps=10.0,
     ),
     "forklift-03": CameraConfig(
         "forklift-03", BASE_DIR / "test1.mp4", BASE_DIR / "person-forklift2-best.pt",
-        "지게차 접근 위험", "forklift", 2, 1000006, sample_fps=2.0,
+        "지게차 접근 위험", "forklift", 2, 1000006, sample_fps=10.0,
     ),
 }
 
@@ -355,7 +355,7 @@ def stream(camera_id: str) -> StreamingResponse:
                 jpeg = worker.latest_jpeg
             if jpeg:
                 yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n"
-            time.sleep(0.1)
+            time.sleep(0.02)
     return StreamingResponse(frames(), media_type="multipart/x-mixed-replace; boundary=frame")
 
 
