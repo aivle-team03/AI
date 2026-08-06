@@ -1,9 +1,6 @@
 """BOSS CCTV AI 데모 서버.
 
 실행: python -m uvicorn ai_server:app --host 127.0.0.1 --port 8001
-
-테스트 영상은 이 AI 서비스가 소유하고, 프론트에는 분석 결과만 MJPEG로
-제공한다. 위험 감지 시에는 캡처 URL과 함께 백엔드 이벤트 API에도 저장한다.
 """
 
 from __future__ import annotations
@@ -34,8 +31,7 @@ SNAPSHOT_DIR = BASE_DIR / "snapshots"
 EVENT_STATE_PATH = SNAPSHOT_DIR / "event_cooldowns.json"
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
-EVENT_COOLDOWN_SECONDS = int(os.getenv("AI_EVENT_COOLDOWN_SECONDS", "60"))
-# 💡 소화장비 자동 점검 주기 (기본 7200초 = 2시간 / 테스트 시 짧게 변경 가능)
+EVENT_COOLDOWN_SECONDS = int(os.getenv("AI_EVENT_COOLDOWN_SECONDS", "300"))
 INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "60"))
 
 
@@ -43,25 +39,40 @@ INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "6
 class CameraConfig:
     camera_id: str
     source: Path
-    model_path: Path
     category_name: str
     detector: str
     cctv_id: int
     category_id: int
     confidence: float = 0.4
     sample_fps: float = 1.0
+    model_path: Path | None = None
+    
+    # 💡 다중 모델/다중 감지를 위한 확장 필드 (기본값 설정)
+    inspect_items: list[dict[str, Any]] = field(default_factory=list)
 
 
 CAMERAS = {
     "fire-01": CameraConfig(
-        "fire-01", BASE_DIR / "test3.mp4", BASE_DIR / "fire_finetuned_v5.pt",
-        "화재 감지", "fire", 1, 1, sample_fps=10.0,
+        camera_id="fire-01",
+        source=BASE_DIR / "test3.mp4",
+        model_path=BASE_DIR / "fire_finetuned_v5.pt",
+        category_name="화재 감지",
+        detector="fire",
+        cctv_id=1,
+        category_id=1,
+        sample_fps=10.0,
     ),
     "forklift-03": CameraConfig(
-        "forklift-03", BASE_DIR / "test1.mp4", BASE_DIR / "person-forklift2-best.pt",
-        "지게차 접근 위험", "forklift", 2, 1000006, sample_fps=10.0,
+        camera_id="forklift-03",
+        source=BASE_DIR / "test1.mp4",
+        model_path=BASE_DIR / "person-forklift2-best.pt",
+        category_name="지게차 접근 위험",
+        detector="forklift",
+        cctv_id=2,
+        category_id=1000006,
+        sample_fps=10.0,
     ),
-    # 💡 소화기/소화전 점검용 카메라 추가
+    # 💡 1대의 카메라로 소화기와 소화전 모델을 각각 적용하는 설정 예시
     "extinguisher-01": CameraConfig(
         camera_id="extinguisher-01",
         source=BASE_DIR / "test3.mp4",
@@ -73,12 +84,12 @@ CAMERAS = {
         inspect_items=[
             {
                 "name": "소화기 미감지",
-                "model_path": BASE_DIR / "extinguisher_best.pt",
+                "model_path": BASE_DIR / "fire extinguisher_best_v1.pt",
                 "category_id": 1000008,
             },
             {
                 "name": "소화전 미감지",
-                "model_path": BASE_DIR / "fire_plug_best.pt", # 소화전 모델 파일명
+                "model_path": BASE_DIR / "fire hose station_best.pt", # 소화전 모델 파일명
                 "category_id": 1000009, # 소화전 미감지 카테고리 ID
             },
         ],
@@ -115,12 +126,12 @@ def _save_event_cooldowns() -> None:
     EVENT_STATE_PATH.write_text(json.dumps(_last_persisted_events), encoding="utf-8")
 
 
-def should_persist_event(camera_id: str) -> bool:
+def should_persist_event(event_key: str) -> bool:
     now = time.time()
-    last_persisted_at = _last_persisted_events.get(camera_id, 0)
+    last_persisted_at = _last_persisted_events.get(event_key, 0)
     if now - last_persisted_at < EVENT_COOLDOWN_SECONDS:
         return False
-    _last_persisted_events[camera_id] = now
+    _last_persisted_events[event_key] = now
     _save_event_cooldowns()
     return True
 
@@ -135,28 +146,39 @@ def get_model(model_path: Path) -> YOLO:
         return _models[model_path]
 
 
-def send_backend_event(config: CameraConfig, snapshot_url: str) -> None:
-    """백엔드 POST /api/ai/events API 호출하여 이벤트 적재"""
+def send_backend_event(cctv_id: int, category_id: int, snapshot_url: str) -> None:
     payload = (
         '{"cctv_id": %d, "category_id": %d, "image_url": "%s"}'
-        % (config.cctv_id, config.category_id, snapshot_url)
+        % (cctv_id, category_id, snapshot_url)
     ).encode("utf-8")
     
-    # 💡 Request -> UrlRequest 로 변경
     request = UrlRequest(
-        f"{BACKEND_URL}/api/monitoring/events", 
+        f"{BACKEND_URL}/api/monitoring/events",
         data=payload,
-        headers={"Content-Type": "application/json"}, 
-        method="POST"
+        headers={"Content-Type": "application/json"},
+        method="POST",
     )
     try:
         with urlopen(request, timeout=5) as response:
-            print(f"백엔드 이벤트 저장 완료: {config.camera_id} ({response.status})", flush=True)
+            print(f"백엔드 이벤트 저장 완료: CCTV({cctv_id}), Category({category_id}) -> {response.status}", flush=True)
     except (URLError, TimeoutError) as error:
-        print(f"백엔드 이벤트 저장 실패 [{config.camera_id}]: {error}", flush=True)
+        print(f"백엔드 이벤트 저장 실패 [CCTV:{cctv_id}]: {error}", flush=True)
 
-def publish_event(config: CameraConfig, confidence: float, source_time: float, snapshot: bytes) -> None:
+
+def publish_event(
+    config: CameraConfig,
+    confidence: float,
+    source_time: float,
+    snapshot: bytes,
+    category_id: int | None = None,
+    category_name: str | None = None,
+) -> None:
     global _next_event_id
+
+    target_category_id = category_id or config.category_id
+    target_category_name = category_name or config.category_name
+    event_key = f"{config.camera_id}_{target_category_id}"
+
     with _event_lock:
         event_id = _next_event_id
         _next_event_id += 1
@@ -164,21 +186,25 @@ def publish_event(config: CameraConfig, confidence: float, source_time: float, s
         SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
         (SNAPSHOT_DIR / f"{snapshot_id}.jpg").write_bytes(snapshot)
         snapshot_url = f"{PUBLIC_URL}/snapshots/{snapshot_id}"
+        
         _events.append({
             "id": event_id,
             "cameraId": config.camera_id,
-            "categoryName": config.category_name,
+            "categoryName": target_category_name,
             "confidence": round(confidence, 3),
             "sourceTime": round(source_time, 2),
             "detectedAt": time.strftime("%Y-%m-%dT%H:%M:%S"),
             "snapshotUrl": snapshot_url,
         })
-    if should_persist_event(config.camera_id):
+
+    if should_persist_event(event_key):
         threading.Thread(
-            target=send_backend_event, args=(config, snapshot_url), daemon=True,
+            target=send_backend_event,
+            args=(config.cctv_id, target_category_id, snapshot_url),
+            daemon=True,
         ).start()
     else:
-        print(f"DB 이벤트 중복 저장 생략: {config.camera_id} ({EVENT_COOLDOWN_SECONDS}초 쿨다운)", flush=True)
+        print(f"DB 이벤트 중복 저장 생략: {event_key} ({EVENT_COOLDOWN_SECONDS}초 쿨다운)", flush=True)
 
 
 def _boxes_by_class(result: Any) -> tuple[list[tuple[tuple[int, int, int, int], float]], list[tuple[tuple[int, int, int, int], float]]]:
@@ -289,7 +315,9 @@ class CameraWorker:
                     self.latest_jpeg = encoded.tobytes()
                     self.frame_version += 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
-        model = get_model(self.config.model_path)
+        
+        # 실시간 모니터링 카메라용 모델 로드
+        model = get_model(self.config.model_path) if self.config.model_path else None
         frame_step = max(1, round(fps / self.config.sample_fps))
         frame_index = 0
         while self.running:
@@ -311,7 +339,7 @@ class CameraWorker:
                     ok, candidate = capture.read()
                 if ok:
                     frame, frame_index = candidate, frame_index + 1
-            if frame is None:
+            if frame is None or model is None:
                 continue
             result = model.predict(source=frame, conf=self.config.confidence, verbose=False)[0]
             if self.config.detector == "forklift":
@@ -333,67 +361,96 @@ class CameraWorker:
         capture.release()
 
 
-workers = {camera_id: CameraWorker(config) for camera_id, config in CAMERAS.items()}
+# 💡 소화장비(extinguisher) 카메라는 별도 점검 스케줄러에서 관리하므로 workers에서 제외
+workers = {
+    camera_id: CameraWorker(config)
+    for camera_id, config in CAMERAS.items()
+    if config.detector != "extinguisher"
+}
 _load_event_cooldowns()
 
 
-# 💡 [신규 추가] 2시간 주기 소화장비 점검 백그라운드 스케줄러
+# 💡 [다중 모델 지원] 주기적 소화장비 자동 점검 스케줄러
 def _run_equipment_inspector() -> None:
-    time.sleep(5)  # 서버 시작 후 5초 뒤 첫 점검
+    time.sleep(5)
     while True:
         print(f"\n🔍 [자동 점검] 소화장비(소화기/소화전) 존재 여부 검사를 시작합니다...", flush=True)
         for camera_id, config in CAMERAS.items():
             if config.detector != "extinguisher":
                 continue
 
-            # worker를 쓰지 않고 비디오에서 바로 최신 프레임 1장을 읽어옵니다.
             cap = cv2.VideoCapture(str(config.source))
             if not cap.isOpened():
-                print(f"⚠️ [{camera_id}] 영상을 열 수 없습니다.", flush=True)
+                print(f"⚠️ [{camera_id}] 영상을 열 수 없습니다: {config.source}", flush=True)
                 continue
 
             ok, frame = cap.read()
             cap.release()
 
             if not ok or frame is None:
-                print(f"⚠️ [{camera_id}] 프레임을 읽어오지 못했습니다.", flush=True)
+                print(f"⚠️ [{camera_id}] 프레임을 읽지 못했습니다.", flush=True)
                 continue
 
-            # 모델 추론
-            model = get_model(config.model_path)
-            result = model.predict(source=frame, conf=config.confidence, verbose=False)[0]
-            detected_count = len(result.boxes) if result.boxes is not None else 0
+            # JPEG 인코딩
+            _, encoded = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+            jpeg = encoded.tobytes()
 
-            # 💡 [핵심] 0개 미감지일 때만 이벤트 발행! (정상일 때는 절대 이벤트 안 보냄)
-            if detected_count == 0:
-                print(f"🚨 [소화장비 미감지 경고] {camera_id}: 소화기/소화전이 탐지되지 않았습니다! 백엔드 전송 중...", flush=True)
-                
-                # 이미지 JPEG 인코딩
-                _, encoded = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
-                jpeg = encoded.tobytes()
-                
-                # 미감지 시에만 백엔드로 이벤트 발행
-                publish_event(config, confidence=0.0, source_time=0.0, snapshot=jpeg)
-            else:
-                max_conf = float(result.boxes.conf.max()) if result.boxes is not None else 0.0
-                print(f"✅ [소화장비 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%}) - DB 저장 안 함", flush=True)
+            # 💡 단일 프레임(frame)으로 등록된 여러 모델을 순차 검사
+            items = config.inspect_items or [{
+                "name": config.category_name,
+                "model_path": config.model_path,
+                "category_id": config.category_id,
+            }]
+
+            for item in items:
+                model_path = item["model_path"]
+                category_id = item["category_id"]
+                item_name = item["name"]
+
+                if not model_path or not model_path.is_file():
+                    print(f"⚠️ [{camera_id}] 모델 파일이 없습니다: {model_path}", flush=True)
+                    continue
+
+                model = get_model(model_path)
+                result = model.predict(source=frame, conf=config.confidence, verbose=False)[0]
+                detected_count = len(result.boxes) if result.boxes is not None else 0
+
+                if detected_count == 0:
+                    print(f"🚨 [{item_name} 경고] {camera_id}: 감지되지 않았습니다! 이벤트 전송 중...", flush=True)
+                    publish_event(
+                        config=config,
+                        confidence=0.0,
+                        source_time=0.0,
+                        snapshot=jpeg,
+                        category_id=category_id,
+                        category_name=item_name,
+                    )
+                else:
+                    max_conf = float(result.boxes.conf.max()) if result.boxes is not None else 0.0
+                    print(f"✅ [{item_name} 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%})", flush=True)
 
         time.sleep(INSPECTION_INTERVAL_SECONDS)
 
 
 @app.on_event("startup")
 def preload_models() -> None:
-    """Warm model runtime at startup; CCTV video inference still starts per stream request."""
-    unique_model_paths = {config.model_path for config in CAMERAS.values()}
-    for model_path in unique_model_paths:
-        model = get_model(model_path)
-        model.predict(source=np.zeros((640, 640, 3), dtype=np.uint8), verbose=False)
-        print(f"AI 모델 워밍업 완료: {model_path.name}", flush=True)
-    
-    # 💡 2시간 주기 소화장비 점검 스케줄러 스레드 자동 가동
+    # 모든 모델 사전 로드
+    all_model_paths = set()
+    for config in CAMERAS.values():
+        if config.model_path:
+            all_model_paths.add(config.model_path)
+        for item in config.inspect_items:
+            if item.get("model_path"):
+                all_model_paths.add(item["model_path"])
+
+    for model_path in all_model_paths:
+        if model_path.is_file():
+            model = get_model(model_path)
+            model.predict(source=np.zeros((640, 640, 3), dtype=np.uint8), verbose=False)
+            print(f"AI 모델 워밍업 완료: {model_path.name}", flush=True)
+
     threading.Thread(target=_run_equipment_inspector, name="ai-extinguisher-inspector", daemon=True).start()
     print(f"소화장비 자동 점검 스케줄러 가동 완료 (주기: {INSPECTION_INTERVAL_SECONDS}초)", flush=True)
-    print("AI 모델 사전 로드 완료. CCTV 스트림 요청을 기다립니다.", flush=True)
 
 
 @app.get("/health")
@@ -426,8 +483,12 @@ def latest_frame(camera_id: str) -> Response:
     if worker is None:
         raise HTTPException(status_code=404, detail="camera not found")
     worker.start()
-    with worker.lock:
-        jpeg = worker.latest_jpeg
+    for _ in range(10):
+        with worker.lock:
+            jpeg = worker.latest_jpeg
+        if jpeg:
+            break
+        time.sleep(0.1)
     if not jpeg:
         raise HTTPException(status_code=503, detail="frame is warming up")
     return Response(content=jpeg, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
