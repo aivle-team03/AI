@@ -94,7 +94,16 @@ async def site_anomaly_review_node(state):
 
 
 def risk_assessment_table_node(state):
-    source_data = state["request"].model_dump(mode="json")
+    request = state["request"]
+    if getattr(request, "final_history_rows", None):
+        return {
+            "final_history_rows": [
+                row.model_dump(mode="json") if hasattr(row, "model_dump") else row
+                for row in request.final_history_rows
+            ]
+        }
+
+    source_data = request.model_dump(mode="json")
     return {"final_history_rows": build_final_history_table_14(source_data)}
 
 
