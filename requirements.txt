@@ -1,0 +1,8 @@
+langgraph
+openai
+python-dotenv
+fastapi
+uvicorn
+httpx
+sqlalchemy
+pymysql
