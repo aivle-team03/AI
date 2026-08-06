@@ -63,8 +63,25 @@ CAMERAS = {
     ),
     # 💡 소화기/소화전 점검용 카메라 추가
     "extinguisher-01": CameraConfig(
-        "extinguisher-01", BASE_DIR / "test3.mp4", BASE_DIR / "fire extinguisher_best_v1.pt",
-        "소화장비 미감지", "extinguisher", 1, 1000008, sample_fps=1.0,
+        camera_id="extinguisher-01",
+        source=BASE_DIR / "test3.mp4",
+        category_name="소화장비 점검",
+        detector="extinguisher",
+        cctv_id=1,           # 실제 DB에 존재하는 cctv_id
+        category_id=1000008, # 대표 category_id
+        sample_fps=1.0,
+        inspect_items=[
+            {
+                "name": "소화기 미감지",
+                "model_path": BASE_DIR / "extinguisher_best.pt",
+                "category_id": 1000008,
+            },
+            {
+                "name": "소화전 미감지",
+                "model_path": BASE_DIR / "fire_plug_best.pt", # 소화전 모델 파일명
+                "category_id": 1000009, # 소화전 미감지 카테고리 ID
+            },
+        ],
     ),
 }
 
@@ -322,41 +339,44 @@ _load_event_cooldowns()
 
 # 💡 [신규 추가] 2시간 주기 소화장비 점검 백그라운드 스케줄러
 def _run_equipment_inspector() -> None:
-    time.sleep(5)  # 서버 구동 후 첫 5초 대기
+    time.sleep(5)  # 서버 시작 후 5초 뒤 첫 점검
     while True:
         print(f"\n🔍 [자동 점검] 소화장비(소화기/소화전) 존재 여부 검사를 시작합니다...", flush=True)
         for camera_id, config in CAMERAS.items():
             if config.detector != "extinguisher":
                 continue
 
-            worker = workers.get(camera_id)
-            if not worker:
+            # worker를 쓰지 않고 비디오에서 바로 최신 프레임 1장을 읽어옵니다.
+            cap = cv2.VideoCapture(str(config.source))
+            if not cap.isOpened():
+                print(f"⚠️ [{camera_id}] 영상을 열 수 없습니다.", flush=True)
                 continue
 
-            worker.start()
-            time.sleep(1)
+            ok, frame = cap.read()
+            cap.release()
 
-            with worker.lock:
-                jpeg = worker.latest_jpeg
-
-            if not jpeg:
-                print(f"⚠️ [{camera_id}] 최신 프레임을 불러오지 못했습니다.", flush=True)
+            if not ok or frame is None:
+                print(f"⚠️ [{camera_id}] 프레임을 읽어오지 못했습니다.", flush=True)
                 continue
 
-            nparr = np.frombuffer(jpeg, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            # 모델 추론
             model = get_model(config.model_path)
-
             result = model.predict(source=frame, conf=config.confidence, verbose=False)[0]
             detected_count = len(result.boxes) if result.boxes is not None else 0
 
-            # 💡 소화기/소화전이 0개 탐지되면 이벤트 발행 및 DB 저장
+            # 💡 [핵심] 0개 미감지일 때만 이벤트 발행! (정상일 때는 절대 이벤트 안 보냄)
             if detected_count == 0:
-                print(f"🚨 [소화장비 미감지 경고] {camera_id}: 소화기/소화전이 탐지되지 않았습니다! 이벤트 전송 중...", flush=True)
-                publish_event(config, confidence=0.0, source_time=time.time(), snapshot=jpeg)
+                print(f"🚨 [소화장비 미감지 경고] {camera_id}: 소화기/소화전이 탐지되지 않았습니다! 백엔드 전송 중...", flush=True)
+                
+                # 이미지 JPEG 인코딩
+                _, encoded = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+                jpeg = encoded.tobytes()
+                
+                # 미감지 시에만 백엔드로 이벤트 발행
+                publish_event(config, confidence=0.0, source_time=0.0, snapshot=jpeg)
             else:
-                max_conf = float(result.boxes.conf.max())
-                print(f"✅ [소화장비 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%})", flush=True)
+                max_conf = float(result.boxes.conf.max()) if result.boxes is not None else 0.0
+                print(f"✅ [소화장비 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%}) - DB 저장 안 함", flush=True)
 
         time.sleep(INSPECTION_INTERVAL_SECONDS)
 
