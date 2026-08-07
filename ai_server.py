@@ -50,6 +50,19 @@ class CameraConfig:
     sample_fps: float = 1.0
 
 
+@dataclass
+class EquipmentInspection:
+    """가장 최근 소화설비 자동 점검 결과다."""
+
+    jpeg: bytes
+    inspected_at: float
+    source_time: float
+    detected_count: int
+    confidence: float
+    is_hazard: bool
+    reason: str | None = None
+
+
 # ID 값은 현재 Dahyun AI 스크립트가 백엔드에 보내던 값을 유지한다.
 # DB 시드가 다르면 환경 변수/설정으로 바꾸기 전에 실제 CCTV·카테고리 ID를 확인해야 한다.
 CAMERAS = {
@@ -75,7 +88,7 @@ CAMERAS = {
     ),
     "extinguisher-01": CameraConfig(
         camera_id="extinguisher-01",
-        source=BASE_DIR / "test5.mp4",
+        source=BASE_DIR / "test8.mp4",
         category_name="소화기 미감지",
         detector="extinguisher",
         cctv_id=1,
@@ -85,15 +98,18 @@ CAMERAS = {
     ),
     "hydrant-01": CameraConfig(
         camera_id="hydrant-01",
-        source=BASE_DIR / "test5.mp4",
+        source=BASE_DIR / "test9.mp4",
         category_name="소화전 미감지",
-        detector="extinguisher",
+        detector="hydrant",
         cctv_id=1,
         category_id=1000012,
         model_path=BASE_DIR / "fire hose station_best.pt",
         sample_fps=1.0,
     ),
 }
+
+# 소화기·소화전은 일반 위험 감지 스트림이 아니라, 설비 존재 여부를 주기적으로 점검한다.
+STATIC_EQUIPMENT_DETECTORS = {"extinguisher", "hydrant"}
 
 app = FastAPI(title="BOSS AI CCTV service")
 app.add_middleware(
@@ -109,6 +125,10 @@ _events: deque[dict[str, Any]] = deque(maxlen=200)
 _event_lock = threading.Lock()
 _next_event_id = 1
 _server_instance_id = uuid4().hex
+_equipment_inspections: dict[str, EquipmentInspection] = {}
+_equipment_inspection_lock = threading.Lock()
+
+
 def get_model(model_path: Path) -> YOLO:
     with _model_lock:
         if model_path not in _models:
@@ -164,6 +184,29 @@ def send_backend_event(config: CameraConfig, snapshot_url: str) -> None:
                 flush=True,
             )
             time.sleep(1)
+
+
+def record_equipment_inspection(
+    config: CameraConfig,
+    *,
+    jpeg: bytes,
+    source_time: float,
+    detected_count: int,
+    confidence: float,
+    is_hazard: bool,
+    reason: str | None,
+) -> None:
+    """프론트가 최신 점검 이미지와 판정 결과를 조회할 수 있게 보관한다."""
+    with _equipment_inspection_lock:
+        _equipment_inspections[config.camera_id] = EquipmentInspection(
+            jpeg=jpeg,
+            inspected_at=time.time(),
+            source_time=source_time,
+            detected_count=detected_count,
+            confidence=confidence,
+            is_hazard=is_hazard,
+            reason=reason,
+        )
 
 
 def publish_event(config: CameraConfig, confidence: float, source_time: float, snapshot: bytes) -> None:
@@ -377,7 +420,7 @@ class CameraWorker:
 workers = {
     camera_id: CameraWorker(config) 
     for camera_id, config in CAMERAS.items() 
-    if config.detector != "extinguisher"
+    if config.detector not in STATIC_EQUIPMENT_DETECTORS
 }
 
 _inspection_cursors: dict[str, int] = {}
@@ -387,7 +430,7 @@ def _run_equipment_inspector() -> None:
     while True:
         print(f"\n🔍 [자동 점검] 소화장비 존재 여부 검사를 시작합니다...", flush=True)
         for camera_id, config in CAMERAS.items():
-            if config.detector != "extinguisher":
+            if config.detector not in STATIC_EQUIPMENT_DETECTORS:
                 continue
 
             cap = cv2.VideoCapture(str(config.source))
@@ -427,7 +470,10 @@ def _run_equipment_inspector() -> None:
             annotated_frame = result.plot()  # 박스, 신뢰도, 클래스명이 그려진 BGR 이미지
 
             # 바운딩 박스가 그려진 프레임을 JPEG로 인코딩
-            _, encoded = cv2.imencode(".jpg", annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+            encoded_ok, encoded = cv2.imencode(".jpg", annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+            if not encoded_ok:
+                print(f"⚠️ [{camera_id}] 점검 결과 이미지를 만들지 못했습니다.", flush=True)
+                continue
             annotated_jpeg = encoded.tobytes()
 
             # 💡 [조건 변경] 감지된 개수가 0개이거나, 최고 신뢰도가 50% 미만인 경우 미감지(경고) 처리
@@ -436,6 +482,16 @@ def _run_equipment_inspector() -> None:
                     reason = "감지 객체 없음"
                 else:
                     reason = f"낮은 신뢰도 ({max_conf:.0%} < 50%)"
+
+                record_equipment_inspection(
+                    config,
+                    jpeg=annotated_jpeg,
+                    source_time=current_pos / fps,
+                    detected_count=detected_count,
+                    confidence=max_conf,
+                    is_hazard=True,
+                    reason=reason,
+                )
 
                 print(f"🚨 [{config.category_name} 경고] {camera_id}: 미감지 판단 ({reason})! 이벤트 전송 중...", flush=True)
                 
@@ -446,6 +502,15 @@ def _run_equipment_inspector() -> None:
                     snapshot=annotated_jpeg,
                 )
             else:
+                record_equipment_inspection(
+                    config,
+                    jpeg=annotated_jpeg,
+                    source_time=current_pos / fps,
+                    detected_count=detected_count,
+                    confidence=max_conf,
+                    is_hazard=False,
+                    reason=None,
+                )
                 print(f"✅ [{config.category_name} 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%})", flush=True)
 
         time.sleep(INSPECTION_INTERVAL_SECONDS)
@@ -506,6 +571,57 @@ def latest_frame(camera_id: str) -> Response:
     if not jpeg:
         raise HTTPException(status_code=503, detail="frame is warming up")
     return Response(content=jpeg, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/equipment/status")
+def equipment_status() -> dict[str, Any]:
+    """소화기·소화전 자동 점검 카드에 표시할 최신 상태를 반환한다."""
+    with _equipment_inspection_lock:
+        inspections = dict(_equipment_inspections)
+
+    equipment = []
+    for camera_id, config in CAMERAS.items():
+        if config.detector not in STATIC_EQUIPMENT_DETECTORS:
+            continue
+
+        inspection = inspections.get(camera_id)
+        item: dict[str, Any] = {
+            "cameraId": camera_id,
+            "categoryName": config.category_name,
+            "detector": config.detector,
+            "imageUrl": f"{PUBLIC_URL}/equipment/{camera_id}/frame",
+        }
+        if inspection is None:
+            item["status"] = "warming_up"
+        else:
+            item.update({
+                "status": "warning" if inspection.is_hazard else "normal",
+                "detectedCount": inspection.detected_count,
+                "confidence": inspection.confidence,
+                "inspectedAt": inspection.inspected_at,
+                "sourceTime": inspection.source_time,
+                "reason": inspection.reason,
+            })
+        equipment.append(item)
+
+    return {"inspectionIntervalSeconds": INSPECTION_INTERVAL_SECONDS, "equipment": equipment}
+
+
+@app.get("/equipment/{camera_id}/frame")
+def equipment_frame(camera_id: str) -> Response:
+    """최근 자동 점검에서 바운딩 박스를 그린 이미지 한 장을 반환한다."""
+    if camera_id not in CAMERAS or CAMERAS[camera_id].detector not in STATIC_EQUIPMENT_DETECTORS:
+        raise HTTPException(status_code=404, detail="equipment camera not found")
+
+    with _equipment_inspection_lock:
+        inspection = _equipment_inspections.get(camera_id)
+    if inspection is None:
+        raise HTTPException(status_code=503, detail="inspection is warming up")
+    return Response(
+        content=inspection.jpeg,
+        media_type="image/jpeg",
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/events")
