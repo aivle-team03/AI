@@ -1,6 +1,9 @@
 """BOSS CCTV AI 데모 서버.
 
 실행: python -m uvicorn ai_server:app --host 127.0.0.1 --port 8001
+
+테스트 영상은 이 AI 서비스가 소유하고, 프론트에는 분석 결과만 MJPEG로
+제공한다. 위험 감지 시에는 캡처 URL과 함께 백엔드 이벤트 API에도 저장한다.
 """
 
 from __future__ import annotations
@@ -9,13 +12,12 @@ import os
 import asyncio
 import threading
 import time
-import json
 from uuid import uuid4
 from collections import deque
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request as UrlRequest, urlopen
 
 import cv2
@@ -28,11 +30,11 @@ from ultralytics import YOLO
 
 BASE_DIR = Path(__file__).resolve().parent
 SNAPSHOT_DIR = BASE_DIR / "snapshots"
-EVENT_STATE_PATH = SNAPSHOT_DIR / "event_cooldowns.json"
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
-EVENT_COOLDOWN_SECONDS = int(os.getenv("AI_EVENT_COOLDOWN_SECONDS", "300"))
-INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "60"))
+
+# 소화장비 탐지 주기
+INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "600"))
 
 
 @dataclass(frozen=True)
@@ -43,56 +45,53 @@ class CameraConfig:
     detector: str
     cctv_id: int
     category_id: int
+    model_path: Path | None = None
     confidence: float = 0.4
     sample_fps: float = 1.0
-    model_path: Path | None = None
-    
-    # 💡 다중 모델/다중 감지를 위한 확장 필드 (기본값 설정)
-    inspect_items: list[dict[str, Any]] = field(default_factory=list)
 
 
+# ID 값은 현재 Dahyun AI 스크립트가 백엔드에 보내던 값을 유지한다.
+# DB 시드가 다르면 환경 변수/설정으로 바꾸기 전에 실제 CCTV·카테고리 ID를 확인해야 한다.
 CAMERAS = {
     "fire-01": CameraConfig(
         camera_id="fire-01",
         source=BASE_DIR / "test3.mp4",
-        model_path=BASE_DIR / "fire_finetuned_v5.pt",
         category_name="화재 감지",
         detector="fire",
         cctv_id=1,
         category_id=1,
+        model_path=BASE_DIR / "fire_finetuned_v5.pt",
         sample_fps=10.0,
     ),
     "forklift-03": CameraConfig(
         camera_id="forklift-03",
         source=BASE_DIR / "test1.mp4",
-        model_path=BASE_DIR / "person-forklift2-best.pt",
         category_name="지게차 접근 위험",
         detector="forklift",
         cctv_id=2,
         category_id=1000006,
+        model_path=BASE_DIR / "person-forklift2-best.pt",
         sample_fps=10.0,
     ),
-    # 💡 1대의 카메라로 소화기와 소화전 모델을 각각 적용하는 설정 예시
     "extinguisher-01": CameraConfig(
         camera_id="extinguisher-01",
-        source=BASE_DIR / "test6.mp4",
-        category_name="소화장비 점검",
+        source=BASE_DIR / "test5.mp4",
+        category_name="소화기 미감지",
         detector="extinguisher",
-        cctv_id=1,           # 실제 DB에 존재하는 cctv_id
-        category_id=1000008, # 대표 category_id
+        cctv_id=1,
+        category_id=1000011,
+        model_path=BASE_DIR / "fire extinguisher_best_v1.pt",
         sample_fps=1.0,
-        inspect_items=[
-            {
-                "name": "소화기 미감지",
-                "model_path": BASE_DIR / "fire extinguisher_best_v1.pt",
-                "category_id": 1000008,
-            },
-            {
-                "name": "소화전 미감지",
-                "model_path": BASE_DIR / "fire hose station_best.pt", # 소화전 모델 파일명
-                "category_id": 1000009, # 소화전 미감지 카테고리 ID
-            },
-        ],
+    ),
+    "hydrant-01": CameraConfig(
+        camera_id="hydrant-01",
+        source=BASE_DIR / "test5.mp4",
+        category_name="소화전 미감지",
+        detector="extinguisher",
+        cctv_id=1,
+        category_id=1000012,
+        model_path=BASE_DIR / "fire hose station_best.pt",
+        sample_fps=1.0,
     ),
 }
 
@@ -109,33 +108,7 @@ _model_lock = threading.Lock()
 _events: deque[dict[str, Any]] = deque(maxlen=200)
 _event_lock = threading.Lock()
 _next_event_id = 1
-_last_persisted_events: dict[str, float] = {}
-
-
-def _load_event_cooldowns() -> None:
-    if not EVENT_STATE_PATH.is_file():
-        return
-    try:
-        _last_persisted_events.update(json.loads(EVENT_STATE_PATH.read_text(encoding="utf-8")))
-    except (OSError, ValueError):
-        return
-
-
-def _save_event_cooldowns() -> None:
-    SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
-    EVENT_STATE_PATH.write_text(json.dumps(_last_persisted_events), encoding="utf-8")
-
-
-def should_persist_event(event_key: str) -> bool:
-    now = time.time()
-    last_persisted_at = _last_persisted_events.get(event_key, 0)
-    if now - last_persisted_at < EVENT_COOLDOWN_SECONDS:
-        return False
-    _last_persisted_events[event_key] = now
-    _save_event_cooldowns()
-    return True
-
-
+_server_instance_id = uuid4().hex
 def get_model(model_path: Path) -> YOLO:
     with _model_lock:
         if model_path not in _models:
@@ -146,68 +119,84 @@ def get_model(model_path: Path) -> YOLO:
         return _models[model_path]
 
 
-def send_backend_event(cctv_id: int, category_id: int, snapshot_url: str) -> None:
+def send_backend_event(config: CameraConfig, snapshot_url: str) -> None:
+    """백엔드가 늦게 준비돼도 감지 이벤트를 잃지 않도록 별도 스레드에서 전송한다."""
     payload = (
         '{"cctv_id": %d, "category_id": %d, "image_url": "%s"}'
-        % (cctv_id, category_id, snapshot_url)
+        % (config.cctv_id, config.category_id, snapshot_url)
     ).encode("utf-8")
-    
-    request = UrlRequest(
-        f"{BACKEND_URL}/api/monitoring/events",
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urlopen(request, timeout=5) as response:
-            print(f"백엔드 이벤트 저장 완료: CCTV({cctv_id}), Category({category_id}) -> {response.status}", flush=True)
-    except (URLError, TimeoutError) as error:
-        print(f"백엔드 이벤트 저장 실패 [CCTV:{cctv_id}]: {error}", flush=True)
+    # AI를 먼저 켜고 백엔드를 이어서 실행하는 경우가 있다. 기존 3초 재시도는
+    # 백엔드 기동 전에 끝나서 화면의 임시 알림만 남고 DB 이벤트가 사라졌다.
+    # 스트림 처리는 막지 않되, 백엔드가 준비될 시간을 충분히 준다.
+    attempt = 0
+    while True:
+        attempt += 1
+        request = UrlRequest(
+            f"{BACKEND_URL}/api/ai/events", data=payload,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        try:
+            with urlopen(request, timeout=5) as response:
+                print(f"백엔드 이벤트 저장: {config.camera_id} ({response.status})", flush=True)
+                return
+        except HTTPError as error:
+            # 4xx/5xx의 본문을 출력해야 category_id, DB 제약조건 같은 실제 원인을
+            # AI 서버 콘솔에서 바로 확인할 수 있다.
+            try:
+                detail = error.read().decode("utf-8", errors="replace")
+            except OSError:
+                detail = ""
+            # 잘못된 요청(4xx)은 재시도해도 해결되지 않는다. 반면 5xx는 백엔드
+            # reload/DB 연결이 완료될 때까지 잠시 발생할 수 있으므로 이벤트를
+            # 버리지 말고 계속 재시도한다.
+            print(
+                f"백엔드 이벤트 저장 실패 [{config.camera_id}] "
+                f"HTTP {error.code} (시도 {attempt}): {detail}",
+                flush=True,
+            )
+            if 400 <= error.code < 500:
+                return
+            time.sleep(1)
+        except (URLError, TimeoutError) as error:
+            print(
+                f"백엔드 이벤트 저장 대기 [{config.camera_id}] "
+                f"(시도 {attempt}): {error}",
+                flush=True,
+            )
+            time.sleep(1)
 
 
-def publish_event(
-    config: CameraConfig,
-    confidence: float,
-    source_time: float,
-    snapshot: bytes,
-    category_id: int | None = None,
-    category_name: str | None = None,
-) -> None:
+def publish_event(config: CameraConfig, confidence: float, source_time: float, snapshot: bytes) -> None:
     global _next_event_id
-
-    target_category_id = category_id or config.category_id
-    target_category_name = category_name or config.category_name
-    event_key = f"{config.camera_id}_{target_category_id}"
-
     with _event_lock:
         event_id = _next_event_id
         _next_event_id += 1
+        # DB 이벤트는 AI 서버가 재시작된 뒤에도 캡처를 보여야 하므로 숫자 ID가
+        # 아닌 고유 파일명으로 저장한다. /reset은 새 세션만 시작할 뿐 과거
+        # 이벤트 캡처를 지우지 않는다.
         snapshot_id = uuid4().hex
         SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
         (SNAPSHOT_DIR / f"{snapshot_id}.jpg").write_bytes(snapshot)
         snapshot_url = f"{PUBLIC_URL}/snapshots/{snapshot_id}"
-        
         _events.append({
             "id": event_id,
             "cameraId": config.camera_id,
-            "categoryName": target_category_name,
+            "categoryName": config.category_name,
             "confidence": round(confidence, 3),
             "sourceTime": round(source_time, 2),
             "detectedAt": time.strftime("%Y-%m-%dT%H:%M:%S"),
             "snapshotUrl": snapshot_url,
         })
-
-    if should_persist_event(event_key):
-        threading.Thread(
-            target=send_backend_event,
-            args=(config.cctv_id, target_category_id, snapshot_url),
-            daemon=True,
-        ).start()
-    else:
-        print(f"DB 이벤트 중복 저장 생략: {event_key} ({EVENT_COOLDOWN_SECONDS}초 쿨다운)", flush=True)
+    # worker의 emitted_in_session이 한 서버 실행/데모 재시작 세션에서 한 번만
+    # publish_event를 호출하도록 보장한다. 따라서 과거 실행의 파일 쿨다운 없이
+    # 현재 세션 감지는 항상 DB에도 남긴다.
+    threading.Thread(
+        target=send_backend_event, args=(config, snapshot_url), daemon=True,
+    ).start()
 
 
 def _boxes_by_class(result: Any) -> tuple[list[tuple[tuple[int, int, int, int], float]], list[tuple[tuple[int, int, int, int], float]]]:
+    """반환값은 (지게차 목록, 사람 목록)이며 각 요소는 (박스, 신뢰도)다."""
     forklifts: list[tuple[tuple[int, int, int, int], float]] = []
     persons: list[tuple[tuple[int, int, int, int], float]] = []
     if result.boxes is None:
@@ -229,6 +218,7 @@ def _center(box: tuple[int, int, int, int]) -> tuple[int, int]:
 
 
 def annotate_fire(frame: Any, result: Any) -> tuple[Any, bool]:
+    """YOLO 기본 plot 대신 화재 화면에 맞춘 간결한 경고 표시를 그린다."""
     annotated = frame.copy()
     hazard = result.boxes is not None and len(result.boxes) > 0
     if result.boxes is not None:
@@ -242,6 +232,7 @@ def annotate_fire(frame: Any, result: Any) -> tuple[Any, bool]:
 
 
 def annotate_forklift(frame: Any, result: Any) -> tuple[Any, bool]:
+    """Dahyun 방식: 바운딩박스 대신 중심점·거리선·위험 상태를 표시한다."""
     annotated = frame.copy()
     forklifts, persons = _boxes_by_class(result)
     danger = False
@@ -296,17 +287,41 @@ class CameraWorker:
 
     def reset(self) -> None:
         with self.lock:
+            # 현재 프레임은 새 첫 프레임이 준비될 때까지 유지한다. 상세 화면에서
+            # 돌아오거나 데모를 재시작할 때 검은 화면이 보이지 않게 하기 위함이다.
             self.consecutive_hits = 0
             self.emitted_in_session = False
             self.reset_requested = True
             self.reset_complete.clear()
         self.start()
 
+    def is_hazard(self, result: Any) -> bool:
+        if result.boxes is None or len(result.boxes) == 0:
+            return False
+        if self.config.detector == "fire":
+            return True
+        forklifts: list[tuple[int, int]] = []
+        persons: list[tuple[int, int]] = []
+        for box in result.boxes:
+            class_id = int(box.cls[0])
+            x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
+            center = ((x1 + x2) // 2, (y1 + y2) // 2)
+            if class_id == 0:
+                forklifts.append(center)
+            elif class_id == 1:
+                persons.append(center)
+        return any(
+            ((px - fx) ** 2 + (py - fy) ** 2) ** 0.5 <= 60
+            for px, py in persons for fx, fy in forklifts
+        )
+
     def _run(self) -> None:
         capture = cv2.VideoCapture(str(self.config.source))
         if not capture.isOpened():
             raise RuntimeError(f"테스트 영상을 열 수 없습니다: {self.config.source}")
         fps = capture.get(cv2.CAP_PROP_FPS) or 30.0
+        # 모델 로딩은 수 초가 걸릴 수 있다. 분석 준비 중에도 첫 원본 프레임을
+        # 보내면 프론트 CCTV 탭이 검은 화면으로 오래 남지 않는다.
         initial_ok, initial_frame = capture.read()
         if initial_ok:
             ok, encoded = cv2.imencode(".jpg", initial_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
@@ -315,9 +330,7 @@ class CameraWorker:
                     self.latest_jpeg = encoded.tobytes()
                     self.frame_version += 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
-        
-        # 실시간 모니터링 카메라용 모델 로드
-        model = get_model(self.config.model_path) if self.config.model_path else None
+        model = get_model(self.config.model_path)
         frame_step = max(1, round(fps / self.config.sample_fps))
         frame_index = 0
         while self.running:
@@ -339,7 +352,7 @@ class CameraWorker:
                     ok, candidate = capture.read()
                 if ok:
                     frame, frame_index = candidate, frame_index + 1
-            if frame is None or model is None:
+            if frame is None:
                 continue
             result = model.predict(source=frame, conf=self.config.confidence, verbose=False)[0]
             if self.config.detector == "forklift":
@@ -361,20 +374,18 @@ class CameraWorker:
         capture.release()
 
 
-# 💡 소화장비(extinguisher) 카메라는 별도 점검 스케줄러에서 관리하므로 workers에서 제외
 workers = {
-    camera_id: CameraWorker(config)
-    for camera_id, config in CAMERAS.items()
+    camera_id: CameraWorker(config) 
+    for camera_id, config in CAMERAS.items() 
     if config.detector != "extinguisher"
 }
-_load_event_cooldowns()
 
+_inspection_cursors: dict[str, int] = {}
 
-# 💡 [다중 모델 지원] 주기적 소화장비 자동 점검 스케줄러
 def _run_equipment_inspector() -> None:
     time.sleep(5)
     while True:
-        print(f"\n🔍 [자동 점검] 소화장비(소화기/소화전) 존재 여부 검사를 시작합니다...", flush=True)
+        print(f"\n🔍 [자동 점검] 소화장비 존재 여부 검사를 시작합니다...", flush=True)
         for camera_id, config in CAMERAS.items():
             if config.detector != "extinguisher":
                 continue
@@ -384,65 +395,69 @@ def _run_equipment_inspector() -> None:
                 print(f"⚠️ [{camera_id}] 영상을 열 수 없습니다: {config.source}", flush=True)
                 continue
 
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
+            fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+
+            current_pos = _inspection_cursors.get(camera_id, 0)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, current_pos)
+
             ok, frame = cap.read()
+
+            next_pos = (current_pos + int(fps * 3)) % total_frames
+            _inspection_cursors[camera_id] = next_pos
+
             cap.release()
 
             if not ok or frame is None:
                 print(f"⚠️ [{camera_id}] 프레임을 읽지 못했습니다.", flush=True)
                 continue
 
-            # JPEG 인코딩
-            _, encoded = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
-            jpeg = encoded.tobytes()
+            if not isinstance(config.model_path, Path) or not config.model_path.is_file():
+                print(f"⚠️ [{camera_id}] 모델 파일이 없습니다: {config.model_path}", flush=True)
+                continue
 
-            # 💡 단일 프레임(frame)으로 등록된 여러 모델을 순차 검사
-            items = config.inspect_items or [{
-                "name": config.category_name,
-                "model_path": config.model_path,
-                "category_id": config.category_id,
-            }]
+            model = get_model(config.model_path)
+            result = model.predict(source=frame, conf=config.confidence, verbose=False)[0]
+            detected_count = len(result.boxes) if result.boxes is not None else 0
 
-            for item in items:
-                model_path = item["model_path"]
-                category_id = item["category_id"]
-                item_name = item["name"]
+            # 최고 신뢰도 계산
+            max_conf = float(result.boxes.conf.max()) if (result.boxes is not None and len(result.boxes) > 0) else 0.0
 
-                if not model_path or not model_path.is_file():
-                    print(f"⚠️ [{camera_id}] 모델 파일이 없습니다: {model_path}", flush=True)
-                    continue
+            # YOLO 추론 결과(바운딩 박스 표시) 이미지 가져오기
+            annotated_frame = result.plot()  # 박스, 신뢰도, 클래스명이 그려진 BGR 이미지
 
-                model = get_model(model_path)
-                result = model.predict(source=frame, conf=config.confidence, verbose=False)[0]
-                detected_count = len(result.boxes) if result.boxes is not None else 0
+            # 바운딩 박스가 그려진 프레임을 JPEG로 인코딩
+            _, encoded = cv2.imencode(".jpg", annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+            annotated_jpeg = encoded.tobytes()
 
+            # 💡 [조건 변경] 감지된 개수가 0개이거나, 최고 신뢰도가 50% 미만인 경우 미감지(경고) 처리
+            if detected_count == 0 or max_conf < 0.5:
                 if detected_count == 0:
-                    print(f"🚨 [{item_name} 경고] {camera_id}: 감지되지 않았습니다! 이벤트 전송 중...", flush=True)
-                    publish_event(
-                        config=config,
-                        confidence=0.0,
-                        source_time=0.0,
-                        snapshot=jpeg,
-                        category_id=category_id,
-                        category_name=item_name,
-                    )
+                    reason = "감지 객체 없음"
                 else:
-                    max_conf = float(result.boxes.conf.max()) if result.boxes is not None else 0.0
-                    print(f"✅ [{item_name} 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%})", flush=True)
+                    reason = f"낮은 신뢰도 ({max_conf:.0%} < 50%)"
+
+                print(f"🚨 [{config.category_name} 경고] {camera_id}: 미감지 판단 ({reason})! 이벤트 전송 중...", flush=True)
+                
+                publish_event(
+                    config=config,
+                    confidence=max_conf,  # 50% 미만이어도 측정된 신뢰도 전달 (없으면 0.0)
+                    source_time=current_pos / fps,
+                    snapshot=annotated_jpeg,
+                )
+            else:
+                print(f"✅ [{config.category_name} 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%})", flush=True)
 
         time.sleep(INSPECTION_INTERVAL_SECONDS)
 
 
 @app.on_event("startup")
 def preload_models() -> None:
-    # 모든 모델 사전 로드
-    all_model_paths = set()
-    for config in CAMERAS.values():
-        if config.model_path:
-            all_model_paths.add(config.model_path)
-        for item in config.inspect_items:
-            if item.get("model_path"):
-                all_model_paths.add(item["model_path"])
-
+    all_model_paths = {
+        config.model_path 
+        for config in CAMERAS.values() 
+        if isinstance(config.model_path, Path)
+    }
     for model_path in all_model_paths:
         if model_path.is_file():
             model = get_model(model_path)
@@ -470,6 +485,8 @@ async def stream(camera_id: str, request: Request) -> StreamingResponse:
             with worker.lock:
                 jpeg = worker.latest_jpeg
                 frame_version = worker.frame_version
+            # 같은 JPEG를 매 0.02초마다 재전송하지 않는다. 클라이언트마다
+            # 새 분석 프레임이 만들어졌을 때 한 번만 전송한다.
             if jpeg and frame_version != last_sent_version:
                 yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n"
                 last_sent_version = frame_version
@@ -479,16 +496,13 @@ async def stream(camera_id: str, request: Request) -> StreamingResponse:
 
 @app.get("/frames/{camera_id}")
 def latest_frame(camera_id: str) -> Response:
+    """Return the most recent image immediately while a new MJPEG client connects."""
     worker = workers.get(camera_id)
     if worker is None:
         raise HTTPException(status_code=404, detail="camera not found")
     worker.start()
-    for _ in range(10):
-        with worker.lock:
-            jpeg = worker.latest_jpeg
-        if jpeg:
-            break
-        time.sleep(0.1)
+    with worker.lock:
+        jpeg = worker.latest_jpeg
     if not jpeg:
         raise HTTPException(status_code=503, detail="frame is warming up")
     return Response(content=jpeg, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
@@ -497,7 +511,10 @@ def latest_frame(camera_id: str) -> Response:
 @app.get("/events")
 def events(after: int = Query(0, ge=0)) -> dict[str, Any]:
     with _event_lock:
-        return {"events": [dict(event) for event in _events if event["id"] > after]}
+        return {
+            "serverInstanceId": _server_instance_id,
+            "events": [dict(event) for event in _events if event["id"] > after],
+        }
 
 
 @app.get("/snapshots/{snapshot_id}")
@@ -516,4 +533,6 @@ def reset() -> dict[str, Any]:
         _events.clear()
     for worker in workers.values():
         worker.reset()
+    # 모델의 첫 로딩을 기다리지 않는다. 각 worker는 원본 첫 프레임을 먼저
+    # 내보내므로 프론트는 즉시 화면을 그리고, 준비되면 분석 프레임으로 전환한다.
     return {"status": "reset", "ready": True, "warmingUp": True}
