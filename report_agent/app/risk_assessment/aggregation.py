@@ -122,7 +122,8 @@ def _board_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         row
         for row in rows
-        if _has_action(row) and str(row.get("type") or "").strip() == "게시판"
+        if _has_action(row)
+        and str(row.get("source_type") or row.get("type") or "").strip() == "게시판"
     ]
 
 def _inspection_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -247,7 +248,8 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             "medium_risk_records": risk_band_counts.get("MEDIUM", 0),
             "low_risk_records": risk_band_counts.get("LOW", 0),
             "high_or_critical_risk_records": len(high_risk_rows),
-            "high_or_critical_risk_rate": _round_rate(len(_board_action_rows(action_rows)), len(req.action_history)),
+            "high_or_critical_risk_rate":  _round_rate(len(high_risk_rows),len(inspection_rows)),
+            "board_action_history_rate": _round_rate(len(_board_action_rows(req.action_history)), len(req.action_history)),
             "action_total": len(action_rows),
             "action_completed": len(completed_action_rows),
             "action_completion_rate": _round_rate(len(completed_action_rows), len(inspection_rows)),

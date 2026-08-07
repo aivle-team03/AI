@@ -50,7 +50,7 @@ RISK_ASSESSMENT_REPORT_WRITER_PROMPT = """
    - 이상패턴, 반복 발생 원인, 개선 필요 원인은 쓰지 마세요.
 3. 주요 고위험 항목
    - high_risk_items 또는 unaddressed_high_risk_items에 있는 항목만 사용하세요.
-   - 각 항목은 가능한 범위에서 inspection_history_id, 위치, 위험유형, 위험도, 조치/승인 상태를 포함하세요.
+   - 각 항목은 가능한 범위에서  위치, 위험유형, 위험도, 조치/승인 상태를 포함하세요.
 4. 결론
    - 전체 위험성평가 결과를 객관적으로 종합하세요.
    - 개선권고안, 현장관리자 조치 지시, 재발방지 대책은 작성하지 마세요.
@@ -77,7 +77,6 @@ RISK_ASSESSMENT_REPORT_REVIEW_PROMPT = """
 - KPI 수치가 aggregated_data.kpi와 일치하는지 확인하세요.
 - 위험도 분포와 관리 현황 설명이 aggregated_data.risk_distribution, kpi와 모순되지 않는지 확인하세요.
 - 주요 고위험 항목이 high_risk_items 또는 unaddressed_high_risk_items에 근거하는지 확인하세요.
-- 존재하지 않는 inspection_history_id, action_history_id, event_id를 언급하면 오류로 판단하세요.
 - 이상패턴 분석, 개선권고안, 권고사항, 반복 발생 원인 분석, 현장 확인 체크포인트, 재발방지 대책, 현장관리자 조치 지시가 포함되면 오류로 판단하세요.
 - 원본에 없는 사고 원인, 책임 소재, 법적 판단, 비용 효과가 단정적으로 쓰이면 오류로 판단하세요.
 - 위험성평가보고서 문체로 객관적이고 근거 중심인지 확인하세요.

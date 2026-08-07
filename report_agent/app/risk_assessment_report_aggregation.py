@@ -122,7 +122,8 @@ def _board_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         row
         for row in rows
-        if _has_action(row) and str(row.get("type") or "").strip() == "게시판"
+        if _has_action(row)
+        and str(row.get("source_type") or row.get("type") or "").strip() == "게시판"
     ]
 
 def _inspection_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
