@@ -62,7 +62,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--output",
-        default="output/risk_assessment_form_filled.csv",
+        default="output/risk_assessment_form/risk_assessment_form_filled.csv",
         help="Filled CSV output path. XLSX is generated beside this path.",
     )
     args = parser.parse_args()

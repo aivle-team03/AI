@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+EXTERNAL_OUTPUT_ROOT = PROJECT_ROOT.parent / "output"
 INSPECTION_DONE = "점검 완료"
 APPROVED = "승인 완료"
 TYPE_INSPECTION = "점검이력"
@@ -173,18 +175,22 @@ def main() -> None:
     )
     parser.add_argument(
         "--input",
-        default="output/BackendData.json",
+        default=str(EXTERNAL_OUTPUT_ROOT / "risk_assessment_form" / "BackendData.json"),
         help="BackendData JSON path.",
     )
     parser.add_argument(
         "--output",
-        default="output/final_history_table_14.json",
+        default=str(PROJECT_ROOT / "output" / "final_history_table_14.json"),
         help="Compact final table JSON path.",
     )
     args = parser.parse_args()
 
     input_path = Path(args.input)
     output_path = Path(args.output)
+    if not input_path.is_absolute():
+        input_path = PROJECT_ROOT / input_path
+    if not output_path.is_absolute():
+        output_path = PROJECT_ROOT / output_path
 
     with input_path.open("r", encoding="utf-8-sig") as file:
         tables = json.load(file)
@@ -209,3 +215,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
