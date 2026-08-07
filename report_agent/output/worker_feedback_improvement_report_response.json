@@ -213,7 +213,7 @@
         "category": "REPORT_STYLE",
         "original_text": "없다",
         "corrected_text": "없음",
-        "message": "구어체 표현 '없다'를 더 간결하고 객관적인 '없음'으로 수정함.",
+        "message": "더 간결하고 객관적인 표현으로 변경하여 보고서 문체에 적합하게 수정함.",
         "recommendation": "이와 같은 문체 정리는 적절하며 승인합니다."
       },
       {
@@ -230,9 +230,9 @@
     "items_requiring_revision": []
   },
   "word_output_paths": [
-    "output\\worker_feedback_reports\\worker_feedback_001_ㄴㄴ_06.docx",
-    "output\\worker_feedback_reports\\worker_feedback_002_화재_감지_06.docx",
-    "output\\worker_feedback_reports\\worker_feedback_003_ㄴㄴ_06.docx",
-    "output\\worker_feedback_reports\\worker_feedback_004_현수님_06.docx"
+    "output\\worker_feedback_reports\\worker_feedback_001_ㄴㄴ_07.docx",
+    "output\\worker_feedback_reports\\worker_feedback_002_화재_감지_07.docx",
+    "output\\worker_feedback_reports\\worker_feedback_003_ㄴㄴ_07.docx",
+    "output\\worker_feedback_reports\\worker_feedback_004_현수님_07.docx"
   ]
 }

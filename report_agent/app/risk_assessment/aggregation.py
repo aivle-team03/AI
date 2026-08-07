@@ -178,6 +178,8 @@ def _high_risk_item(row: dict[str, Any]) -> dict[str, Any]:
         "action_completed": _action_completed(row),
         "approval_completed": _approval_completed(row),
         "approval_name": row.get("approver_name"),
+        "date" : row.get("inspection_date") or row.get("completed_at"),
+        "handler" :  row.get("handler_name") or row.get("inspection_user_name"),
     }
 
 
@@ -254,7 +256,7 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             "low_risk_records": risk_band_counts.get("LOW", 0),
             "high_or_critical_risk_records": len(high_risk_rows),
             "high_or_critical_risk_rate":  _round_rate(len(high_risk_rows),len(inspection_rows)),
-            "board_action_history_rate": _round_rate(len(_board_action_rows(req.action_history)), len(req.action_history)),
+            "board_action_history_rate": _round_rate(len(_board_action_rows(rows)), len(rows)),
             "risk_recurrence_rate": _round_rate( len (_recurrence_rows(inspection_rows)), len(inspection_rows)),
             "action_total": len(action_rows),
             "action_completed": len(completed_action_rows),

@@ -9,10 +9,10 @@ from datetime import datetime
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_template.docx"
-DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_reports" / "risk_assessment_report_response.json"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_reports" / "risk_assessment_report.docx"
+DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_response.json"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_report.docx"
 
 
 def _section_content(report: dict, section_code: str) -> str:
@@ -69,8 +69,6 @@ def _value_map(response: dict) -> dict[str, str]:
         "aggregated_data.kpi.action_total": str(kpi.get("action_total", 0)),
         "aggregated_data.kpi.action_completion_rate": f"{kpi.get('action_completion_rate', 0)}%",
         "aggregated_data.kpi.approval_completion_rate": f"{kpi.get('approval_completion_rate', 0)}%",
-        "aggregated_data.kpi.board_action_history_rate": f"{kpi.get('board_action_history_rate', 0)}%",
-        "aggregated_data.kpi.risk_recurrence_rate": f"{kpi.get('risk_recurrence_rate', 0)}%",
         "aggregated_data.kpi.unaddressed_assessment_records": str(kpi.get("unaddressed_assessment_records", 0)),
         "aggregated_data.kpi.unaddressed_high_risk_records": str(kpi.get("unaddressed_high_risk_records", 0)),
         "aggregated_data.risk_distribution.risk_band_counts": _fmt_count_map(risk_distribution.get("risk_band_counts")),
@@ -83,10 +81,6 @@ def _value_map(response: dict) -> dict[str, str]:
         "aggregated_data.high_risk_items.action_name": _fmt_items(high_risk_items, "action_name"),
         "aggregated_data.high_risk_items.action_content": _fmt_items(high_risk_items, "action_content"),
         "aggregated_data.high_risk_items.approval_name": _fmt_items(high_risk_items, "approval_name"),
-        "aggregated_data.high_risk_items.location": _fmt_items(high_risk_items, "location"),
-        "aggregated_data.high_risk_items.date": _fmt_items(high_risk_items, "date"),
-        "aggregated_data.high_risk_items.handler": _fmt_items(high_risk_items, "handler"),
-            
     }
 
 
@@ -132,11 +126,6 @@ def _xml_text(value: str) -> str:
 HIGH_RISK_PREFIX = "aggregated_data.high_risk_items."
 
 
-def _clean_placeholder_key(raw_key: str) -> str:
-    """Strip XML tags that Word's spellcheck/autoformat can insert inside a {{...}} placeholder."""
-    return re.sub(r"<[^>]+>", "", raw_key).strip()
-
-
 def _item_state(value: bool, done_text: str, pending_text: str) -> str:
     return done_text if value else pending_text
 
@@ -156,7 +145,7 @@ def _high_risk_item_value(item: dict, index: int, key: str) -> str:
 
 def _replace_high_risk_placeholders(row_xml: str, item: dict, index: int) -> str:
     def replace(match: re.Match) -> str:
-        key = _clean_placeholder_key(match.group(1))
+        key = match.group(1).strip()
         if key.startswith(HIGH_RISK_PREFIX):
             item_key = key.removeprefix(HIGH_RISK_PREFIX)
             return _xml_text(_high_risk_item_value(item, index, item_key))
@@ -168,17 +157,10 @@ def _replace_high_risk_placeholders(row_xml: str, item: dict, index: int) -> str
 def _expand_high_risk_item_rows(document_xml: str, response: dict) -> str:
     items = ((response.get("aggregated_data") or {}).get("high_risk_items") or [])
     row_pattern = re.compile(r"<w:tr[\s\S]*?</w:tr>")
-    placeholder_pattern = re.compile(r"\{\{\s*([^{}]+?)\s*\}\}")
-
-    def row_has_high_risk_placeholder(row_xml: str) -> bool:
-        return any(
-            _clean_placeholder_key(match.group(1)).startswith(HIGH_RISK_PREFIX)
-            for match in placeholder_pattern.finditer(row_xml)
-        )
 
     def replace_row(match: re.Match) -> str:
         row_xml = match.group(0)
-        if not row_has_high_risk_placeholder(row_xml):
+        if "{{aggregated_data.high_risk_items." not in row_xml:
             return row_xml
         source_items = items or [{}]
         return "".join(
@@ -201,7 +183,7 @@ def fill_docx_template(response: dict, template_path: Path, output_path: Path) -
                     text = _expand_high_risk_item_rows(text, response)
 
                 def replace(match: re.Match) -> str:
-                    key = _clean_placeholder_key(match.group(1))
+                    key = match.group(1).strip()
                     return _xml_text(values.get(key, "-"))
 
                 text = pattern.sub(replace, text)
@@ -229,7 +211,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
 
 
 
