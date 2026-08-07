@@ -41,6 +41,10 @@ def _clean_and_parse_json_for_veo(raw_text: str, context: str = ""):
 
 
 # 파이프라인별 LLM 토큰 집계용 글로벌 저장소
+# 스토리보드 프롬프트에 넣을 문서 원문의 최대 길이.
+# 문서 분석(analyze_document)이 12,000자를 보므로 같은 값으로 맞춘다.
+MAX_SOURCE_TEXT_CHARS = 12000
+
 _ACCUMULATED_TOKEN_USAGE = {"input_tokens": 0, "output_tokens": 0}
 
 
@@ -69,7 +73,9 @@ def _call_gemini_for_veo_sync(api_key: str, payload: dict, models: List[str]) ->
         # Vertex에 실제로 존재하는 모델만 나열한다. 존재하지 않는 이름은 404로 즉시 실패해 폴백이
         # 무력해지고, 그러면 호출 한도에 자주 걸리는 AI Studio로 곧장 넘어가 Fallback 대본을 쓰게 된다.
         # (2026-08-04 실측: 2.0-flash / 1.5-flash / flash-latest 는 이 프로젝트에서 모두 404)
-        vertex_models = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.5-pro"]
+        # lite를 pro보다 뒤에 둔다. lite는 빠르지만 대본 글자 수 같은 지시를 자주 무시해서
+        # 앞에 두면 상위 모델이 한 번 실패했을 때 곧바로 품질이 떨어진 대본이 확정된다.
+        vertex_models = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"]
         for v_model in vertex_models:
             url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{v_model}:generateContent"
             headers = {
@@ -78,10 +84,13 @@ def _call_gemini_for_veo_sync(api_key: str, payload: dict, models: List[str]) ->
             }
             req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers)
             try:
-                with urllib.request.urlopen(req, timeout=40) as resp:
+                # generateContent는 스트리밍이 아니라 응답 전체가 생성될 때까지 아무것도 반환하지 않는다.
+                # 대기 시간은 입력이 아니라 출력 길이에 비례한다. 스토리보드 생성은 장면 10개의 대본과
+                # veo_prompt를 만드느라 2,000토큰 이상을 뱉어서 40초로는 부족했다. (2026-08-06 실측)
+                with urllib.request.urlopen(req, timeout=120) as resp:
                     res_data = json.loads(resp.read().decode("utf-8"))
                     text_out = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                    
+
                     # 토큰 메타데이터 집계
                     meta = res_data.get("usageMetadata", {})
                     in_tok = meta.get("promptTokenCount", 0)
@@ -100,7 +109,7 @@ def _call_gemini_for_veo_sync(api_key: str, payload: dict, models: List[str]) ->
             headers = {"Content-Type": "application/json"}
             req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers)
             try:
-                with urllib.request.urlopen(req, timeout=40) as resp:
+                with urllib.request.urlopen(req, timeout=120) as resp:
                     res_data = json.loads(resp.read().decode("utf-8"))
                     text_out = res_data["candidates"][0]["content"]["parts"][0]["text"]
 
@@ -253,7 +262,7 @@ async def generate_veo_prompts_from_parsed_text(
 ]
 
 파싱 문서 원문:
-{extracted_text[:4000]}
+{extracted_text[:MAX_SOURCE_TEXT_CHARS]}
 """
     if request:
         user_prompt += f"사용자 추가 요청: {request}\n"

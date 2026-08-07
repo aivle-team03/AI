@@ -1,15 +1,16 @@
 import os
 import shutil
+import tempfile
 from typing import Optional
 
-from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadFile, status
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import FRONTEND_ORIGINS, UPLOAD_DIR
+from app.config import FRONTEND_ORIGINS
 from app.pipeline import (
     create_veo_task_record,
     get_veo_task_status,
-    process_veo_summary_video_pipeline,
+    process_veo_pipeline_task,
 )
 from app.schemas import VideoGenerateResponse, VideoStatusResponse
 
@@ -40,7 +41,6 @@ def health() -> dict:
     status_code=status.HTTP_202_ACCEPTED,
 )
 async def generate_video(
-    background_tasks: BackgroundTasks,
     company_id: int = Form(...),
     file: Optional[UploadFile] = File(None),
     text_content: Optional[str] = Form(None),
@@ -57,19 +57,21 @@ async def generate_video(
         )
 
     task_id = create_veo_task_record()
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+    # 파이프라인이 같은 프로세스에서 돌기 때문에 업로드본을 영구 경로에 둘 이유가 없다.
+    # OS 임시 디렉터리에 쓰고 파이프라인의 finally에서 지운다.
+    # 파서가 확장자로 파싱 방식을 고르므로(parse_document_content) 원본 확장자를 유지해야 한다.
     if file:
-        file_path = os.path.join(UPLOAD_DIR, f"{task_id}_{os.path.basename(file.filename or 'upload')}")
-        with open(file_path, "wb") as buffer:
+        suffix = os.path.splitext(file.filename or "")[1].lower() or ".bin"
+        fd, file_path = tempfile.mkstemp(prefix=f"{task_id}_", suffix=suffix)
+        with os.fdopen(fd, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     else:
-        file_path = os.path.join(UPLOAD_DIR, f"{task_id}_text.txt")
-        with open(file_path, "wb") as buffer:
+        fd, file_path = tempfile.mkstemp(prefix=f"{task_id}_", suffix=".txt")
+        with os.fdopen(fd, "wb") as buffer:
             buffer.write(text_content.encode("utf-8"))
 
-    background_tasks.add_task(
-        process_veo_summary_video_pipeline,
+    process_veo_pipeline_task.delay(
         task_id=task_id,
         file_path=file_path,
         company_id=company_id,

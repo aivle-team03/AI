@@ -22,15 +22,86 @@ async def _generate_json(instruction: str) -> Optional[Dict[str, Any]]:
     return await generate_json_response(instruction)
 
 
-async def analyze_document(document_text: str) -> Dict[str, Any]:
-    """[문서분석 Agent] 전달받은 교육 문서 원문에서 핵심 주제, 안전 수칙, 위험 요소를 정밀 분석한다."""
+# 한 번의 분석 호출에 넣을 원문 길이. 이 단위로 문서를 나눠 전부 분석한다.
+ANALYSIS_CHUNK_CHARS = 12000
+# 분석 호출 상한. 초과분은 버린다. (12,000 x 10 = 120,000자)
+MAX_ANALYSIS_CHUNKS = 10
+# 조각 분석 동시 호출 수. 조각이 실패하면 재시도 없이 그만큼 내용이 빠지므로
+# 429를 애초에 만들지 않도록 제한한다. 클립 생성(veo/pipelines.py)과 같은 값을 쓴다.
+MAX_CONCURRENT_ANALYSIS = 4
+# 병합 결과 상한. 조각 수에 비례해 늘어나면 스토리보드 프롬프트 예산을 혼자 다 먹는다.
+_MERGE_CAPS = {"key_rules": 12, "hazards": 8, "required_actions": 12}
+
+
+def _chunk_document(document_text: str) -> List[str]:
+    """문서를 분석 단위로 나눈다. 앞에서부터 자르면 목차·표지만 반영되므로 전체를 훑는다."""
+    text = document_text or ""
+    chunks = [
+        text[i:i + ANALYSIS_CHUNK_CHARS]
+        for i in range(0, len(text), ANALYSIS_CHUNK_CHARS)
+    ]
+    return chunks[:MAX_ANALYSIS_CHUNKS] or [""]
+
+
+async def _analyze_chunk(chunk_text: str) -> Optional[Dict[str, Any]]:
     prompt = f"""전달받은 사업장 안전 교육 문서를 정밀 분석하여 핵심 지침을 추출하세요. 반드시 아래 JSON 형식으로만 응답하세요:
 {{"topic":"교육 주제", "key_rules":["핵심 안전 수칙 1", "..."], "hazards":["위험 요소 1", "..."], "required_actions":["필수 행동 수칙 1", "..."], "source_summary":"문서 원문 요약 2~3문장"}}
 문서에 명시되지 않은 지침을 임의로 생성하지 마세요.
-문서 원문:\n{document_text[:12000]}"""
-    result = await _generate_json(prompt)
+문서 원문:\n{chunk_text}"""
+    return await _generate_json(prompt)
+
+
+def _merge_analyses(results: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """조각별 분석을 하나로 합친다. 항목은 순서를 유지한 채 중복을 제거하고 상한까지만 남긴다."""
+    merged: Dict[str, Any] = {}
+    for field, cap in _MERGE_CAPS.items():
+        seen, items = set(), []
+        for result in results:
+            for item in result.get(field) or []:
+                key = " ".join(str(item).split())
+                if key and key not in seen:
+                    seen.add(key)
+                    items.append(item)
+        merged[field] = items[:cap]
+
+    # 주제는 문서 앞부분(제목이 있는 조각)에서 가져온다.
+    merged["topic"] = next(
+        (r.get("topic") for r in results if r.get("topic")), "사업장 안전 교육"
+    )
+    summaries = [r.get("source_summary") for r in results if r.get("source_summary")]
+    merged["source_summary"] = " ".join(summaries)[:1000]
+    return merged
+
+
+async def analyze_document(document_text: str) -> Dict[str, Any]:
+    """[문서분석 Agent] 교육 문서 원문에서 핵심 주제, 안전 수칙, 위험 요소를 정밀 분석한다.
+
+    문서가 길면 조각으로 나눠 전부 분석한 뒤 병합한다. 앞부분만 보면 법령처럼 목차·총칙이
+    앞에 오는 문서에서 실무 지침이 통째로 누락된다. (105,192자 문서 실측: 기존 방식 반영률 11.4%)
+    """
+    chunks = _chunk_document(document_text)
+
+    if len(chunks) == 1:
+        result = await _analyze_chunk(chunks[0])
+    else:
+        print(f"[DocAnalysis] 문서 {len(document_text):,}자 → {len(chunks)}개 조각 분석 "
+              f"(최대 {MAX_CONCURRENT_ANALYSIS}개씩 동시)")
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT_ANALYSIS)
+
+        async def analyze_with_limit(chunk: str) -> Optional[Dict[str, Any]]:
+            async with semaphore:
+                return await _analyze_chunk(chunk)
+
+        raw = await asyncio.gather(
+            *[analyze_with_limit(chunk) for chunk in chunks], return_exceptions=True
+        )
+        valid = [r for r in raw if isinstance(r, dict) and r.get("key_rules")]
+        print(f"[DocAnalysis] 조각 분석 성공 {len(valid)}/{len(chunks)}")
+        result = _merge_analyses(valid) if valid else None
+
     if result and result.get("key_rules"):
         return result
+
     summary = " ".join(document_text.split())[:500]
     return {
         "topic": "사업장 안전 교육",

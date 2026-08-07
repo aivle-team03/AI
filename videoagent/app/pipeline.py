@@ -2,6 +2,7 @@ import asyncio
 import os
 from typing import Any, Dict, Optional
 
+from app.celery_app import celery_app
 from app.config import OUTPUT_DIR
 from app.task_store import create_task, get_task, update_task
 from app.utils.cloudinary_utils import upload_video_to_cloudinary
@@ -194,3 +195,34 @@ async def process_veo_summary_video_pipeline(
                 os.remove(file_path)
             except OSError:
                 pass
+
+
+@celery_app.task(name="videoagent.process_veo_pipeline_task")
+def process_veo_pipeline_task(
+    task_id: str,
+    file_path: str,
+    company_id: int,
+    title: Optional[str] = None,
+    category: Optional[str] = "공통",
+    type: Optional[str] = "필수",
+    request: Optional[str] = None,
+    target_duration_seconds: Optional[int] = None,
+):
+    """Celery 워커가 실행할 동기 래퍼.
+
+    워커는 웹 서버와 다른 프로세스이므로 file_path는 두 프로세스가 함께 볼 수 있는
+    경로여야 한다. 같은 머신이면 OS 임시 디렉터리로 충분하지만, 웹과 워커를 별도
+    컨테이너로 띄운다면 공유 볼륨을 마운트해야 한다.
+    """
+    asyncio.run(
+        process_veo_summary_video_pipeline(
+            task_id=task_id,
+            file_path=file_path,
+            company_id=company_id,
+            title=title,
+            category=category,
+            type=type,
+            request=request,
+            target_duration_seconds=target_duration_seconds,
+        )
+    )

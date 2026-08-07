@@ -72,34 +72,3 @@ def _concat_video_clips_ffmpeg(clip_paths: List[str], output_path: str) -> bool:
     finally:
         if os.path.exists(list_file):
             os.remove(list_file)
-
-
-def _attach_audio_to_video_ffmpeg(video_path: str, audio_path: str, output_path: str) -> str:
-    """FFmpeg를 사용해 한국어 고품질 Neural TTS 오디오(MP3)를 Veo 비디오 클립에 또박또박 믹싱/합성한다."""
-    if not os.path.exists(video_path) or not os.path.exists(audio_path) or os.path.getsize(audio_path) < 100:
-        return video_path
-
-    ffmpeg_bin = _get_ffmpeg_executable()
-    temp_output = output_path + ".muxed.mp4"
-    cmd = [
-        ffmpeg_bin, "-y",
-        "-i", video_path,
-        "-i", audio_path,
-        "-map", "0:v:0",
-        "-map", "1:a:0",
-        "-c:v", "copy",
-        "-c:a", "aac",
-        temp_output
-    ]
-    try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        if res.returncode == 0 and os.path.exists(temp_output) and os.path.getsize(temp_output) > 0:
-            import shutil
-            shutil.move(temp_output, output_path)
-            print(f"[VeoAudioMux] SUCCESS: 한국어 Neural TTS 오디오 병합 완료 -> {output_path}")
-            return output_path
-    except Exception as e:
-        print(f"[VeoAudioMux] WARNING: 오디오 병합 중 예외 발생 (기존 오디오 사용): {e}")
-        if os.path.exists(temp_output):
-            os.remove(temp_output)
-    return video_path
