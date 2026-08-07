@@ -26,6 +26,9 @@ async def _generate_json(instruction: str) -> Optional[Dict[str, Any]]:
 ANALYSIS_CHUNK_CHARS = 12000
 # 분석 호출 상한. 초과분은 버린다. (12,000 x 10 = 120,000자)
 MAX_ANALYSIS_CHUNKS = 10
+# 조각 분석 동시 호출 수. 조각이 실패하면 재시도 없이 그만큼 내용이 빠지므로
+# 429를 애초에 만들지 않도록 제한한다. 클립 생성(veo/pipelines.py)과 같은 값을 쓴다.
+MAX_CONCURRENT_ANALYSIS = 4
 # 병합 결과 상한. 조각 수에 비례해 늘어나면 스토리보드 프롬프트 예산을 혼자 다 먹는다.
 _MERGE_CAPS = {"key_rules": 12, "hazards": 8, "required_actions": 12}
 
@@ -81,9 +84,16 @@ async def analyze_document(document_text: str) -> Dict[str, Any]:
     if len(chunks) == 1:
         result = await _analyze_chunk(chunks[0])
     else:
-        print(f"[DocAnalysis] 문서 {len(document_text):,}자 → {len(chunks)}개 조각 분석")
+        print(f"[DocAnalysis] 문서 {len(document_text):,}자 → {len(chunks)}개 조각 분석 "
+              f"(최대 {MAX_CONCURRENT_ANALYSIS}개씩 동시)")
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT_ANALYSIS)
+
+        async def analyze_with_limit(chunk: str) -> Optional[Dict[str, Any]]:
+            async with semaphore:
+                return await _analyze_chunk(chunk)
+
         raw = await asyncio.gather(
-            *[_analyze_chunk(chunk) for chunk in chunks], return_exceptions=True
+            *[analyze_with_limit(chunk) for chunk in chunks], return_exceptions=True
         )
         valid = [r for r in raw if isinstance(r, dict) and r.get("key_rules")]
         print(f"[DocAnalysis] 조각 분석 성공 {len(valid)}/{len(chunks)}")
