@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_TEMPLATE_PATH = Path(
-    r"C:\Users\User\Desktop\KT에이블\빅프로젝트\종사자에_의한_유해_위험요인_조사표.docx"
+    "output/종사자에_의한_유해_위험요인_조사표.docx"
 )
 DEFAULT_OUTPUT_DIR = Path("output/worker_feedback_reports")
 
