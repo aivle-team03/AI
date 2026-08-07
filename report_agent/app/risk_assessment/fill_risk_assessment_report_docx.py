@@ -70,6 +70,7 @@ def _value_map(response: dict) -> dict[str, str]:
         "aggregated_data.kpi.action_completion_rate": f"{kpi.get('action_completion_rate', 0)}%",
         "aggregated_data.kpi.approval_completion_rate": f"{kpi.get('approval_completion_rate', 0)}%",
         "aggregated_data.kpi.board_action_history_rate": f"{kpi.get('board_action_history_rate', 0)}%",
+        "aggregated_data.kpi.risk_recurrence_rate": f"{kpi.get('risk_recurrence_rate', 0)}%",
         "aggregated_data.kpi.unaddressed_assessment_records": str(kpi.get("unaddressed_assessment_records", 0)),
         "aggregated_data.kpi.unaddressed_high_risk_records": str(kpi.get("unaddressed_high_risk_records", 0)),
         "aggregated_data.risk_distribution.risk_band_counts": _fmt_count_map(risk_distribution.get("risk_band_counts")),
@@ -123,9 +124,6 @@ def _xml_text(value: str) -> str:
     return escaped.replace("\n", "</w:t><w:br/><w:t>")
 
 
-def _placeholder_key(value: str) -> str:
-    return re.sub(r"<[^>]+>", "", value).strip()
-
 
 HIGH_RISK_PREFIX = "aggregated_data.high_risk_items."
 
@@ -149,7 +147,7 @@ def _high_risk_item_value(item: dict, index: int, key: str) -> str:
 
 def _replace_high_risk_placeholders(row_xml: str, item: dict, index: int) -> str:
     def replace(match: re.Match) -> str:
-        key = _placeholder_key(match.group(1))
+        key = match.group(1).strip()
         if key.startswith(HIGH_RISK_PREFIX):
             item_key = key.removeprefix(HIGH_RISK_PREFIX)
             return _xml_text(_high_risk_item_value(item, index, item_key))
@@ -187,7 +185,7 @@ def fill_docx_template(response: dict, template_path: Path, output_path: Path) -
                     text = _expand_high_risk_item_rows(text, response)
 
                 def replace(match: re.Match) -> str:
-                    key = _placeholder_key(match.group(1))
+                    key = match.group(1).strip()
                     return _xml_text(values.get(key, "-"))
 
                 text = pattern.sub(replace, text)
