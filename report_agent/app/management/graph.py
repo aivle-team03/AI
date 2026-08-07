@@ -97,6 +97,10 @@ def management_review_aggregate_node(state):
     return {"aggregated_data": aggregate_management_review_order_data(request)}
 
 
+def management_review_aggregate_from_request_node(state):
+    return {"aggregated_data": aggregate_management_review_order_data(state["request"])}
+
+
 async def management_review_analyze_node(state):
     return {"analysis_result": await management_review_analyze_agent(state["aggregated_data"])}
 
@@ -295,4 +299,26 @@ def build_management_review_order_graph():
     return graph.compile()
 
 
+def build_management_review_order_no_preprocessing_graph():
+    graph = StateGraph(ManagementReviewOrderState)
+    graph.add_node("management_review_aggregation", management_review_aggregate_from_request_node)
+    graph.add_node("management_review_analysis", management_review_analyze_node)
+    graph.add_node("management_review_order_writer", management_review_write_node)
+    graph.add_node("management_review_order_review", management_review_review_node)
+    graph.add_node("management_review_retry", retry_node)
+
+    graph.add_edge(START, "management_review_aggregation")
+    graph.add_edge("management_review_aggregation", "management_review_analysis")
+    graph.add_edge("management_review_analysis", "management_review_order_writer")
+    graph.add_edge("management_review_order_writer", "management_review_order_review")
+    graph.add_conditional_edges(
+        "management_review_order_review",
+        route,
+        {"finish": END, "retry": "management_review_retry"},
+    )
+    graph.add_edge("management_review_retry", "management_review_order_writer")
+    return graph.compile()
+
+
 management_review_order_graph = build_management_review_order_graph()
+management_review_order_no_preprocessing_graph = build_management_review_order_no_preprocessing_graph()

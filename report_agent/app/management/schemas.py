@@ -155,6 +155,15 @@ class SiteAnomalyReportRequest(EvidenceContentRequest):
     final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
+class SiteAnomalyReportResponse(BaseModel):
+    status: Literal["COMPLETED", "FAILED"]
+    retry_count: int
+    aggregated_data: dict[str, Any]
+    analysis_result: AnalysisResult
+    report: GeneratedReport
+    review: ReviewResult
+
+
 class UnifiedReportRequest(EvidenceContentRequest):
     report_type: ReportType
     final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)

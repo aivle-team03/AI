@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app.graph import _management_judgment, _management_risk_label
+from app.management.graph import _management_judgment, _management_risk_label
 
 DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "output" / "management_review_order_form.docx"
 DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "management_review_order_response.json"

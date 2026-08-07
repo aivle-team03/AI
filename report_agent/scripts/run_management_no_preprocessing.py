@@ -13,8 +13,8 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.graph import site_anomaly_full_graph
-from app.schemas import SiteAnomalyReportRequest, SiteAnomalyReportResponse
+from app.management.graph import management_review_order_no_preprocessing_graph
+from app.management.schemas import SiteAnomalyReportRequest, SiteAnomalyReportResponse
 from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 
 INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_14.json"
@@ -69,7 +69,7 @@ async def main() -> None:
     final_history_rows = _load_final_history_rows(INPUT_PATH)
     request = SiteAnomalyReportRequest(final_history_rows=final_history_rows)
 
-    result = await site_anomaly_full_graph.ainvoke(
+    result = await management_review_order_no_preprocessing_graph.ainvoke(
         {
             "request": request,
             "retry_count": 0,
