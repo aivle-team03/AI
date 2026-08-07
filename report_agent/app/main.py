@@ -7,7 +7,6 @@ from app.graph import (
     risk_assessment_form_graph,
     risk_assessment_report_graph,
     site_anomaly_full_graph,
-    unified_report_graph,
 )
 from app.schemas import (
     EvidenceContentRequest,
@@ -18,8 +17,6 @@ from app.schemas import (
     RiskAssessmentReportResponse,
     SiteAnomalyReportRequest,
     SiteAnomalyReportResponse,
-    UnifiedReportRequest,
-    UnifiedReportResponse,
 )
 
 app = FastAPI(title="Warehouse Safety AI Report API", version="2.0.0")
@@ -149,47 +146,5 @@ async def generate_risk_assessment_report(req: RiskAssessmentReportRequest):
         ) from exc
 
 
-
-@app.post(
-    "/api/reports/generate",
-    response_model=UnifiedReportResponse,
-    tags=["report-generation"],
-)
-async def generate_unified_report(req: UnifiedReportRequest):
-    try:
-        result = await unified_report_graph.ainvoke(
-            {
-                "request": req,
-                "retry_count": 0,
-                "preprocessing_retry_count": 0,
-                "max_retry_count": MAX_RETRY_COUNT,
-                "errors": [],
-            }
-        )
-        correction_review = result["correction_review"]
-        review_result = result.get("review_result")
-        is_form = req.report_type == "risk_assessment_form"
-        report_passed = True if is_form else bool(review_result and review_result.passed)
-        status = "COMPLETED" if correction_review.approved and report_passed else "FAILED"
-        return UnifiedReportResponse(
-            status=status,
-            report_type=req.report_type,
-            retry_count=result.get("retry_count", 0),
-            preprocessing_retry_count=result.get("preprocessing_retry_count", 0),
-            final_history_rows=result.get("final_history_rows", []),
-            correction_result=result["correction_result"],
-            correction_review=correction_review,
-            aggregated_data=result.get("aggregated_data"),
-            analysis_result=result.get("analysis_result"),
-            report=result.get("generated_report"),
-            review=review_result,
-            csv_output_path=result.get("csv_output_path"),
-            xlsx_output_path=result.get("xlsx_output_path"),
-        )
-    except Exception as exc:
-        raise HTTPException(
-            500,
-            f"Failed to generate unified report: {exc}",
-        ) from exc
 
 

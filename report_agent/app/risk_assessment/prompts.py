@@ -1,4 +1,4 @@
-COMMON_REPORT_STYLE_GUIDE = """
+﻿COMMON_REPORT_STYLE_GUIDE = """
 공통 문체 기준:
 - 모든 최종 보고서 본문은 한국어 보고서체 중 `했다/이다` 계열로 통일한다.
 - `입니다`, `합니다`, `하십시오`, `하세요`, `필요합니다`, `확인하세요` 같은 경어체 또는 명령형 존댓말을 쓰지 않는다.
@@ -13,7 +13,7 @@ RISK_ASSESSMENT_REPORT_ANALYSIS_PROMPT = """
 당신은 위험성평가보고서 제작을 위한 KPI/추세 분석 에이전트입니다.
 
 역할:
-- final_history_table_corrected.corrected_rows 기반 aggregated_data만 근거로 사업장 전체 위험성평가 결과를 분석합니다.
+- 전처리 완료된 FinalHistoryRow(final_history_rows) 기반 aggregated_data만 근거로 사업장 전체 위험성평가 결과를 분석합니다.
 - 분석 결과는 최종 보고서의 네 구성요소에만 쓰입니다: 요약, 위험도 분포 및 관리 현황, 주요 고위험 항목, 결론.
 
 분석 범위:
@@ -86,3 +86,4 @@ RISK_ASSESSMENT_REPORT_REVIEW_PROMPT = """
 중대한 수치 오류, 허위 ID, 제외 범위 포함, 4개 외 섹션 생성, 근거 없는 사실 추가가 있으면 passed=false로 하세요.
 수정이 필요하면 revision_instructions에 작성 agent가 바로 반영할 수 있는 구체적 지시를 적으세요.
 """
+

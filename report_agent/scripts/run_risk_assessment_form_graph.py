@@ -41,7 +41,7 @@ async def run_graph(request):
             if isinstance(update, dict):
                 state.update(update)
 
-            if node_name == "build_final_history_table":
+            if node_name == "build_final_history_table_14":
                 print("[1/4] 최종 이력 테이블 생성 완료", flush=True)
                 print("[2/4] 데이터 수정 agent 실행 중", flush=True)
             elif node_name == "data_correction_agent":

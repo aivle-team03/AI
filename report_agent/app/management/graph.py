@@ -258,7 +258,7 @@ def _normalize_management_review_order(report, aggregated_data):
 
 def build_management_review_order_graph():
     graph = StateGraph(ManagementReviewOrderState)
-    graph.add_node("build_final_history_table", build_final_history_table_node)
+    graph.add_node("build_final_history_table_14", build_final_history_table_node)
     graph.add_node("data_correction_agent", data_correction_node)
     graph.add_node("data_correction_review_agent", data_correction_review_node)
     graph.add_node("preprocessing_retry", preprocessing_retry_node)
@@ -269,8 +269,8 @@ def build_management_review_order_graph():
     graph.add_node("management_review_order_review", management_review_review_node)
     graph.add_node("management_review_retry", retry_node)
 
-    graph.add_edge(START, "build_final_history_table")
-    graph.add_edge("build_final_history_table", "data_correction_agent")
+    graph.add_edge(START, "build_final_history_table_14")
+    graph.add_edge("build_final_history_table_14", "data_correction_agent")
     graph.add_edge("data_correction_agent", "data_correction_review_agent")
     graph.add_conditional_edges(
         "data_correction_review_agent",

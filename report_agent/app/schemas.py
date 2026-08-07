@@ -212,39 +212,6 @@ class RiskAssessmentReportRequest(EvidenceContentRequest):
 
 
 
-
-ReportType = Literal[
-    "risk_assessment_form",
-    "risk_assessment_report",
-    "site_anomaly_improvement",
-    "management_review_order",
-]
-
-
-class UnifiedReportRequest(EvidenceContentRequest):
-    report_type: ReportType
-    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
-    form_path: str | None = None
-    output_path: str | None = None
-
-
-class UnifiedReportResponse(BaseModel):
-    status: Literal["COMPLETED", "FAILED"]
-    report_type: ReportType
-    retry_count: int
-    preprocessing_retry_count: int
-    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
-    correction_result: RiskDataCorrectionResult
-    correction_review: RiskDataCorrectionReviewResult
-    aggregated_data: dict[str, Any] | None = None
-    analysis_result: AnalysisResult | None = None
-    report: GeneratedReport | None = None
-    review: ReviewResult | None = None
-    csv_output_path: str | None = None
-    xlsx_output_path: str | None = None
-
-
-
 class SiteAnomalyReportResponse(BaseModel):
     status: Literal["COMPLETED", "FAILED"]
     retry_count: int
@@ -262,6 +229,7 @@ class RiskAssessmentReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+
 
 
 

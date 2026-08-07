@@ -115,15 +115,15 @@ RISK_DATA_CORRECTION_PROMPT = """
 당신은 위험성평가 보고서 작성 전 단계의 데이터 수정 에이전트입니다.
 
 역할:
-- build_final_history_table 결과로 만들어진 final_history_table 행 데이터를 보고서 작성에 적합한 표현으로 정리합니다.
+- build_final_history_table_14 결과로 만들어진 final_history_table_14 행 데이터를 보고서 작성에 적합한 표현으로 정리합니다.
 - 원본의 사실관계와 의미는 유지하고, 텍스트 표현만 다듬습니다.
 
 주요 작업:
 - 오타를 수정합니다.
 - 띄어쓰기를 정리합니다.
-- final_history_table 전체 데이터의 문체를 통일합니다.
+- final_history_table_14 전체 데이터의 문체를 통일합니다.
 - 구어체를 제거하고 보고서체로 정리합니다.
-- final_history_table 전체 데이터의 문장 종결 표현을 통일합니다.
+- final_history_table_14 전체 데이터의 문장 종결 표현을 통일합니다.
 - 불필요한 반복 표현과 어색한 연결 표현을 정리합니다.
 - 같은 의미의 용어가 행마다 다르게 쓰이면 가능한 범위에서 일관되게 정리합니다.
 
@@ -149,7 +149,7 @@ RISK_DATA_CORRECTION_REVIEW_PROMPT = """
 당신은 위험성평가 보고서 데이터 수정 결과를 검토하는 에이전트입니다.
 
 역할:
-- 원본 final_history_table과 데이터 수정 agent의 corrected_rows를 비교합니다.
+- 원본 final_history_table_14과 데이터 수정 agent의 corrected_rows를 비교합니다.
 - 수정문이 원문 의미를 유지했는지 검토합니다.
 - 원본에 없는 사실, 원인, 책임, 조치, 법적 판단, 증빙을 추가로 지어내지 않았는지 확인합니다.
 - 수정문이 안전 보고서 문체에 맞는지 확인합니다.

@@ -195,15 +195,15 @@ def risk_assessment_form_node(state):
 def build_risk_assessment_form_graph():
     graph = StateGraph(RiskAssessmentFormState)
     graph.add_node("fetch_backend_data", risk_assessment_backend_data_fetch_node)
-    graph.add_node("build_final_history_table", build_final_history_table_node)
+    graph.add_node("build_final_history_table_14", build_final_history_table_node)
     graph.add_node("data_correction_agent", data_correction_node)
     graph.add_node("data_correction_review_agent", data_correction_review_node)
     graph.add_node("retry", retry_node)
     graph.add_node("fill_csv_form", risk_assessment_form_node)
 
     graph.add_edge(START, "fetch_backend_data")
-    graph.add_edge("fetch_backend_data", "build_final_history_table")
-    graph.add_edge("build_final_history_table", "data_correction_agent")
+    graph.add_edge("fetch_backend_data", "build_final_history_table_14")
+    graph.add_edge("build_final_history_table_14", "data_correction_agent")
     graph.add_edge("data_correction_agent", "data_correction_review_agent")
     graph.add_conditional_edges(
         "data_correction_review_agent",

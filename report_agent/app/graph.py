@@ -29,7 +29,6 @@ from app.state import (
     RiskAssessmentFormState,
     RiskAssessmentReportState,
     SiteAnomalyReportState,
-    UnifiedReportState,
 )
 from scripts.build_final_history_table_14 import build_final_history_table_14
 
@@ -493,15 +492,15 @@ def build_site_anomaly_full():
 def build_risk_assessment_form_graph():
     graph = StateGraph(RiskAssessmentFormState)
     graph.add_node("fetch_backend_data", risk_assessment_backend_data_fetch_node)
-    graph.add_node("build_final_history_table", risk_assessment_table_node)
+    graph.add_node("build_final_history_table_14", risk_assessment_table_node)
     graph.add_node("data_correction_agent", risk_data_correction_node)
     graph.add_node("data_correction_review_agent", risk_data_correction_review_node)
     graph.add_node("retry", retry_node)
     graph.add_node("fill_csv_form", risk_assessment_form_node)
 
     graph.add_edge(START, "fetch_backend_data")
-    graph.add_edge("fetch_backend_data", "build_final_history_table")
-    graph.add_edge("build_final_history_table", "data_correction_agent")
+    graph.add_edge("fetch_backend_data", "build_final_history_table_14")
+    graph.add_edge("build_final_history_table_14", "data_correction_agent")
     graph.add_edge("data_correction_agent", "data_correction_review_agent")
     graph.add_conditional_edges(
         "data_correction_review_agent",
@@ -540,247 +539,7 @@ def build_risk_assessment_report_graph():
     return graph.compile()
 
 
-
-def unified_preprocessing_retry_node(state):
-    return {"preprocessing_retry_count": state.get("preprocessing_retry_count", 0) + 1}
-
-
-def reset_report_retry_node(state):
-    return {"retry_count": 0}
-
-
-def route_after_unified_correction_review(
-    state,
-) -> Literal["route_report", "retry_preprocessing", "finish"]:
-    review = state["correction_review"]
-    if review.approved:
-        return "route_report"
-    if state.get("preprocessing_retry_count", 0) < state.get("max_retry_count", 2):
-        return "retry_preprocessing"
-    return "finish"
-
-
-def route_unified_report_type(
-    state,
-) -> Literal[
-    "risk_assessment_form",
-    "risk_assessment_report",
-    "site_anomaly_improvement",
-    "management_review_order",
-]:
-    report_type = state["request"].report_type
-    if report_type == "site_anomaly_improvement":
-        return "management_review_order"
-    return report_type
-
-
-def unified_report_router_node(state):
-    return {}
-
-
-def _request_with_corrected_rows(state, request_cls):
-    data = state["request"].model_dump(mode="json")
-    data["corrected_rows"] = [
-        row.model_dump(mode="json") if hasattr(row, "model_dump") else row
-        for row in state["correction_result"].corrected_rows
-    ]
-    return request_cls(**data)
-
-
-def _request_with_final_history_rows(state, request_cls):
-    data = state["request"].model_dump(mode="json")
-    data["final_history_rows"] = [
-        row.model_dump(mode="json") if hasattr(row, "model_dump") else row
-        for row in state["correction_result"].corrected_rows
-    ]
-    return request_cls(**data)
-
-
-def unified_risk_assessment_form_node(state):
-    request = state["request"]
-    source_data = request.model_dump(mode="json")
-    form_path = Path(request.form_path) if request.form_path else DEFAULT_FORM_PATH
-    output_path = Path(request.output_path) if request.output_path else DEFAULT_OUTPUT_PATH
-    csv_output_path = fill_risk_assessment_form(
-        source_data,
-        state["correction_result"],
-        form_path=form_path,
-        output_path=output_path,
-    )
-    return {
-        "csv_output_path": csv_output_path,
-        "xlsx_output_path": str(resolved_xlsx_path_for(csv_output_path)),
-    }
-
-
-def unified_risk_assessment_report_aggregate_node(state):
-    request = _request_with_final_history_rows(state, RiskAssessmentReportRequest)
-    return {"aggregated_data": aggregate_risk_assessment_report_data(request)}
-
-
-def unified_site_anomaly_aggregate_node(state):
-    request = _request_with_final_history_rows(state, SiteAnomalyReportRequest)
-    return {"aggregated_data": aggregate_site_anomaly_data(request)}
-
-
-async def unified_site_anomaly_analyze_node(state):
-    return {"analysis_result": await site_anomaly_analyze_agent(state["aggregated_data"])}
-
-
-async def unified_site_anomaly_write_node(state):
-    return {
-        "generated_report": await site_anomaly_writer_agent(
-            state["aggregated_data"],
-            state["analysis_result"],
-            state.get("generated_report"),
-            state.get("review_result"),
-        )
-    }
-
-
-async def unified_site_anomaly_review_node(state):
-    normalized_report = _normalize_management_review_order(
-        state["generated_report"],
-        state["aggregated_data"],
-    )
-    return {
-        "generated_report": normalized_report,
-        "review_result": await site_anomaly_review_agent(
-            state["aggregated_data"],
-            state["analysis_result"],
-            normalized_report,
-        )
-    }
-
-
-async def unified_risk_assessment_report_analyze_node(state):
-    return {
-        "analysis_result": await risk_assessment_report_analyze_agent(
-            state["aggregated_data"]
-        )
-    }
-
-
-async def unified_risk_assessment_report_write_node(state):
-    return {
-        "generated_report": await risk_assessment_report_writer_agent(
-            state["aggregated_data"],
-            state["analysis_result"],
-            state.get("generated_report"),
-            state.get("review_result"),
-        )
-    }
-
-
-async def unified_risk_assessment_report_review_node(state):
-    normalized_report = _normalize_risk_assessment_report(state["generated_report"], state["aggregated_data"])
-    review_result = await risk_assessment_report_review_agent(
-        state["aggregated_data"],
-        state["analysis_result"],
-        normalized_report,
-    )
-    return {
-        "generated_report": normalized_report,
-        "review_result": review_result,
-    }
-
-
-def build_unified_report_graph():
-    graph = StateGraph(UnifiedReportState)
-    graph.add_node("build_final_history_table", risk_assessment_table_node)
-    graph.add_node("data_correction_agent", risk_data_correction_node)
-    graph.add_node("data_correction_review_agent", risk_data_correction_review_node)
-    graph.add_node("preprocessing_retry", unified_preprocessing_retry_node)
-    graph.add_node("reset_report_retry", reset_report_retry_node)
-    graph.add_node("report_router", unified_report_router_node)
-
-    graph.add_node("risk_assessment_form", unified_risk_assessment_form_node)
-
-    graph.add_node("risk_assessment_report_aggregation", unified_risk_assessment_report_aggregate_node)
-    graph.add_node("risk_assessment_report_analysis", unified_risk_assessment_report_analyze_node)
-    graph.add_node("risk_assessment_report_writer", unified_risk_assessment_report_write_node)
-    graph.add_node("risk_assessment_report_review", unified_risk_assessment_report_review_node)
-    graph.add_node("risk_assessment_report_retry", retry_node)
-
-    graph.add_node("site_anomaly_aggregation", unified_site_anomaly_aggregate_node)
-    graph.add_node("management_anomaly_analysis", unified_site_anomaly_analyze_node)
-    graph.add_node("management_review_order_writer", unified_site_anomaly_write_node)
-    graph.add_node("management_review_order_review", unified_site_anomaly_review_node)
-    graph.add_node("site_anomaly_retry", retry_node)
-
-    graph.add_edge(START, "build_final_history_table")
-    graph.add_edge("build_final_history_table", "data_correction_agent")
-    graph.add_edge("data_correction_agent", "data_correction_review_agent")
-    graph.add_conditional_edges(
-        "data_correction_review_agent",
-        route_after_unified_correction_review,
-        {
-            "route_report": "reset_report_retry",
-            "retry_preprocessing": "preprocessing_retry",
-            "finish": END,
-        },
-    )
-    graph.add_edge("preprocessing_retry", "data_correction_agent")
-    graph.add_edge("reset_report_retry", "report_router")
-    graph.add_conditional_edges(
-        "report_router",
-        route_unified_report_type,
-        {
-            "risk_assessment_form": "risk_assessment_form",
-            "risk_assessment_report": "risk_assessment_report_aggregation",
-            "site_anomaly_improvement": "site_anomaly_aggregation",
-            "management_review_order": "site_anomaly_aggregation",
-        },
-    )
-
-    graph.add_edge("risk_assessment_form", END)
-
-    graph.add_edge("risk_assessment_report_aggregation", "risk_assessment_report_analysis")
-    graph.add_edge("risk_assessment_report_analysis", "risk_assessment_report_writer")
-    graph.add_edge("risk_assessment_report_writer", "risk_assessment_report_review")
-    graph.add_conditional_edges(
-        "risk_assessment_report_review",
-        route,
-        {"finish": END, "retry": "risk_assessment_report_retry"},
-    )
-    graph.add_edge("risk_assessment_report_retry", "risk_assessment_report_writer")
-
-    graph.add_edge("site_anomaly_aggregation", "management_anomaly_analysis")
-    graph.add_edge("management_anomaly_analysis", "management_review_order_writer")
-    graph.add_edge("management_review_order_writer", "management_review_order_review")
-    graph.add_conditional_edges(
-        "management_review_order_review",
-        route,
-        {"finish": END, "retry": "site_anomaly_retry"},
-    )
-    graph.add_edge("site_anomaly_retry", "management_review_order_writer")
-
-    return graph.compile()
-
 site_anomaly_full_graph = build_site_anomaly_full()
 risk_assessment_form_graph = build_risk_assessment_form_graph()
 risk_assessment_report_graph = build_risk_assessment_report_graph()
-unified_report_graph = build_unified_report_graph()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

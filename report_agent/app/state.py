@@ -9,7 +9,6 @@ from app.schemas import (
     RiskDataCorrectionResult,
     RiskDataCorrectionReviewResult,
     SiteAnomalyReportRequest,
-    UnifiedReportRequest,
 )
 
 
@@ -51,18 +50,4 @@ class RiskAssessmentReportState(TypedDict, total=False):
     errors: list[str]
 
 
-class UnifiedReportState(TypedDict, total=False):
-    request: UnifiedReportRequest
-    final_history_rows: list[dict]
-    correction_result: RiskDataCorrectionResult
-    correction_review: RiskDataCorrectionReviewResult
-    preprocessing_retry_count: int
-    aggregated_data: dict
-    analysis_result: AnalysisResult
-    generated_report: GeneratedReport
-    review_result: ReviewResult
-    csv_output_path: str
-    xlsx_output_path: str
-    retry_count: int
-    max_retry_count: int
-    errors: list[str]
+
