@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.request import Request as UrlRequest, urlopen
 
 import cv2
 import numpy as np
@@ -33,16 +33,19 @@ SNAPSHOT_DIR = BASE_DIR / "snapshots"
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
 
+# 소화장비 탐지 주기
+INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "600"))
+
 
 @dataclass(frozen=True)
 class CameraConfig:
     camera_id: str
     source: Path
-    model_path: Path
     category_name: str
     detector: str
     cctv_id: int
     category_id: int
+    model_path: Path | None = None
     confidence: float = 0.4
     sample_fps: float = 1.0
 
@@ -51,12 +54,44 @@ class CameraConfig:
 # DB 시드가 다르면 환경 변수/설정으로 바꾸기 전에 실제 CCTV·카테고리 ID를 확인해야 한다.
 CAMERAS = {
     "fire-01": CameraConfig(
-        "fire-01", BASE_DIR / "test3.mp4", BASE_DIR / "fire_finetuned_v5.pt",
-        "화재 감지", "fire", 1, 1, sample_fps=10.0,
+        camera_id="fire-01",
+        source=BASE_DIR / "test3.mp4",
+        category_name="화재 감지",
+        detector="fire",
+        cctv_id=1,
+        category_id=1,
+        model_path=BASE_DIR / "fire_finetuned_v5.pt",
+        sample_fps=10.0,
     ),
     "forklift-03": CameraConfig(
-        "forklift-03", BASE_DIR / "test1.mp4", BASE_DIR / "person-forklift2-best.pt",
-        "지게차 접근 위험", "forklift", 2, 1000006, sample_fps=10.0,
+        camera_id="forklift-03",
+        source=BASE_DIR / "test1.mp4",
+        category_name="지게차 접근 위험",
+        detector="forklift",
+        cctv_id=2,
+        category_id=1000006,
+        model_path=BASE_DIR / "person-forklift2-best.pt",
+        sample_fps=10.0,
+    ),
+    "extinguisher-01": CameraConfig(
+        camera_id="extinguisher-01",
+        source=BASE_DIR / "test5.mp4",
+        category_name="소화기 미감지",
+        detector="extinguisher",
+        cctv_id=1,
+        category_id=1000011,
+        model_path=BASE_DIR / "fire extinguisher_best_v1.pt",
+        sample_fps=1.0,
+    ),
+    "hydrant-01": CameraConfig(
+        camera_id="hydrant-01",
+        source=BASE_DIR / "test5.mp4",
+        category_name="소화전 미감지",
+        detector="extinguisher",
+        cctv_id=1,
+        category_id=1000012,
+        model_path=BASE_DIR / "fire hose station_best.pt",
+        sample_fps=1.0,
     ),
 }
 
@@ -96,7 +131,7 @@ def send_backend_event(config: CameraConfig, snapshot_url: str) -> None:
     attempt = 0
     while True:
         attempt += 1
-        request = Request(
+        request = UrlRequest(
             f"{BACKEND_URL}/api/ai/events", data=payload,
             headers={"Content-Type": "application/json"}, method="POST",
         )
@@ -339,21 +374,98 @@ class CameraWorker:
         capture.release()
 
 
-workers = {camera_id: CameraWorker(config) for camera_id, config in CAMERAS.items()}
+workers = {
+    camera_id: CameraWorker(config) 
+    for camera_id, config in CAMERAS.items() 
+    if config.detector != "extinguisher"
+}
+
+_inspection_cursors: dict[str, int] = {}
+
+def _run_equipment_inspector() -> None:
+    time.sleep(5)
+    while True:
+        print(f"\n🔍 [자동 점검] 소화장비 존재 여부 검사를 시작합니다...", flush=True)
+        for camera_id, config in CAMERAS.items():
+            if config.detector != "extinguisher":
+                continue
+
+            cap = cv2.VideoCapture(str(config.source))
+            if not cap.isOpened():
+                print(f"⚠️ [{camera_id}] 영상을 열 수 없습니다: {config.source}", flush=True)
+                continue
+
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
+            fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+
+            current_pos = _inspection_cursors.get(camera_id, 0)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, current_pos)
+
+            ok, frame = cap.read()
+
+            next_pos = (current_pos + int(fps * 3)) % total_frames
+            _inspection_cursors[camera_id] = next_pos
+
+            cap.release()
+
+            if not ok or frame is None:
+                print(f"⚠️ [{camera_id}] 프레임을 읽지 못했습니다.", flush=True)
+                continue
+
+            if not isinstance(config.model_path, Path) or not config.model_path.is_file():
+                print(f"⚠️ [{camera_id}] 모델 파일이 없습니다: {config.model_path}", flush=True)
+                continue
+
+            model = get_model(config.model_path)
+            result = model.predict(source=frame, conf=config.confidence, verbose=False)[0]
+            detected_count = len(result.boxes) if result.boxes is not None else 0
+
+            # 최고 신뢰도 계산
+            max_conf = float(result.boxes.conf.max()) if (result.boxes is not None and len(result.boxes) > 0) else 0.0
+
+            # YOLO 추론 결과(바운딩 박스 표시) 이미지 가져오기
+            annotated_frame = result.plot()  # 박스, 신뢰도, 클래스명이 그려진 BGR 이미지
+
+            # 바운딩 박스가 그려진 프레임을 JPEG로 인코딩
+            _, encoded = cv2.imencode(".jpg", annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+            annotated_jpeg = encoded.tobytes()
+
+            # 💡 [조건 변경] 감지된 개수가 0개이거나, 최고 신뢰도가 50% 미만인 경우 미감지(경고) 처리
+            if detected_count == 0 or max_conf < 0.5:
+                if detected_count == 0:
+                    reason = "감지 객체 없음"
+                else:
+                    reason = f"낮은 신뢰도 ({max_conf:.0%} < 50%)"
+
+                print(f"🚨 [{config.category_name} 경고] {camera_id}: 미감지 판단 ({reason})! 이벤트 전송 중...", flush=True)
+                
+                publish_event(
+                    config=config,
+                    confidence=max_conf,  # 50% 미만이어도 측정된 신뢰도 전달 (없으면 0.0)
+                    source_time=current_pos / fps,
+                    snapshot=annotated_jpeg,
+                )
+            else:
+                print(f"✅ [{config.category_name} 정상] {camera_id}: {detected_count}개 탐지됨 (신뢰도: {max_conf:.0%})", flush=True)
+
+        time.sleep(INSPECTION_INTERVAL_SECONDS)
 
 
 @app.on_event("startup")
 def preload_models() -> None:
-    """Warm model runtime at startup; CCTV video inference still starts per stream request."""
-    unique_model_paths = {config.model_path for config in CAMERAS.values()}
-    for model_path in unique_model_paths:
-        model = get_model(model_path)
-        # 가중치만 읽어 둬도 PyTorch/CPU(또는 GPU) 런타임 초기화는 첫 predict에서
-        # 발생한다. 실제 CCTV 영상을 읽지 않는 빈 프레임 워밍업으로 그 지연을 서버
-        # 시작 단계로 옮긴다.
-        model.predict(source=np.zeros((640, 640, 3), dtype=np.uint8), verbose=False)
-        print(f"AI 모델 워밍업 완료: {model_path.name}", flush=True)
-    print("AI 모델 사전 로드 완료. CCTV 스트림 요청을 기다립니다.", flush=True)
+    all_model_paths = {
+        config.model_path 
+        for config in CAMERAS.values() 
+        if isinstance(config.model_path, Path)
+    }
+    for model_path in all_model_paths:
+        if model_path.is_file():
+            model = get_model(model_path)
+            model.predict(source=np.zeros((640, 640, 3), dtype=np.uint8), verbose=False)
+            print(f"AI 모델 워밍업 완료: {model_path.name}", flush=True)
+
+    threading.Thread(target=_run_equipment_inspector, name="ai-extinguisher-inspector", daemon=True).start()
+    print(f"소화장비 자동 점검 스케줄러 가동 완료 (주기: {INSPECTION_INTERVAL_SECONDS}초)", flush=True)
 
 
 @app.get("/health")
