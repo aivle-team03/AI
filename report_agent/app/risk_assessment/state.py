@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from app.schemas import (
+from app.risk_assessment.schemas import (
     AnalysisResult,
     GeneratedReport,
     ReviewResult,

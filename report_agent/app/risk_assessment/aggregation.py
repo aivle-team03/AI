@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Any
 
-from app.schemas import RiskAssessmentReportRequest
+from app.risk_assessment.schemas import RiskAssessmentReportRequest
 
 RISK_SCORE = {
     "CRITICAL": 4,
@@ -221,7 +221,9 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
         row for row in inspection_rows
         if _risk_band(row.get("risk")) in {"CRITICAL", "HIGH"}
     ]
-    unresolved_high_risk_rows = [row for row in high_risk_rows if not _has_action(row)]
+    #필요없음
+    unresolved_high_risk_rows = [row for row in high_risk_rows if not _has_action(row)] 
+    #
     daily_counts_dict = dict(sorted(daily_counts.items()))
     weekly_counts_dict = dict(sorted(weekly_counts.items()))
     daily_high_counts_dict = dict(sorted(daily_high_counts.items()))

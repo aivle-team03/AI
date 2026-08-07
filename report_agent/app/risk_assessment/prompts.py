@@ -26,6 +26,9 @@ RISK_ASSESSMENT_REPORT_ANALYSIS_PROMPT = """
 - 주요 고위험 항목은 high_risk_items와 unaddressed_high_risk_items를 근거로 판단하세요.
 - 개선 권고, 재발방지 대책, 현장 조치 지시로 이어지는 분석은 하지 마세요.
 - 데이터가 부족하거나 글자가 깨진 값이 있으면 data_limitations에 명확히 적으세요.
+- type이 게시판/직접추가/이벤트 인 경우 inspection 관련 내용이 없습니다.
+- type이 점검이력인 경우 inspection 내용이 무조건 있어야합니다. 
+- inspection 내용이 있을 때 action은 없을 수 있습니다.
 
 반환 형식:
 - executive_insights: 요약 섹션에 들어갈 사업장 전체 평가 결과와 KPI 핵심 신호 3~5개

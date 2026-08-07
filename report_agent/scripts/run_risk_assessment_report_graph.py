@@ -14,7 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from app.config import MAX_RETRY_COUNT
 from app.risk_assessment.graph import risk_assessment_report_graph
-from app.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
+from app.risk_assessment.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
 from app.risk_assessment.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 
 INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"

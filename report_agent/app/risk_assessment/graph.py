@@ -9,7 +9,7 @@ from app.risk_assessment.agents import (
 )
 from app.risk_assessment.aggregation import aggregate_risk_assessment_report_data
 from app.risk_assessment.state import RiskAssessmentReportState
-from app.schemas import ReportSection, SectionCode
+from app.risk_assessment.schemas import ReportSection, SectionCode
 from scripts.build_final_history_table_14 import build_final_history_table_14
 
 
