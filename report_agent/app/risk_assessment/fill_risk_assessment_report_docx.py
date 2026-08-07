@@ -128,6 +128,11 @@ def _xml_text(value: str) -> str:
 HIGH_RISK_PREFIX = "aggregated_data.high_risk_items."
 
 
+def _clean_placeholder_key(raw_key: str) -> str:
+    """Strip XML tags that Word's spellcheck/autoformat can insert inside a {{...}} placeholder."""
+    return re.sub(r"<[^>]+>", "", raw_key).strip()
+
+
 def _item_state(value: bool, done_text: str, pending_text: str) -> str:
     return done_text if value else pending_text
 
@@ -147,7 +152,7 @@ def _high_risk_item_value(item: dict, index: int, key: str) -> str:
 
 def _replace_high_risk_placeholders(row_xml: str, item: dict, index: int) -> str:
     def replace(match: re.Match) -> str:
-        key = match.group(1).strip()
+        key = _clean_placeholder_key(match.group(1))
         if key.startswith(HIGH_RISK_PREFIX):
             item_key = key.removeprefix(HIGH_RISK_PREFIX)
             return _xml_text(_high_risk_item_value(item, index, item_key))
@@ -159,10 +164,17 @@ def _replace_high_risk_placeholders(row_xml: str, item: dict, index: int) -> str
 def _expand_high_risk_item_rows(document_xml: str, response: dict) -> str:
     items = ((response.get("aggregated_data") or {}).get("high_risk_items") or [])
     row_pattern = re.compile(r"<w:tr[\s\S]*?</w:tr>")
+    placeholder_pattern = re.compile(r"\{\{\s*([^{}]+?)\s*\}\}")
+
+    def row_has_high_risk_placeholder(row_xml: str) -> bool:
+        return any(
+            _clean_placeholder_key(match.group(1)).startswith(HIGH_RISK_PREFIX)
+            for match in placeholder_pattern.finditer(row_xml)
+        )
 
     def replace_row(match: re.Match) -> str:
         row_xml = match.group(0)
-        if "{{aggregated_data.high_risk_items." not in row_xml:
+        if not row_has_high_risk_placeholder(row_xml):
             return row_xml
         source_items = items or [{}]
         return "".join(
@@ -185,7 +197,7 @@ def fill_docx_template(response: dict, template_path: Path, output_path: Path) -
                     text = _expand_high_risk_item_rows(text, response)
 
                 def replace(match: re.Match) -> str:
-                    key = match.group(1).strip()
+                    key = _clean_placeholder_key(match.group(1))
                     return _xml_text(values.get(key, "-"))
 
                 text = pattern.sub(replace, text)
