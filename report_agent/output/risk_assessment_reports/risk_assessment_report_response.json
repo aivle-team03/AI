@@ -26,14 +26,13 @@
       "high_or_critical_risk_records": 4,
       "high_or_critical_risk_rate": 33.3,
       "board_action_history_rate": 23.5,
+      "cctv_action_history_rate": 0.0,
       "risk_recurrence_rate": 25.0,
       "action_total": 3,
       "action_completed": 3,
       "action_completion_rate": 25.0,
       "approval_completed": 3,
-      "approval_completion_rate": 25.0,
-      "unaddressed_assessment_records": 9,
-      "unaddressed_high_risk_records": 2
+      "approval_completion_rate": 25.0
     },
     "trend": {
       "daily_assessment_counts": {
@@ -188,48 +187,6 @@
         "handler": "김작업"
       }
     ],
-    "unaddressed_high_risk_items": [
-      {
-        "source_id": "2026-08-03T09:00:00",
-        "inspection_history_id": null,
-        "action_history_id": null,
-        "category_name": "화재 감지",
-        "risk": "상",
-        "risk_band": "HIGH",
-        "location": "집",
-        "inspection_date": "2026-08-03T09:00:00",
-        "inspection_name": "소방안전",
-        "inspection_content": "Action is required for this inspection.",
-        "action_name": null,
-        "action_date": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null,
-        "date": "2026-08-03T09:00:00",
-        "handler": "작업자10"
-      },
-      {
-        "source_id": "2026-08-03T09:00:00",
-        "inspection_history_id": null,
-        "action_history_id": null,
-        "category_name": "화재 감지",
-        "risk": "상",
-        "risk_band": "HIGH",
-        "location": "기석님 집",
-        "inspection_date": "2026-08-03T09:00:00",
-        "inspection_name": "소방안전",
-        "inspection_content": "Action is required for this inspection.",
-        "action_name": null,
-        "action_date": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null,
-        "date": "2026-08-03T09:00:00",
-        "handler": "작업자10"
-      }
-    ],
     "source_ids": {
       "inspection_history_ids": [
         null,
@@ -334,188 +291,6 @@
           "date": "2026-07-28T08:43:54",
           "handler": "김작업"
         }
-      ],
-      "unaddressed_items": [
-        {
-          "source_id": "2026-08-03T09:00:00",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "화재 감지",
-          "risk": "상",
-          "risk_band": "HIGH",
-          "location": "집",
-          "inspection_date": "2026-08-03T09:00:00",
-          "inspection_name": "소방안전",
-          "inspection_content": "Action is required for this inspection.",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-08-03T09:00:00",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-08-03T09:00:00",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "화재 감지",
-          "risk": "상",
-          "risk_band": "HIGH",
-          "location": "기석님 집",
-          "inspection_date": "2026-08-03T09:00:00",
-          "inspection_name": "소방안전",
-          "inspection_content": "Action is required for this inspection.",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-08-03T09:00:00",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-08-03T00:00:00",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "적재물",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "B동 자재창고",
-          "inspection_date": "2026-08-03T00:00:00",
-          "inspection_name": "시설안전",
-          "inspection_content": "[매월] 정기 점검 자동 생성 건입니다.",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-08-03T00:00:00",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-08-01T11:45:00",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "충돌",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "C동 하역장",
-          "inspection_date": "2026-08-01T11:45:00",
-          "inspection_name": "산업안전",
-          "inspection_content": "보호구 불량",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-08-01T11:45:00",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-08-01T11:45:00",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "충돌",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "C동 하역장",
-          "inspection_date": "2026-08-01T11:45:00",
-          "inspection_name": "산업안전",
-          "inspection_content": "Action is required for this inspection.",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-08-01T11:45:00",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-07-31T11:45:52",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "충돌",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "C동 하역장",
-          "inspection_date": "2026-07-31T11:45:52",
-          "inspection_name": "산업안전",
-          "inspection_content": "[매일] 정기 점검 자동 생성 건입니다.",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-07-31T11:45:52",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-07-30T15:52:16",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "충돌",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "D동 정문",
-          "inspection_date": "2026-07-30T15:52:16",
-          "inspection_name": "산업안전",
-          "inspection_content": "[매일] 정기 점검 자동 생성 건입니다.",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-07-30T15:52:16",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-07-30T15:52:16",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "충돌",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "C동 하역장",
-          "inspection_date": "2026-07-30T15:52:16",
-          "inspection_name": "산업안전",
-          "inspection_content": "조치",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-07-30T15:52:16",
-          "handler": "작업자10"
-        },
-        {
-          "source_id": "2026-07-29T05:43:54",
-          "inspection_history_id": null,
-          "action_history_id": null,
-          "category_name": "적재물",
-          "risk": "중",
-          "risk_band": "MEDIUM",
-          "location": "B동 자재창고",
-          "inspection_date": "2026-07-29T05:43:54",
-          "inspection_name": "시설안전",
-          "inspection_content": "비상 통로 확보 양호",
-          "action_name": null,
-          "action_date": null,
-          "action_content": null,
-          "action_completed": false,
-          "approval_completed": false,
-          "approval_name": null,
-          "date": "2026-07-29T05:43:54",
-          "handler": "김작업"
-        }
       ]
     },
     "constraints": {
@@ -527,33 +302,33 @@
   },
   "analysis_result": {
     "executive_insights": [
-      "전체 평가 건수는 17건이며, 이 중 12건이 위험성 평가에 해당합니다.",
-      "고위험 및 중대위험 비율은 33.3%로, 전체 위험 중 상당 부분을 차지합니다.",
-      "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 4건 모두 고위험으로 분류되었습니다.",
-      "최근 일별 평가 건수는 증가 추세이며, 특히 고위험 건수는 200% 증가하여 주의가 필요합니다.",
-      "평가 기준 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 편이며, 미조치 고위험 항목이 2건 존재합니다."
+      "전체 평가 건수는 17건이며, 이 중 위험성 평가 건수는 12건으로 집계됨.",
+      "고위험 및 중대위험 비율은 33.3%로, 전체 위험성 평가 중 1/3 이상이 높은 위험도를 나타냄.",
+      "위험도 분포는 고위험 4건, 중위험 8건으로 중위험 이상이 전체 평가의 100%를 차지함.",
+      "최근 일별 평가 건수는 증가 추세이며, 특히 고위험 건수는 200% 증가하여 위험도 상승 신호를 보임.",
+      "평가 기준 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 편이며, 조치 이력은 3건 중 3건 완료됨."
     ],
     "findings": [
       {
         "finding_type": "KPI",
-        "title": "평가 건수 및 위험도 분포",
-        "description": "총 17건의 기록 중 12건이 위험성 평가 대상이며, 고위험 이상 건수는 4건으로 전체의 33.3%를 차지합니다. 중위험 건수는 8건입니다.",
+        "title": "평가 건수 및 위험도 분포 현황",
+        "description": "총 17건의 평가 중 12건이 위험성 평가이며, 고위험 이상은 4건(33.3%)으로 나타남. 중위험은 8건으로 전체 위험성 평가의 66.7%를 차지함.",
         "related_event_ids": [],
         "evidence_ids": [],
-        "severity": "INFO"
+        "severity": "HIGH"
       },
       {
         "finding_type": "TREND",
-        "title": "평가 건수 및 고위험 건수 추세",
-        "description": "일별 평가 건수는 7월 28일 1건에서 8월 3일 4건으로 300% 증가하였고, 고위험 건수는 같은 기간 1건에서 3건으로 200% 증가하였습니다. 주간 평가 건수는 감소 추세(-50%)를 보입니다.",
+        "title": "평가 건수 및 고위험 건수 일별 추세",
+        "description": "일별 평가 건수는 7월 28일 1건에서 8월 3일 4건으로 300% 증가하였으며, 고위험 건수도 같은 기간 1건에서 3건으로 200% 증가함.",
         "related_event_ids": [],
         "evidence_ids": [],
-        "severity": "MEDIUM"
+        "severity": "HIGH"
       },
       {
         "finding_type": "RISK_ASSESSMENT",
-        "title": "고위험 항목 집중 현황",
-        "description": "고위험 항목 4건 모두 '화재 감지' 카테고리에 속하며, 위치는 집, 운동장, 기석님 집, B동 2층으로 분포되어 있습니다.",
+        "title": "위험도별 주요 분포 및 위치",
+        "description": "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 집, 운동장, 기석님 집, B동 2층 등으로 분포됨. 중위험은 '적재물'과 '충돌' 카테고리에 분포됨.",
         "related_event_ids": [],
         "evidence_ids": [
           "2026-08-03T09:00:00",
@@ -562,9 +337,9 @@
         "severity": "HIGH"
       },
       {
-        "finding_type": "UNRESOLVED",
-        "title": "미조치 고위험 항목 현황",
-        "description": "고위험 항목 중 2건이 미조치 상태이며, 모두 '화재 감지' 카테고리에 속해 있습니다. 위치는 집과 기석님 집입니다.",
+        "finding_type": "PRIORITY",
+        "title": "고위험 항목 중 조치 및 승인 현황",
+        "description": "고위험 항목 4건 중 2건은 조치 및 승인이 완료되었으나, 2건은 조치 및 승인 미완료 상태임.",
         "related_event_ids": [],
         "evidence_ids": [
           "2026-08-03T09:00:00"
@@ -572,9 +347,9 @@
         "severity": "HIGH"
       },
       {
-        "finding_type": "PRIORITY",
-        "title": "조치 및 승인 완료율 저조",
-        "description": "전체 조치 건수는 3건이며, 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 수준입니다. 이는 위험성 평가 결과의 신속한 대응이 필요함을 시사합니다.",
+        "finding_type": "KPI",
+        "title": "조치 및 승인 완료율 현황",
+        "description": "전체 조치 이력 3건 중 3건 완료되었으나, 전체 평가 대비 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 수준임.",
         "related_event_ids": [],
         "evidence_ids": [],
         "severity": "MEDIUM"
@@ -582,27 +357,28 @@
     ],
     "recommended_actions": [],
     "data_limitations": [
-      "inspection_history_id와 action_history_id가 모두 null로, 개별 점검 및 조치 이력의 상세 추적이 불가능합니다.",
-      "일부 평가 건에 대해 조치 및 승인 완료 여부가 명확하지 않아 완전한 관리 현황 파악에 한계가 있습니다."
+      "inspection_history_id 및 action_history_id가 모두 null로, 개별 점검 및 조치 이력 상세 확인이 불가함.",
+      "event_id가 제공되지 않아 특정 사건과의 연계 분석이 불가능함.",
+      "고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음."
     ]
   },
   "report": {
-    "title": "2026년 7월 28일~8월 3일 위험성평가보고서",
+    "title": "위험성평가보고서",
     "audience": "RISK_ASSESSMENT_REPORT",
-    "period": "2026-07-28~2026-08-03",
-    "summary": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
+    "period": "2026-07-28 ~ 2026-08-03",
+    "summary": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 종사자가 신고하여 위험요인을 추가한 항목은 전체 중 23.5% 이며, CCTV가 감지한 항목은 전체의 0.0이다. 재발 항목률 25.0% 이다.",
     "sections": [
       {
         "section_code": "EXECUTIVE_SUMMARY",
         "heading": "요약",
-        "content": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
+        "content": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 종사자가 신고하여 위험요인을 추가한 항목은 전체 중 23.5% 이며, CCTV가 감지한 항목은 전체의 0.0이다. 재발 항목률 25.0% 이다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "RISK_DISTRIBUTION",
         "heading": "위험도 분포 및 관리 현황",
-        "content": "위험도 분포는 중대위험 0건, 고위험 4건, 중간위험 8건, 저위험 0건으로 확인됐다. 고위험 및 중대위험 항목은 총 4건으로 전체 평가 항목 12건의 33.3%를 차지했다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%, 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건으로 확인됐다.",
+        "content": "위험도 분포는 중대위험 0건, 고위험 4건, 중간위험 8건, 저위험 0건으로 확인됐다. 고위험 및 중대위험 항목은 총 4건으로 전체 평가 항목 12건의 33.3%를 차지했다. 조치가 연결된 평가 항목은 3건이며, 승인 완료율은 25.0%이다. 재발 항목률 25.0% 이다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
@@ -617,10 +393,11 @@
         ]
       }
     ],
-    "conclusion": "위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이며, 미조치 평가 항목은 9건으로 확인됐다. 특히 고위험 또는 중대위험 미조치 항목 2건은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.",
+    "conclusion": "위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이다. 특히 동일 항목에 대한 재현율은 25.0%로 해당 항목은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.",
     "limitations": [
-      "inspection_history_id와 action_history_id가 모두 null로, 개별 점검 및 조치 이력의 상세 추적이 불가능하다.",
-      "일부 평가 건에 대해 조치 및 승인 완료 여부가 명확하지 않아 완전한 관리 현황 파악에 한계가 있다."
+      "inspection_history_id 및 action_history_id가 모두 null로, 개별 점검 및 조치 이력 상세 확인이 불가함.",
+      "event_id가 제공되지 않아 특정 사건과의 연계 분석이 불가능함.",
+      "고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음."
     ]
   },
   "review": {

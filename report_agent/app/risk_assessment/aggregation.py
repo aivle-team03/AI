@@ -126,6 +126,15 @@ def _board_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         and str(row.get("source_type") or row.get("type") or "").strip() == "게시판"
     ]
 
+def _cctv_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        row
+        for row in rows
+        if _has_action(row)
+        and str(row.get("source_type") or row.get("type") or "").strip() == "이벤트"
+    ]
+
+
 def _inspection_action_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         row
@@ -191,7 +200,7 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
     action_rows = [row for row in inspection_rows if _has_action(row)]
     completed_action_rows = [row for row in inspection_rows if _action_completed(row)]
     approved_action_rows = [row for row in inspection_rows if _approval_completed(row)]
-    unaddressed_inspection_rows = [row for row in inspection_rows if not _has_action(row)]
+
 
     daily_counts: Counter = Counter()
     weekly_counts: Counter = Counter()
@@ -221,9 +230,7 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
         row for row in inspection_rows
         if _risk_band(row.get("risk")) in {"CRITICAL", "HIGH"}
     ]
-    #필요없음
-    unresolved_high_risk_rows = [row for row in high_risk_rows if not _has_action(row)] 
-    #
+
     daily_counts_dict = dict(sorted(daily_counts.items()))
     weekly_counts_dict = dict(sorted(weekly_counts.items()))
     daily_high_counts_dict = dict(sorted(daily_high_counts.items()))
@@ -258,15 +265,16 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             "low_risk_records": risk_band_counts.get("LOW", 0),
             "high_or_critical_risk_records": len(high_risk_rows),
             "high_or_critical_risk_rate":  _round_rate(len(high_risk_rows),len(inspection_rows)),
-            "board_action_history_rate": _round_rate(len(_board_action_rows(rows)), len(rows)),
+            "board_action_history_rate": _round_rate(len(_board_action_rows(rows)), len(rows)),     # 종사가가 추가한 조치항목
+            "cctv_action_history_rate":  _round_rate(len(_cctv_action_rows(rows)), len(rows)),      # CCTV가 추가한 조치항목
             "risk_recurrence_rate": _round_rate( len (_recurrence_rows(inspection_rows)), len(inspection_rows)),
             "action_total": len(action_rows),
             "action_completed": len(completed_action_rows),
             "action_completion_rate": _round_rate(len(completed_action_rows), len(inspection_rows)),
             "approval_completed": len(approved_action_rows),
             "approval_completion_rate": _round_rate(len(_inspection_action_rows(action_rows)), len(inspection_rows)),
-            "unaddressed_assessment_records": len(unaddressed_inspection_rows),
-            "unaddressed_high_risk_records": len(unresolved_high_risk_rows),
+
+
         },
         "trend": {
             "daily_assessment_counts": daily_counts_dict,
@@ -285,9 +293,6 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
             },
         },
         "high_risk_items": high_risk_items[:20],
-        "unaddressed_high_risk_items": [
-            _high_risk_item(row) for row in unresolved_high_risk_rows
-        ],
         "source_ids": {
             "inspection_history_ids": [
                 row.get("inspection_history_id") for row in inspection_rows
@@ -299,7 +304,6 @@ def aggregate_risk_assessment_report_data(req: RiskAssessmentReportRequest) -> d
         },
         "source_samples": {
             "high_risk_items": high_risk_items[:10],
-            "unaddressed_items": [_high_risk_item(row) for row in unaddressed_inspection_rows[:10]],
         },
         "constraints": {
             "do_not_include_anomaly_patterns": True,

@@ -213,6 +213,7 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
                     "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
                     "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
                     "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+                    "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
                 ],
             }
         )
