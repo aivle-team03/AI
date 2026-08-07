@@ -41,6 +41,10 @@ def _clean_and_parse_json_for_veo(raw_text: str, context: str = ""):
 
 
 # 파이프라인별 LLM 토큰 집계용 글로벌 저장소
+# 스토리보드 프롬프트에 넣을 문서 원문의 최대 길이.
+# 문서 분석(analyze_document)이 12,000자를 보므로 같은 값으로 맞춘다.
+MAX_SOURCE_TEXT_CHARS = 12000
+
 _ACCUMULATED_TOKEN_USAGE = {"input_tokens": 0, "output_tokens": 0}
 
 
@@ -258,7 +262,7 @@ async def generate_veo_prompts_from_parsed_text(
 ]
 
 파싱 문서 원문:
-{extracted_text[:4000]}
+{extracted_text[:MAX_SOURCE_TEXT_CHARS]}
 """
     if request:
         user_prompt += f"사용자 추가 요청: {request}\n"
