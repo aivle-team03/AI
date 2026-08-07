@@ -33,9 +33,21 @@ docker run -d -p 6379:6379 redis:7-alpine
 
 ### 서버로 실행
 
+영상 생성은 Celery 워커가 처리하므로 **API 서버와 워커를 모두** 띄워야 한다.
+
 ```bash
-uvicorn app.server:app --reload --port 8100
+uvicorn app.server:app --port 8100
 ```
+
+```bash
+celery -A app.celery_app worker --loglevel=info --pool=solo
+```
+
+> Windows에서는 기본 prefork 풀이 동작하지 않으므로 `--pool=solo`가 필요하다.
+> 워커를 띄우지 않으면 요청은 `202`를 반환하지만 상태가 `PENDING`에서 진행되지 않는다.
+>
+> 워커는 API 서버와 다른 프로세스다. 업로드 원본은 OS 임시 디렉터리에 두므로 두 프로세스가
+> **같은 머신**에 있어야 한다. 별도 컨테이너로 띄운다면 임시 디렉터리를 공유 볼륨으로 마운트할 것.
 
 | Method | Endpoint | 설명 |
 | :--- | :--- | :--- |
@@ -71,11 +83,14 @@ python agent_main.py ./sample.pdf --company-id 1 --pretty
 
 ## 현재 상태
 
-백엔드(`aivle-team03/backend`)의 `app/services/ai/` 및 `app/services/veo_service.py` 에서 이관한 코드다. **현재는 복제 단계로, 백엔드 쪽 파이프라인도 그대로 동작 중이다.** 이 서비스가 검증되면 백엔드에서 제거하고 백엔드는 이 서비스를 호출하도록 바꾼다.
+백엔드(`aivle-team03/backend`)의 `app/services/ai/` 및 `app/services/veo_service.py` 에서 이관한 코드다.
+백엔드는 이 서비스를 호출하는 프록시로 전환되어, 인증과 `company_id` 판별, `Education` 테이블
+영속화만 담당한다.
 
 이관 시 백엔드와 달라진 점:
 
-- Celery 워커 → FastAPI `BackgroundTasks`
-- `Education` 테이블 직접 INSERT 제거
-- 산출물 경로 `static/` → `output/` (`OUTPUT_DIR`, `UPLOAD_DIR` 로 설정 가능)
-- 업로드 원본 삭제를 `finally` 로 옮겨 실패 시에도 디스크에 남지 않도록 함
+- `Education` 테이블 직접 INSERT 제거. 백엔드가 상태를 폴링해 저장한다
+- 산출물 경로 `static/` → `output/` (`OUTPUT_DIR` 로 설정 가능)
+- 업로드 원본을 영구 경로가 아닌 OS 임시 디렉터리에 저장하고 `finally` 에서 삭제.
+  실패하거나 조기 반환해도 디스크에 남지 않는다.
+- 실행 방식은 backend와 동일하게 Celery 워커를 쓴다

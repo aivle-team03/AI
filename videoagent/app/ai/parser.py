@@ -99,9 +99,3 @@ def parse_document_content(file_path: str, raw_content: Optional[bytes] = None) 
         full_text = f"산업안전보건 수칙 교육 자료 ({os.path.basename(file_path)})"
 
     return full_text, visual_parts
-
-
-def extract_text_from_file(file_path: str, raw_content: Optional[bytes] = None) -> str:
-    """기존 코드 하위 호환성을 위한 텍스트 전용 파서 지원 함수"""
-    full_text, _ = parse_document_content(file_path, raw_content)
-    return full_text

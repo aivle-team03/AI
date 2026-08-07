@@ -18,8 +18,8 @@ def _parse_csv_env(name: str, default: str) -> tuple[str, ...]:
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 # 생성 산출물 경로. 백엔드의 static/ 아래가 아니라 이 서비스 전용 디렉터리를 쓴다.
+# 업로드 원본은 OS 임시 디렉터리를 쓰므로 별도 설정이 없다.
 OUTPUT_DIR = os.getenv("OUTPUT_DIR", "output/videos").rstrip("/")
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "output/uploads").rstrip("/")
 
 BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://127.0.0.1:8000").rstrip("/")
 
