@@ -25,7 +25,7 @@
       "low_risk_records": 0,
       "high_or_critical_risk_records": 4,
       "high_or_critical_risk_rate": 33.3,
-      "board_action_history_rate": 46.2,
+      "board_action_history_rate": 23.5,
       "risk_recurrence_rate": 25.0,
       "action_total": 3,
       "action_completed": 3,
@@ -123,7 +123,9 @@
         "action_content": null,
         "action_completed": false,
         "approval_completed": false,
-        "approval_name": null
+        "approval_name": null,
+        "date": "2026-08-03T09:00:00",
+        "handler": "작업자10"
       },
       {
         "source_id": "2026-08-03T09:00:00",
@@ -141,7 +143,9 @@
         "action_content": null,
         "action_completed": true,
         "approval_completed": true,
-        "approval_name": "판교관리자"
+        "approval_name": "판교관리자",
+        "date": "2026-08-03T09:00:00",
+        "handler": "작업자10"
       },
       {
         "source_id": "2026-08-03T09:00:00",
@@ -159,7 +163,9 @@
         "action_content": null,
         "action_completed": false,
         "approval_completed": false,
-        "approval_name": null
+        "approval_name": null,
+        "date": "2026-08-03T09:00:00",
+        "handler": "작업자10"
       },
       {
         "source_id": "2026-07-28T08:43:54",
@@ -177,7 +183,9 @@
         "action_content": null,
         "action_completed": true,
         "approval_completed": true,
-        "approval_name": "현수"
+        "approval_name": "현수",
+        "date": "2026-07-28T08:43:54",
+        "handler": "김작업"
       }
     ],
     "unaddressed_high_risk_items": [
@@ -197,7 +205,9 @@
         "action_content": null,
         "action_completed": false,
         "approval_completed": false,
-        "approval_name": null
+        "approval_name": null,
+        "date": "2026-08-03T09:00:00",
+        "handler": "작업자10"
       },
       {
         "source_id": "2026-08-03T09:00:00",
@@ -215,7 +225,9 @@
         "action_content": null,
         "action_completed": false,
         "approval_completed": false,
-        "approval_name": null
+        "approval_name": null,
+        "date": "2026-08-03T09:00:00",
+        "handler": "작업자10"
       }
     ],
     "source_ids": {
@@ -258,7 +270,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-03T09:00:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-08-03T09:00:00",
@@ -276,7 +290,9 @@
           "action_content": null,
           "action_completed": true,
           "approval_completed": true,
-          "approval_name": "판교관리자"
+          "approval_name": "판교관리자",
+          "date": "2026-08-03T09:00:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-08-03T09:00:00",
@@ -294,7 +310,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-03T09:00:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-07-28T08:43:54",
@@ -312,7 +330,9 @@
           "action_content": null,
           "action_completed": true,
           "approval_completed": true,
-          "approval_name": "현수"
+          "approval_name": "현수",
+          "date": "2026-07-28T08:43:54",
+          "handler": "김작업"
         }
       ],
       "unaddressed_items": [
@@ -332,7 +352,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-03T09:00:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-08-03T09:00:00",
@@ -350,7 +372,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-03T09:00:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-08-03T00:00:00",
@@ -368,7 +392,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-03T00:00:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-08-01T11:45:00",
@@ -386,7 +412,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-01T11:45:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-08-01T11:45:00",
@@ -404,7 +432,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-08-01T11:45:00",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-07-31T11:45:52",
@@ -422,7 +452,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-07-31T11:45:52",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-07-30T15:52:16",
@@ -440,7 +472,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-07-30T15:52:16",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-07-30T15:52:16",
@@ -458,7 +492,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-07-30T15:52:16",
+          "handler": "작업자10"
         },
         {
           "source_id": "2026-07-29T05:43:54",
@@ -476,7 +512,9 @@
           "action_content": null,
           "action_completed": false,
           "approval_completed": false,
-          "approval_name": null
+          "approval_name": null,
+          "date": "2026-07-29T05:43:54",
+          "handler": "김작업"
         }
       ]
     },
@@ -489,64 +527,70 @@
   },
   "analysis_result": {
     "executive_insights": [
-      "전체 위험성평가 건수는 12건이며, 이 중 고위험 및 중대위험 건수는 4건으로 전체의 33.3%를 차지합니다.",
-      "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 특히 '집', '운동장', '기석님 집', 'B동 2층' 위치에서 발견되었습니다.",
-      "최근 일별 평가 건수는 증가 추세(300% 증가)이나 주간 평가 건수는 감소(-50%)하는 경향을 보입니다.",
-      "고위험 평가 중 2건은 아직 미조치 상태로 남아 있어 관리가 필요한 상황입니다.",
-      "평가 기준 조치 완료율과 승인 완료율은 각각 25%로 낮은 편이며, 미조치 평가 건수는 9건에 달합니다."
+      "전체 위험성평가 건수는 17건이며, 이 중 12건이 실제 평가 건수입니다.",
+      "고위험 및 중대위험 비율은 33.3%로, 고위험 항목 4건이 확인되었습니다.",
+      "최근 일별 평가 건수는 증가 추세이며(300% 증가), 특히 고위험 항목은 200% 증가하여 위험도가 상승하고 있습니다.",
+      "고위험 항목 중 50%는 아직 미조치 상태이며, 전체 조치 완료율은 25%에 불과합니다.",
+      "위험도 분포는 화재 감지(고위험 4건), 적재물(중위험 3건), 충돌(중위험 5건) 순으로 나타났습니다."
     ],
     "findings": [
       {
         "finding_type": "KPI",
-        "title": "평가 건수 및 위험도 분포",
-        "description": "전체 평가 건수는 12건이며, 고위험 및 중대위험 건수는 4건으로 전체의 33.3%를 차지합니다. 중위험은 8건, 저위험은 없습니다.",
+        "title": "평가 건수 및 위험도 비율",
+        "description": "전체 평가 건수는 17건이며, 고위험 및 중대위험 건수는 4건으로 전체의 33.3%를 차지합니다.",
         "related_event_ids": [],
         "evidence_ids": [],
-        "severity": "INFO"
+        "severity": "HIGH"
       },
       {
         "finding_type": "TREND",
-        "title": "평가 건수 추세",
-        "description": "일별 평가 건수는 7월 28일 1건에서 8월 3일 4건으로 300% 증가하였으나, 주간 평가 건수는 7월 31일 주간 8건에서 8월 3일 주간 4건으로 50% 감소하였습니다.",
+        "title": "일별 평가 건수 및 고위험 건수 증가",
+        "description": "최근 일별 평가 건수가 1건에서 4건으로 300% 증가하였고, 고위험 건수도 1건에서 3건으로 200% 증가하는 추세입니다.",
         "related_event_ids": [],
         "evidence_ids": [],
-        "severity": "INFO"
+        "severity": "HIGH"
       },
       {
         "finding_type": "RISK_ASSESSMENT",
-        "title": "고위험 항목 집중 현황",
-        "description": "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 '집', '운동장', '기석님 집', 'B동 2층'입니다.",
-        "related_event_ids": [
-          "2026-08-03T09:00:00",
-          "2026-07-28T08:43:54"
-        ],
+        "title": "위험도 분포 및 주요 위험 카테고리",
+        "description": "고위험은 모두 화재 감지 카테고리에 집중되어 있으며, 중위험은 적재물과 충돌 카테고리에 분포되어 있습니다.",
+        "related_event_ids": [],
         "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "UNRESOLVED",
-        "title": "미조치 고위험 항목",
-        "description": "고위험 평가 중 2건이 미조치 상태로 남아 있으며, 모두 '화재 감지' 카테고리에 속해 있습니다. 위치는 '집'과 '기석님 집'입니다.",
+        "title": "미조치 고위험 항목 현황",
+        "description": "고위험 항목 4건 중 2건(50%)이 미조치 상태로 남아 있으며, 조치 및 승인 완료율은 각각 25%에 불과합니다.",
         "related_event_ids": [
+          "2026-08-03T09:00:00",
           "2026-08-03T09:00:00"
         ],
         "evidence_ids": [],
         "severity": "HIGH"
       },
       {
-        "finding_type": "KPI",
-        "title": "조치 및 승인 완료율",
-        "description": "평가 기준 조치 완료율과 승인 완료율은 각각 25%로 낮으며, 전체 미조치 평가 건수는 9건입니다.",
-        "related_event_ids": [],
+        "finding_type": "PRIORITY",
+        "title": "고위험 항목 우선 관리 필요 위치",
+        "description": "미조치 고위험 항목은 '집'과 '기석님 집' 위치에서 발생하고 있어 해당 위치에 대한 우선 관리가 요구됩니다.",
+        "related_event_ids": [
+          "2026-08-03T09:00:00",
+          "2026-08-03T09:00:00"
+        ],
         "evidence_ids": [],
-        "severity": "MEDIUM"
+        "severity": "HIGH"
       }
     ],
-    "recommended_actions": [],
-    "data_limitations": []
+    "recommended_actions": [
+      "보고서 작성 시 미조치 고위험 항목에 대한 추가 확인 필요."
+    ],
+    "data_limitations": [
+      "평가 기록 중 일부 inspection_history_id 및 action_history_id가 부재하여 상세 추적에 제한이 있음.",
+      "사고 원인 및 책임 소재에 대한 데이터가 없어 원인 분석 불가."
+    ]
   },
   "report": {
-    "title": "위험성평가보고서",
+    "title": "위험성평가보고서 (2026-07-28 ~ 2026-08-03)",
     "audience": "RISK_ASSESSMENT_REPORT",
     "period": "2026-07-28 ~ 2026-08-03",
     "summary": "평가기간 동안 총 12건의 위험성평가가 수행됐다. 고위험 및 중대위험 항목은 4건으로 전체의 33.3%이다. 조치가 연결된 평가 항목은 3건이며, 전체 평가 항목 기준 조치 완료율은 25.0%이다. 승인 완료 평가 항목은 3건이며, 전체 평가 항목 기준 승인 완료율은 25.0%이다. 미조치 평가 항목은 9건이고, 이 중 고위험 또는 중대위험 미조치 항목은 2건이다.",
@@ -571,13 +615,18 @@
         "content": "1. 위치: 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n2. 위치: 운동장, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 점검자 메모프로세스 확인용\n- 조치 내용: -\n\n3. 위치: 기석님 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n4. 위치: B동 2층, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 소화기 앞 박스 적치물 발견 -> 제거 조치 필요\n- 조치 내용: -",
         "related_event_ids": [
           "2026-08-03T09:00:00",
+          "2026-08-03T09:00:00",
+          "2026-08-03T09:00:00",
           "2026-07-28T08:43:54"
         ],
         "evidence_ids": []
       }
     ],
     "conclusion": "위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이며, 미조치 평가 항목은 9건으로 확인됐다. 특히 고위험 또는 중대위험 미조치 항목 2건은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.",
-    "limitations": []
+    "limitations": [
+      "평가 기록 중 일부 inspection_history_id 및 action_history_id가 부재하여 상세 추적에 제한이 있음.",
+      "사고 원인 및 책임 소재에 대한 데이터가 없어 원인 분석 불가."
+    ]
   },
   "review": {
     "passed": true,
