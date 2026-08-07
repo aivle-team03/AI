@@ -1,28 +1,7 @@
 ﻿{
-  "status": "FAILED",
-  "retry_count": 2,
+  "status": "COMPLETED",
+  "retry_count": 0,
   "worker_feedback_rows": [
-    {
-      "board_id": null,
-      "category": "기타",
-      "risk": "상",
-      "category_name": "ㄴㄴ",
-      "user": null,
-      "board_writer": null,
-      "board_created_at": null,
-      "board_contents": null,
-      "status": null,
-      "board_image_url": null,
-      "action_name": "조치 이름 Action_name에 들어가는 지 확인",
-      "location": "집",
-      "completed_at": "2026-08-05 16:08:25",
-      "action_status": "조치 완료",
-      "handler_name": "작업자23",
-      "content": "없다",
-      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_42_20260805160825009402_7d15c7db.png",
-      "approver_name": "판교관리자",
-      "source_type": "게시판"
-    },
     {
       "board_id": 2,
       "category": "소방안전",
@@ -81,7 +60,7 @@
       "completed_at": "2026-08-05 16:27:01",
       "action_status": "조치 완료",
       "handler_name": "작업자24",
-      "content": "zz",
+      "content": "치웠다",
       "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
       "approver_name": "판교관리자",
       "source_type": "게시판"
@@ -89,27 +68,6 @@
   ],
   "correction_result": {
     "corrected_rows": [
-      {
-        "board_id": null,
-        "category": "기타",
-        "risk": "상",
-        "category_name": "ㄴㄴ",
-        "user": null,
-        "board_writer": null,
-        "board_created_at": null,
-        "board_contents": "없음",
-        "status": null,
-        "board_image_url": null,
-        "action_name": "조치 이름 Action_name에 들어가는지 확인",
-        "location": "집",
-        "completed_at": "2026-08-05 16:08:25",
-        "action_status": "조치 완료",
-        "handler_name": "작업자23",
-        "content": "없음",
-        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_42_20260805160825009402_7d15c7db.png",
-        "approver_name": "판교관리자",
-        "source_type": "게시판"
-      },
       {
         "board_id": 2,
         "category": "소방안전",
@@ -163,12 +121,12 @@
         "board_contents": "살려주세요",
         "status": "접수",
         "board_image_url": null,
-        "action_name": "리포트가 부적절합니다",
+        "action_name": "리포트가 이상해요",
         "location": "살려주세요",
         "completed_at": "2026-08-05 16:27:01",
         "action_status": "조치 완료",
         "handler_name": "작업자24",
-        "content": "내용이 부적절하여 추가 확인이 필요합니다.",
+        "content": "치웠습니다.",
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
         "approver_name": "판교관리자",
         "source_type": "게시판"
@@ -177,72 +135,52 @@
     "correction_notes": [
       {
         "row_index": 0,
-        "field": "action_name",
-        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
-        "corrected_text": "조치 이름 Action_name에 들어가는지 확인",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 0,
-        "field": "content",
-        "original_text": "없다",
-        "corrected_text": "없음",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 1,
         "field": "content",
         "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
         "corrected_text": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
-        "row_index": 3,
-        "field": "action_name",
-        "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트가 부적절합니다",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 3,
+        "row_index": 2,
         "field": "content",
-        "original_text": "zz",
-        "corrected_text": "내용이 부적절하여 추가 확인이 필요합니다.",
+        "original_text": "치웠다",
+        "corrected_text": "치웠습니다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       }
     ],
     "unresolved_notes": []
   },
   "correction_review": {
-    "approved": false,
-    "final_decision": "REVISION_REQUIRED",
-    "score": 70,
+    "approved": true,
+    "final_decision": "APPROVED",
+    "score": 100,
     "issues": [
       {
-        "row_index": 3,
-        "field": "action_name",
-        "severity": "ERROR",
-        "category": "MEANING_CHANGED",
-        "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트가 부적절합니다",
-        "message": "원문 '리포트가 이상해요'는 다소 구어체이고 모호하지만, 수정문 '리포트가 부적절합니다'는 원문의 의미를 다소 변경하여 더 강한 부정적 판단을 내리고 있습니다. 이는 원문의 의미 보존에 위배됩니다.",
-        "recommendation": "원문의 의미를 유지하면서 보고서 문체에 맞게 다듬으세요. 예: '리포트에 이상이 있습니다' 등."
+        "row_index": 0,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
+        "corrected_text": "소화기 위치 재배치 및 가압 상태 점검을 완료하였습니다.",
+        "message": "수정문은 원문의 의미를 유지하면서 보고서 문체에 맞게 띄어쓰기와 문장 종결 표현을 개선하였음.",
+        "recommendation": "이러한 문체 개선은 적절하며 승인함."
       },
       {
-        "row_index": 3,
+        "row_index": 2,
         "field": "content",
-        "severity": "ERROR",
-        "category": "MEANING_CHANGED",
-        "original_text": "zz",
-        "corrected_text": "내용이 부적절하여 추가 확인이 필요합니다.",
-        "message": "원문 'zz'는 의미가 불분명한 단순 문자이지만, 수정문은 원문에 없는 추가 판단과 조치 필요성을 포함하고 있어 사실 추가에 해당합니다.",
-        "recommendation": "원문의 의미를 유지하거나 최소한의 문체 개선만 하세요. 의미가 불분명하면 '내용이 불명확함' 정도로 수정하는 것이 적절합니다."
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "치웠다",
+        "corrected_text": "치웠습니다.",
+        "message": "수정문은 원문의 의미를 유지하면서 보고서 문체에 맞게 문장 종결 표현을 개선하였음.",
+        "recommendation": "이러한 문체 개선은 적절하며 승인함."
       }
     ],
-    "items_requiring_revision": [
-      "4행 action_name 필드: '리포트가 이상해요'의 의미를 유지하며 문체 개선 필요",
-      "4행 content 필드: 'zz'의 의미 불명확성을 유지하거나 최소한으로 수정 필요"
-    ]
+    "items_requiring_revision": []
   },
-  "word_output_paths": []
+  "word_output_paths": [
+    "output\\worker_feedback_reports\\종사자에 의한 유해 위험요인 보고서_2.docx",
+    "output\\worker_feedback_reports\\종사자에 의한 유해 위험요인 보고서_23.docx",
+    "output\\worker_feedback_reports\\종사자에 의한 유해 위험요인 보고서_24.docx"
+  ]
 }

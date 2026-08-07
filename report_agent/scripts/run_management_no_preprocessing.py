@@ -17,7 +17,8 @@ from app.management.graph import management_review_order_no_preprocessing_graph
 from app.management.schemas import SiteAnomalyReportRequest, SiteAnomalyReportResponse
 from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 
-INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_14.json"
+# INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_14.json"
+INPUT_PATH = PROJECT_ROOT / "output" /"risk_assessment_form"/ "risk_assessment_form_graph_response100.json"
 OUTPUT_DIR = PROJECT_ROOT / "output" / "management_reports"
 RESPONSE_PATH = OUTPUT_DIR / "management_review_order_no_preprocessing_response.json"
 REPORT_PATH = OUTPUT_DIR / "management_review_order_no_preprocessing.md"

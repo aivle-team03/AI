@@ -4,7 +4,6 @@ import json
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
-
 from app.common.Report_data import BACKEND_AUTH_TOKEN, BACKEND_BASE_URL
 
 def _index_by(items: list[dict[str, Any]], key: str) -> dict[Any, dict[str, Any]]:
@@ -38,7 +37,7 @@ def _unwrap_item(data: Any) -> dict[str, Any]:
     return {}
 
 
-def _get_action_history_detail(action_history_id: int) -> dict[str, Any]:
+def _get_action_history_detail(action_history_id: int) -> dict[str, Any] | None:
     url = (
         f"{BACKEND_BASE_URL.rstrip('/')}"
         f"/api/action-histories/{action_history_id}"
@@ -50,18 +49,22 @@ def _get_action_history_detail(action_history_id: int) -> dict[str, Any]:
             charset = response.headers.get_content_charset() or "utf-8"
             return _unwrap_item(json.loads(response.read().decode(charset)))
     except HTTPError as exc:
+        if exc.code == 404:
+            return None
         body = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"GET {url} failed: {exc.code} {body}") from exc
     except URLError as exc:
         raise RuntimeError(f"GET {url} failed: {exc.reason}") from exc
 
 
-def _merge_action_detail(action: dict[str, Any]) -> dict[str, Any]:
+def _merge_action_detail(action: dict[str, Any]) -> dict[str, Any] | None:
     action_history_id = action.get("action_history_id")
     if action_history_id is None:
         return action
 
     detail = _get_action_history_detail(int(action_history_id))
+    if detail is None:
+        return None
     return {**action, **detail}
 
 
@@ -79,6 +82,8 @@ def build_worker_feedback_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
             continue
 
         action = _merge_action_detail(action)
+        if action is None:
+            continue
 
         board_id = action.get("board_id") or action.get("source_id")
         board = board_by_id.get(board_id, {})
@@ -86,6 +91,7 @@ def build_worker_feedback_table(tables: dict[str, Any]) -> list[dict[str, Any]]:
 
         rows.append(
             {
+                "board_id": board_id,
                 "category": category.get("category"),
                 "risk": _risk(category),
                 "category_name": category.get("category_name"),

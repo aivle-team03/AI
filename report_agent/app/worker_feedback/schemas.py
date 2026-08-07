@@ -8,6 +8,7 @@ from app.schemas import EvidenceContentRequest
 class WorkerFeedbackRow(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
+    board_id: int | str | None = Field(default=None, alias="게시글 ID")
     category: str | None = Field(default=None, alias="카테고리")
     risk: str | int | None = Field(default=None, alias="위험도")
     category_name: str | None = Field(default=None, alias="이름")

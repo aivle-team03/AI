@@ -6,70 +6,242 @@
       "company": {},
       "period": {
         "start_date": "2026-07-28",
-        "end_date": "2026-08-03"
+        "end_date": "2026-08-07"
       },
       "audience": "MANAGEMENT_RESPONSIBLE",
       "report_type": "MANAGEMENT_REVIEW_ORDER",
       "data_source": "preprocessed_final_history_rows.final_history_rows"
     },
     "summary_counts": {
-      "total_records": 17,
-      "inspection_records": 12,
-      "high_risk_records": 4,
-      "pending_or_unapproved_records": 9,
-      "repeated_risk_groups": 2
+      "total_records": 47,
+      "inspection_records": 34,
+      "high_risk_records": 12,
+      "pending_or_unapproved_records": 22,
+      "repeated_risk_groups": 8
     },
     "anomaly_candidates": [
       {
         "pattern_type": "REPEATED_LOCATION_CATEGORY",
         "location": "C동 하역장",
         "risk_type": "충돌",
-        "count": 4,
-        "severity": "MEDIUM",
-        "max_risk_score": 2,
+        "count": 9,
+        "severity": "HIGH",
+        "max_risk_score": 3,
         "source_ids": [
           "2026-08-01T11:45:00|C동 하역장|충돌",
           "2026-08-01T11:45:00|C동 하역장|충돌",
           "2026-07-31T11:45:52|C동 하역장|충돌",
-          "2026-07-30T15:52:16|C동 하역장|충돌"
+          "2026-07-30T15:52:16|C동 하역장|충돌",
+          "2026-08-04T13:00:00|C동 하역장|충돌",
+          "2026-08-05T09:00:00|C동 하역장|충돌",
+          "2026-08-05T14:00:00|C동 하역장|충돌",
+          "2026-08-06T10:30:00|C동 하역장|충돌",
+          "2026-08-07T10:00:00|C동 하역장|충돌"
         ],
-        "latest_record_date": "2026-08-01T11:45:00",
+        "latest_record_date": "2026-08-07T10:00:00",
         "pending_source_ids": [
           "2026-08-01T11:45:00|C동 하역장|충돌",
           "2026-08-01T11:45:00|C동 하역장|충돌",
           "2026-07-31T11:45:52|C동 하역장|충돌",
-          "2026-07-30T15:52:16|C동 하역장|충돌"
+          "2026-07-30T15:52:16|C동 하역장|충돌",
+          "2026-08-04T13:00:00|C동 하역장|충돌",
+          "2026-08-05T14:00:00|C동 하역장|충돌",
+          "2026-08-06T10:30:00|C동 하역장|충돌"
         ],
         "recurrence_after_action_count": 0,
-        "why_flagged": "same location and same risk type repeated 4 times; 4 items require action or approval follow-up",
+        "why_flagged": "same location and same risk type repeated 9 times; high risk included; 7 items require action or approval follow-up",
         "field_check_points": [
           "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
           "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
-          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다."
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
         ]
       },
       {
         "pattern_type": "REPEATED_LOCATION_CATEGORY",
         "location": "B동 자재창고",
         "risk_type": "적재물",
-        "count": 2,
-        "severity": "LOW",
-        "max_risk_score": 2,
+        "count": 6,
+        "severity": "HIGH",
+        "max_risk_score": 3,
         "source_ids": [
           "2026-08-03T00:00:00|B동 자재창고|적재물",
-          "2026-07-29T05:43:54|B동 자재창고|적재물"
+          "2026-07-29T05:43:54|B동 자재창고|적재물",
+          "2026-08-04T10:00:00|B동 자재창고|적재물",
+          "2026-08-05T09:40:00|B동 자재창고|적재물",
+          "2026-08-06T09:30:00|B동 자재창고|적재물",
+          "2026-08-07T09:10:00|B동 자재창고|적재물"
         ],
-        "latest_record_date": "2026-08-03T00:00:00",
+        "latest_record_date": "2026-08-07T09:10:00",
         "pending_source_ids": [
           "2026-08-03T00:00:00|B동 자재창고|적재물",
-          "2026-07-29T05:43:54|B동 자재창고|적재물"
+          "2026-07-29T05:43:54|B동 자재창고|적재물",
+          "2026-08-04T10:00:00|B동 자재창고|적재물",
+          "2026-08-05T09:40:00|B동 자재창고|적재물",
+          "2026-08-07T09:10:00|B동 자재창고|적재물"
         ],
-        "recurrence_after_action_count": 0,
-        "why_flagged": "same location and same risk type repeated 2 times; 2 items require action or approval follow-up",
+        "recurrence_after_action_count": 1,
+        "why_flagged": "same location and same risk type repeated 6 times; high risk included; 5 items require action or approval follow-up; similar pattern appears after previous action date",
         "field_check_points": [
           "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
           "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
-          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다."
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "D동 정문",
+        "risk_type": "충돌",
+        "count": 4,
+        "severity": "HIGH",
+        "max_risk_score": 3,
+        "source_ids": [
+          "2026-07-30T15:52:16|D동 정문|충돌",
+          "2026-08-04T13:30:00|D동 정문|충돌",
+          "2026-08-06T09:10:00|D동 정문|충돌",
+          "2026-08-06T13:30:00|D동 정문|충돌"
+        ],
+        "latest_record_date": "2026-08-06T13:30:00",
+        "pending_source_ids": [
+          "2026-07-30T15:52:16|D동 정문|충돌",
+          "2026-08-04T13:30:00|D동 정문|충돌",
+          "2026-08-06T09:10:00|D동 정문|충돌"
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "same location and same risk type repeated 4 times; high risk included; 3 items require action or approval follow-up",
+        "field_check_points": [
+          "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
+          "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "A동 복도",
+        "risk_type": "적재물",
+        "count": 4,
+        "severity": "HIGH",
+        "max_risk_score": 3,
+        "source_ids": [
+          "2026-07-29T03:43:54|A동 복도|적재물",
+          "2026-08-04T10:30:00|A동 복도|적재물",
+          "2026-08-05T10:10:00|A동 복도|적재물",
+          "2026-08-06T11:00:00|A동 복도|적재물"
+        ],
+        "latest_record_date": "2026-08-06T11:00:00",
+        "pending_source_ids": [
+          "2026-08-05T10:10:00|A동 복도|적재물"
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "same location and same risk type repeated 4 times; high risk included; 1 items require action or approval follow-up",
+        "field_check_points": [
+          "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
+          "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "집",
+        "risk_type": "화재 감지",
+        "count": 3,
+        "severity": "HIGH",
+        "max_risk_score": 3,
+        "source_ids": [
+          "2026-08-03T09:00:00|집|화재 감지",
+          "2026-08-04T09:10:00|집|화재 감지",
+          "2026-08-06T13:00:00|집|화재 감지"
+        ],
+        "latest_record_date": "2026-08-06T13:00:00",
+        "pending_source_ids": [
+          "2026-08-03T09:00:00|집|화재 감지",
+          "2026-08-04T09:10:00|집|화재 감지",
+          "2026-08-06T13:00:00|집|화재 감지"
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "same location and same risk type repeated 3 times; high risk included; 3 items require action or approval follow-up",
+        "field_check_points": [
+          "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
+          "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "운동장",
+        "risk_type": "화재 감지",
+        "count": 3,
+        "severity": "HIGH",
+        "max_risk_score": 3,
+        "source_ids": [
+          "2026-08-03T09:00:00|운동장|화재 감지",
+          "2026-08-05T09:20:00|운동장|화재 감지",
+          "2026-08-07T09:30:00|운동장|화재 감지"
+        ],
+        "latest_record_date": "2026-08-07T09:30:00",
+        "pending_source_ids": [
+          "2026-08-07T09:30:00|운동장|화재 감지"
+        ],
+        "recurrence_after_action_count": 1,
+        "why_flagged": "same location and same risk type repeated 3 times; high risk included; 1 items require action or approval follow-up; similar pattern appears after previous action date",
+        "field_check_points": [
+          "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
+          "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "B동 2층",
+        "risk_type": "화재 감지",
+        "count": 3,
+        "severity": "HIGH",
+        "max_risk_score": 3,
+        "source_ids": [
+          "2026-07-28T08:43:54|B동 2층|화재 감지",
+          "2026-08-04T09:15:00|B동 2층|화재 감지",
+          "2026-08-06T10:00:00|B동 2층|화재 감지"
+        ],
+        "latest_record_date": "2026-08-06T10:00:00",
+        "pending_source_ids": [
+          "2026-08-06T10:00:00|B동 2층|화재 감지"
+        ],
+        "recurrence_after_action_count": 1,
+        "why_flagged": "same location and same risk type repeated 3 times; high risk included; 1 items require action or approval follow-up; similar pattern appears after previous action date",
+        "field_check_points": [
+          "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
+          "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
+        ]
+      },
+      {
+        "pattern_type": "REPEATED_LOCATION_CATEGORY",
+        "location": "기석님 집",
+        "risk_type": "화재 감지",
+        "count": 2,
+        "severity": "HIGH",
+        "max_risk_score": 3,
+        "source_ids": [
+          "2026-08-03T09:00:00|기석님 집|화재 감지",
+          "2026-08-05T14:30:00|기석님 집|화재 감지"
+        ],
+        "latest_record_date": "2026-08-05T14:30:00",
+        "pending_source_ids": [
+          "2026-08-03T09:00:00|기석님 집|화재 감지"
+        ],
+        "recurrence_after_action_count": 0,
+        "why_flagged": "same location and same risk type repeated 2 times; high risk included; 1 items require action or approval follow-up",
+        "field_check_points": [
+          "동일 장소에서 동일 위험요인이 반복되는지 확인한다.",
+          "기존 조치 이후 재발 방지 효과가 있었는지 확인한다.",
+          "지연된 조치 또는 승인 대기 항목이 있는지 확인한다.",
+          "같은 항목에 대해서 조치가 여러 번 있는지 확인한다."
         ]
       }
     ],
@@ -226,19 +398,17 @@
         "approval_completed": false,
         "approval_name": null,
         "before_image_url": null
-      }
-    ],
-    "recent_records": [
+      },
       {
-        "source_id": "2026-08-03T09:00:00|집|화재 감지",
+        "source_id": "2026-08-04T09:10:00|집|화재 감지",
         "type": null,
-        "date": "2026-08-03T09:00:00",
+        "date": "2026-08-04T09:10:00",
         "location": "집",
         "risk_type": "화재 감지",
         "risk": "상",
         "risk_band": "HIGH",
         "inspection_name": "소방안전",
-        "inspection_content": "Action is required for this inspection.",
+        "inspection_content": "소화전 앞 적치물 발견, 조치 필요",
         "action_name": null,
         "action_content": null,
         "action_completed": false,
@@ -247,16 +417,222 @@
         "before_image_url": null
       },
       {
-        "source_id": "2026-08-03T09:00:00|운동장|화재 감지",
-        "type": "점검이력",
-        "date": "2026-08-03T09:00:00",
-        "location": "운동장",
+        "source_id": "2026-08-04T10:00:00|B동 자재창고|적재물",
+        "type": null,
+        "date": "2026-08-04T10:00:00",
+        "location": "B동 자재창고",
+        "risk_type": "적재물",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "시설안전",
+        "inspection_content": "적재물 높이 기준 초과",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-04T13:00:00|C동 하역장|충돌",
+        "type": null,
+        "date": "2026-08-04T13:00:00",
+        "location": "C동 하역장",
+        "risk_type": "충돌",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "산업안전",
+        "inspection_content": "지게차 이동 경로 미표시",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-04T13:30:00|D동 정문|충돌",
+        "type": null,
+        "date": "2026-08-04T13:30:00",
+        "location": "D동 정문",
+        "risk_type": "충돌",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "inspection_name": "산업안전",
+        "inspection_content": "출입 차량과 보행자 동선 겹침, 긴급 조치 필요",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-05T09:40:00|B동 자재창고|적재물",
+        "type": null,
+        "date": "2026-08-05T09:40:00",
+        "location": "B동 자재창고",
+        "risk_type": "적재물",
+        "risk": "하",
+        "risk_band": "LOW",
+        "inspection_name": "시설안전",
+        "inspection_content": "정기 적재물 점검 이상 없음",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-05T10:10:00|A동 복도|적재물",
+        "type": null,
+        "date": "2026-08-05T10:10:00",
+        "location": "A동 복도",
+        "risk_type": "적재물",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "시설안전",
+        "inspection_content": "대피로 표지판 훼손",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-05T14:00:00|C동 하역장|충돌",
+        "type": null,
+        "date": "2026-08-05T14:00:00",
+        "location": "C동 하역장",
+        "risk_type": "충돌",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "inspection_name": "산업안전",
+        "inspection_content": "지게차 후진 경고음 미작동, 긴급 점검 필요",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T09:10:00|D동 정문|충돌",
+        "type": null,
+        "date": "2026-08-06T09:10:00",
+        "location": "D동 정문",
+        "risk_type": "충돌",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "산업안전",
+        "inspection_content": "차량 서행 표지 미부착",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T10:00:00|B동 2층|화재 감지",
+        "type": null,
+        "date": "2026-08-06T10:00:00",
+        "location": "B동 2층",
+        "risk_type": "화재 감지",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "소방안전",
+        "inspection_content": "비상조명등 점등 확인",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T10:30:00|C동 하역장|충돌",
+        "type": null,
+        "date": "2026-08-06T10:30:00",
+        "location": "C동 하역장",
+        "risk_type": "충돌",
+        "risk": "하",
+        "risk_band": "LOW",
+        "inspection_name": "산업안전",
+        "inspection_content": "정기 안전표지 점검 양호",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T13:00:00|집|화재 감지",
+        "type": null,
+        "date": "2026-08-06T13:00:00",
+        "location": "집",
         "risk_type": "화재 감지",
         "risk": "상",
         "risk_band": "HIGH",
         "inspection_name": "소방안전",
-        "inspection_content": "점검자 메모프로세스 확인용",
-        "action_name": "점검조치프로세스 항목",
+        "inspection_content": "옥내 소화전함 잠금장치 파손",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-07T09:10:00|B동 자재창고|적재물",
+        "type": null,
+        "date": "2026-08-07T09:10:00",
+        "location": "B동 자재창고",
+        "risk_type": "적재물",
+        "risk": "하",
+        "risk_band": "LOW",
+        "inspection_name": "시설안전",
+        "inspection_content": "적재물 라벨링 상태 양호",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-07T09:30:00|운동장|화재 감지",
+        "type": null,
+        "date": "2026-08-07T09:30:00",
+        "location": "운동장",
+        "risk_type": "화재 감지",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "소방안전",
+        "inspection_content": "소화기 위치 표지판 훼손",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      }
+    ],
+    "recent_records": [
+      {
+        "source_id": "2026-08-07T10:00:00|C동 하역장|충돌",
+        "type": "점검이력",
+        "date": "2026-08-07T10:00:00",
+        "location": "C동 하역장",
+        "risk_type": "충돌",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "inspection_name": "산업안전",
+        "inspection_content": "지게차 통행로 조명 불량, 조치 필요",
+        "action_name": "통행로 조명 교체",
         "action_content": null,
         "action_completed": true,
         "approval_completed": true,
@@ -264,15 +640,15 @@
         "before_image_url": null
       },
       {
-        "source_id": "2026-08-03T09:00:00|기석님 집|화재 감지",
+        "source_id": "2026-08-07T09:30:00|운동장|화재 감지",
         "type": null,
-        "date": "2026-08-03T09:00:00",
-        "location": "기석님 집",
+        "date": "2026-08-07T09:30:00",
+        "location": "운동장",
         "risk_type": "화재 감지",
-        "risk": "상",
-        "risk_band": "HIGH",
+        "risk": "중",
+        "risk_band": "MEDIUM",
         "inspection_name": "소방안전",
-        "inspection_content": "Action is required for this inspection.",
+        "inspection_content": "소화기 위치 표지판 훼손",
         "action_name": null,
         "action_content": null,
         "action_completed": false,
@@ -281,15 +657,15 @@
         "before_image_url": null
       },
       {
-        "source_id": "2026-08-03T00:00:00|B동 자재창고|적재물",
+        "source_id": "2026-08-07T09:10:00|B동 자재창고|적재물",
         "type": null,
-        "date": "2026-08-03T00:00:00",
+        "date": "2026-08-07T09:10:00",
         "location": "B동 자재창고",
         "risk_type": "적재물",
-        "risk": "중",
-        "risk_band": "MEDIUM",
+        "risk": "하",
+        "risk_band": "LOW",
         "inspection_name": "시설안전",
-        "inspection_content": "[매월] 정기 점검 자동 생성 건입니다.",
+        "inspection_content": "적재물 라벨링 상태 양호",
         "action_name": null,
         "action_content": null,
         "action_completed": false,
@@ -298,66 +674,32 @@
         "before_image_url": null
       },
       {
-        "source_id": "2026-08-01T11:45:00|C동 하역장|충돌",
-        "type": null,
-        "date": "2026-08-01T11:45:00",
-        "location": "C동 하역장",
-        "risk_type": "충돌",
-        "risk": "중",
-        "risk_band": "MEDIUM",
-        "inspection_name": "산업안전",
-        "inspection_content": "보호구 불량",
-        "action_name": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null,
-        "before_image_url": null
-      },
-      {
-        "source_id": "2026-08-01T11:45:00|C동 하역장|충돌",
-        "type": null,
-        "date": "2026-08-01T11:45:00",
-        "location": "C동 하역장",
-        "risk_type": "충돌",
-        "risk": "중",
-        "risk_band": "MEDIUM",
-        "inspection_name": "산업안전",
-        "inspection_content": "Action is required for this inspection.",
-        "action_name": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null,
-        "before_image_url": null
-      },
-      {
-        "source_id": "2026-07-31T11:45:52|C동 하역장|충돌",
-        "type": null,
-        "date": "2026-07-31T11:45:52",
-        "location": "C동 하역장",
-        "risk_type": "충돌",
-        "risk": "중",
-        "risk_band": "MEDIUM",
-        "inspection_name": "산업안전",
-        "inspection_content": "[매일] 정기 점검 자동 생성 건입니다.",
-        "action_name": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null,
-        "before_image_url": null
-      },
-      {
-        "source_id": "2026-07-30T15:52:16|D동 정문|충돌",
-        "type": null,
-        "date": "2026-07-30T15:52:16",
+        "source_id": "2026-08-06T13:30:00|D동 정문|충돌",
+        "type": "점검이력",
+        "date": "2026-08-06T13:30:00",
         "location": "D동 정문",
         "risk_type": "충돌",
         "risk": "중",
         "risk_band": "MEDIUM",
         "inspection_name": "산업안전",
-        "inspection_content": "[매일] 정기 점검 자동 생성 건입니다.",
+        "inspection_content": "출입 게이트 센서 오작동",
+        "action_name": "게이트 센서 점검",
+        "action_content": null,
+        "action_completed": true,
+        "approval_completed": true,
+        "approval_name": "판교관리자",
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T13:00:00|집|화재 감지",
+        "type": null,
+        "date": "2026-08-06T13:00:00",
+        "location": "집",
+        "risk_type": "화재 감지",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "inspection_name": "소방안전",
+        "inspection_content": "옥내 소화전함 잠금장치 파손",
         "action_name": null,
         "action_content": null,
         "action_completed": false,
@@ -366,32 +708,83 @@
         "before_image_url": null
       },
       {
-        "source_id": "2026-07-30T15:52:16|C동 하역장|충돌",
-        "type": null,
-        "date": "2026-07-30T15:52:16",
-        "location": "C동 하역장",
-        "risk_type": "충돌",
-        "risk": "중",
-        "risk_band": "MEDIUM",
-        "inspection_name": "산업안전",
-        "inspection_content": "조치",
-        "action_name": null,
-        "action_content": null,
-        "action_completed": false,
-        "approval_completed": false,
-        "approval_name": null,
-        "before_image_url": null
-      },
-      {
-        "source_id": "2026-07-29T05:43:54|B동 자재창고|적재물",
-        "type": null,
-        "date": "2026-07-29T05:43:54",
-        "location": "B동 자재창고",
+        "source_id": "2026-08-06T11:00:00|A동 복도|적재물",
+        "type": "점검이력",
+        "date": "2026-08-06T11:00:00",
+        "location": "A동 복도",
         "risk_type": "적재물",
         "risk": "중",
         "risk_band": "MEDIUM",
         "inspection_name": "시설안전",
-        "inspection_content": "비상 통로 확보 양호",
+        "inspection_content": "복도 바닥 미끄럼 방지 매트 훼손",
+        "action_name": "미끄럼 방지 매트 교체",
+        "action_content": null,
+        "action_completed": true,
+        "approval_completed": true,
+        "approval_name": "현수",
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T10:30:00|C동 하역장|충돌",
+        "type": null,
+        "date": "2026-08-06T10:30:00",
+        "location": "C동 하역장",
+        "risk_type": "충돌",
+        "risk": "하",
+        "risk_band": "LOW",
+        "inspection_name": "산업안전",
+        "inspection_content": "정기 안전표지 점검 양호",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T10:00:00|B동 2층|화재 감지",
+        "type": null,
+        "date": "2026-08-06T10:00:00",
+        "location": "B동 2층",
+        "risk_type": "화재 감지",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "소방안전",
+        "inspection_content": "비상조명등 점등 확인",
+        "action_name": null,
+        "action_content": null,
+        "action_completed": false,
+        "approval_completed": false,
+        "approval_name": null,
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T09:30:00|B동 자재창고|적재물",
+        "type": "점검이력",
+        "date": "2026-08-06T09:30:00",
+        "location": "B동 자재창고",
+        "risk_type": "적재물",
+        "risk": "상",
+        "risk_band": "HIGH",
+        "inspection_name": "시설안전",
+        "inspection_content": "고소 적재물 낙하 위험",
+        "action_name": "적재물 재배치 조치",
+        "action_content": null,
+        "action_completed": true,
+        "approval_completed": true,
+        "approval_name": "판교관리자",
+        "before_image_url": null
+      },
+      {
+        "source_id": "2026-08-06T09:10:00|D동 정문|충돌",
+        "type": null,
+        "date": "2026-08-06T09:10:00",
+        "location": "D동 정문",
+        "risk_type": "충돌",
+        "risk": "중",
+        "risk_band": "MEDIUM",
+        "inspection_name": "산업안전",
+        "inspection_content": "차량 서행 표지 미부착",
         "action_name": null,
         "action_content": null,
         "action_completed": false,
@@ -407,42 +800,46 @@
         "2026-07-30": 2,
         "2026-07-31": 1,
         "2026-08-01": 2,
-        "2026-08-03": 4
+        "2026-08-03": 4,
+        "2026-08-04": 6,
+        "2026-08-05": 6,
+        "2026-08-06": 7,
+        "2026-08-07": 3
       },
       "top_risk_types": [
         {
           "name": "충돌",
-          "count": 5
+          "count": 13
         },
         {
           "name": "화재 감지",
-          "count": 4
+          "count": 11
         },
         {
           "name": "적재물",
-          "count": 3
+          "count": 10
         }
       ],
       "top_locations": [
         {
           "name": "C동 하역장",
-          "count": 4
+          "count": 9
         },
         {
           "name": "B동 자재창고",
-          "count": 2
+          "count": 6
+        },
+        {
+          "name": "D동 정문",
+          "count": 4
+        },
+        {
+          "name": "A동 복도",
+          "count": 4
         },
         {
           "name": "집",
-          "count": 1
-        },
-        {
-          "name": "운동장",
-          "count": 1
-        },
-        {
-          "name": "기석님 집",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -459,7 +856,29 @@
         "2026-07-30T15:52:16|C동 하역장|충돌",
         "2026-07-29T05:43:54|B동 자재창고|적재물",
         "2026-07-29T03:43:54|A동 복도|적재물",
-        "2026-07-28T08:43:54|B동 2층|화재 감지"
+        "2026-07-28T08:43:54|B동 2층|화재 감지",
+        "2026-08-04T09:10:00|집|화재 감지",
+        "2026-08-04T09:15:00|B동 2층|화재 감지",
+        "2026-08-04T10:00:00|B동 자재창고|적재물",
+        "2026-08-04T10:30:00|A동 복도|적재물",
+        "2026-08-04T13:00:00|C동 하역장|충돌",
+        "2026-08-04T13:30:00|D동 정문|충돌",
+        "2026-08-05T09:00:00|C동 하역장|충돌",
+        "2026-08-05T09:20:00|운동장|화재 감지",
+        "2026-08-05T09:40:00|B동 자재창고|적재물",
+        "2026-08-05T10:10:00|A동 복도|적재물",
+        "2026-08-05T14:00:00|C동 하역장|충돌",
+        "2026-08-05T14:30:00|기석님 집|화재 감지",
+        "2026-08-06T09:10:00|D동 정문|충돌",
+        "2026-08-06T09:30:00|B동 자재창고|적재물",
+        "2026-08-06T10:00:00|B동 2층|화재 감지",
+        "2026-08-06T10:30:00|C동 하역장|충돌",
+        "2026-08-06T11:00:00|A동 복도|적재물",
+        "2026-08-06T13:00:00|집|화재 감지",
+        "2026-08-06T13:30:00|D동 정문|충돌",
+        "2026-08-07T09:10:00|B동 자재창고|적재물",
+        "2026-08-07T09:30:00|운동장|화재 감지",
+        "2026-08-07T10:00:00|C동 하역장|충돌"
       ]
     },
     "constraints": {
@@ -470,87 +889,101 @@
   },
   "analysis_result": {
     "executive_insights": [
-      "C동 하역장에서 '충돌' 위험유형이 4회 반복 발생하여 중간 위험도 수준임에도 불구하고 조치 및 승인 대기 상태가 지속되고 있습니다.",
-      "B동 자재창고에서 '적재물' 위험유형이 2회 반복 발생하였으며, 이 또한 조치 및 승인 대기 상태입니다.",
-      "고위험 등급인 '화재 감지' 위험유형이 집과 기석님 집에서 각각 발생하여 조치 및 승인 대기 상태로 남아 있어 즉각적인 대응이 필요합니다.",
-      "전체 17건 중 9건이 조치 미완료 또는 승인 대기 상태로, 현장 위험 관리의 신속한 조치 및 승인 프로세스 개선이 요구됩니다.",
-      "동일 위험유형 및 장소에서 반복 발생하는 위험에 대해 기존 조치의 효과성 검토와 재발 방지 대책 마련이 필요합니다."
+      "C동 하역장, B동 자재창고, D동 정문 등 특정 구역에서 동일 위험유형(충돌, 적재물, 화재 감지)의 고위험 이상패턴이 반복 발생하고 있음.",
+      "총 12건의 고위험 기록 중 22건이 미조치 또는 승인 대기 상태로, 신속한 조치 및 승인 절차 완료가 필요함.",
+      "B동 자재창고, 운동장, B동 2층 등에서는 조치 완료 후에도 동일 위험유형의 재발이 확인되어 근본적 개선 필요성이 높음.",
+      "특히 집과 관련된 화재 감지 위험은 3건 모두 미조치 상태로, 긴급한 검토 및 조치 지시가 요구됨.",
+      "점검 및 조치 이력에서 조치 완료된 사례가 있으나, 다수 항목에서 조치 미완료 및 승인 대기 상태가 지속되어 관리체계 점검 및 개선이 필요함."
     ],
     "findings": [
       {
         "finding_type": "REPEATED_RISK",
         "title": "C동 하역장 충돌 위험 반복 발생",
-        "description": "C동 하역장에서 충돌 위험이 4회 반복 발생하였으며, 모두 중간 위험도 수준입니다. 조치 및 승인 완료된 기록이 없어 위험 노출이 지속되고 있습니다.",
+        "description": "C동 하역장에서 충돌 위험이 9회 반복 발생하였으며, 이 중 고위험 3점 이상 사례 포함. 최근 점검에서 조명 교체 조치 완료 및 승인 완료되었으나, 과거 미조치 기록 다수 존재.",
         "evidence": [
-          "C동 하역장 충돌 위험 4건 반복 발생 (2026-07-30 ~ 2026-08-01)",
-          "모든 관련 기록에서 action_completed 및 approval_completed가 false"
+          "9회 반복 발생",
+          "고위험 포함",
+          "최근 조치 완료 및 승인 완료",
+          "과거 미조치 다수"
         ]
       },
       {
         "finding_type": "REPEATED_RISK",
-        "title": "B동 자재창고 적재물 위험 반복 발생",
-        "description": "B동 자재창고에서 적재물 위험이 2회 반복 발생하였으며, 중간 위험도 수준입니다. 조치 및 승인 대기 상태로 위험 관리가 미흡합니다.",
+        "title": "B동 자재창고 적재물 위험 반복 및 재발",
+        "description": "B동 자재창고에서 적재물 위험이 6회 반복 발생하였고, 5건이 미조치 또는 승인 대기 상태임. 1건은 조치 후 재발 사례로 근본적 개선 필요.",
         "evidence": [
-          "B동 자재창고 적재물 위험 2건 반복 발생 (2026-07-29, 2026-08-03)",
-          "관련 기록에서 action_completed 및 approval_completed가 false"
+          "6회 반복 발생",
+          "5건 미조치 또는 승인 대기",
+          "1건 조치 후 재발"
         ]
       },
       {
-        "finding_type": "PRIORITY",
-        "title": "고위험 화재 감지 위험 미조치 및 승인 대기",
-        "description": "집과 기석님 집에서 고위험 등급의 화재 감지 위험이 발생하였으나, 조치 및 승인 절차가 완료되지 않아 즉각적인 대응이 필요합니다.",
+        "finding_type": "REPEATED_RISK",
+        "title": "D동 정문 충돌 위험 반복 및 고위험 포함",
+        "description": "D동 정문에서 충돌 위험 4회 반복 발생, 고위험 사례 포함. 최근 게이트 센서 점검 조치 완료 및 승인 완료되었으나, 차량 서행 표지 미부착 등 미조치 항목 존재.",
         "evidence": [
-          "화재 감지 위험 2건 (집, 기석님 집) 모두 action_completed 및 approval_completed가 false",
-          "고위험 등급(HIGH)으로 분류됨"
+          "4회 반복 발생",
+          "고위험 포함",
+          "최근 조치 완료 및 승인 완료",
+          "미조치 항목 존재"
         ]
       },
       {
         "finding_type": "UNRESOLVED",
-        "title": "조치 미완료 및 승인 대기 다수 존재",
-        "description": "전체 17건 중 9건이 조치 미완료 또는 승인 대기 상태로, 위험 노출 기간이 길어지고 있습니다. 신속한 조치 및 승인 프로세스 개선이 필요합니다.",
+        "title": "집 내 화재 감지 위험 미조치 상태 지속",
+        "description": "집과 기석님 집에서 화재 감지 위험이 총 5회 발생하였으나 모두 미조치 및 미승인 상태임. 긴급 조치가 요구되는 소화전함 잠금장치 파손 등 고위험 항목 포함.",
         "evidence": [
-          "summary_counts.pending_or_unapproved_records = 9",
-          "action_context 내 다수 기록에서 action_completed 및 approval_completed가 false"
+          "5회 발생",
+          "모두 미조치 및 미승인",
+          "고위험 항목 포함"
+        ]
+      },
+      {
+        "finding_type": "PRIORITY",
+        "title": "미조치 및 승인 대기 항목 다수 존재",
+        "description": "전체 47건 중 22건이 조치 미완료 또는 승인 대기 상태로, 신속한 조치 및 승인 절차 이행이 필요함. 특히 고위험 항목에 대한 우선 처리 요구.",
+        "evidence": [
+          "22건 미조치 또는 승인 대기",
+          "고위험 항목 다수 포함"
         ]
       }
     ],
     "recommended_actions": [
-      "C동 하역장과 B동 자재창고에서 반복 발생하는 위험에 대해 기존 조치의 효과성을 검토하고, 재발 방지 대책을 수립하라.",
-      "고위험 화재 감지 위험에 대해 즉각적인 조치 및 승인 절차를 완료하도록 지시하고, 관련 프로세스의 신속성 확보 방안을 마련하라.",
-      "조치 미완료 및 승인 대기 상태인 기록에 대해 우선순위를 정하여 신속히 처리할 수 있는 관리 체계를 강화하라.",
-      "정기 점검 및 위험 관리 프로세스에서 동일 위험유형 및 장소의 반복 발생 여부를 지속적으로 모니터링하고, 개선 조치를 경영책임자에게 보고하도록 하라.",
-      "위험 관리 시스템 내 조치 및 승인 현황을 실시간으로 파악할 수 있는 대시보드 구축을 검토하라."
+      "C동 하역장, B동 자재창고, D동 정문 등 반복 발생 구역에 대해 집중 점검 및 근본 원인 분석 지시.",
+      "미조치 및 승인 대기 중인 고위험 항목에 대해 즉각적인 조치 완료 및 승인 절차 이행을 강력히 지시.",
+      "화재 감지 위험이 반복되는 집과 기석님 집에 대해 긴급 안전 점검 및 조치 계획 수립을 명확히 지시.",
+      "조치 완료 후에도 재발하는 위험 유형에 대해 관리체계 및 예방 대책의 실효성 검토 및 개선 방안 마련을 지시.",
+      "정기 점검 및 조치 이력 관리 체계의 엄격한 운영과 함께, 경영책임자 주기적 검토 및 승인 절차 강화 방안을 마련할 것"
     ],
     "data_limitations": [
-      "조치명과 조치내용이 대부분 미기재되어 있어 구체적인 조치 내역 및 적절성 평가가 불가능합니다.",
-      "승인자 정보가 부족하여 승인 지연 원인 분석에 한계가 있습니다.",
-      "사고 원인 및 작업자 과실 관련 데이터가 없어 근본 원인 분석은 수행하지 못했습니다."
+      "조치명과 조치내용이 일부 기록에서 누락되어 있어 조치의 구체적 이행 상태 파악에 한계가 있음.",
+      "승인자 정보가 일부 미기재되어 있어 승인 절차 진행 현황의 완전한 확인이 어려움."
     ]
   },
   "report": {
     "title": "경영책임자 검토지시서",
     "audience": "MANAGEMENT_RESPONSIBLE",
-    "period": "2026-07-28 ~ 2026-08-03",
-    "summary": "C동 하역장과 B동 자재창고에서 동일 위험유형이 반복 발생하고 있으며, 특히 충돌과 적재물 위험이 중간 위험도 수준임에도 불구하고 조치 및 승인 대기 상태가 지속되고 있다. 고위험 화재 감지 위험이 집과 기석님 집에서 발생하여 즉각적인 대응이 필요. 전체 17건 중 9건이 조치 미완료 또는 승인 대기 상태로, 신속한 조치 및 승인 프로세스 개선이 요구된다. 반복 위험에 대한 기존 조치의 효과성 검토와 재발 방지 대책 마련이 필요.",
+    "period": "2026-07-28 ~ 2026-08-07",
+    "summary": "C동 하역장, B동 자재창고, D동 정문 등 특정 구역에서 충돌, 적재물, 화재 감지 위험이 반복적으로 고위험 수준으로 발생하고 있다. 총 12건의 고위험 기록 중 22건이 미조치 또는 승인 대기 상태로 신속한 조치와 승인 절차 완료가 필요. 특히 집과 기석님 집의 화재 감지 위험은 모두 미조치 상태로 긴급한 검토와 조치가 요구된다. 조치 완료 후에도 일부 구역에서 위험이 재발하고 있어 관리체계 점검과 개선이 필요.",
     "sections": [
       {
         "section_code": "MANAGEMENT_REVIEW_CONTENT",
         "heading": "경영책임자 검토내용",
-        "content": "| 구역 | 반복 위험 유형 | 위험도 | 경영책임자 판단 |\n|---|---|---|---|\n| C동 하역장 | 충돌 | MEDIUM | 관리 수준 점검 필요, 미조치 또는 승인 대기 현황 확인 필요, 반복 발생 관리 기준 보완 필요 |\n| B동 자재창고 | 적재물 | MEDIUM | 정기 모니터링 필요, 미조치 또는 승인 대기 현황 확인 필요 |\n\n위 표는 동일 구역과 동일 위험 유형이 반복 기록된 후보를 기준으로 정리한 것이다. 반복 위험 그룹은 2건, 고위험 기록은 4건, 미조치 또는 승인 대기 기록은 9건이다.",
+        "content": "| 구역 | 반복 위험 유형 | 위험도 | 경영책임자 판단 |\n|---|---|---|---|\n| C동 하역장 | 충돌 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 반복 발생 관리 기준 보완 필요 |\n| B동 자재창고 | 적재물 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 조치 이후 동일 유형 기록 재확인 필요, 반복 발생 관리 기준 보완 필요 |\n| D동 정문 | 충돌 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 반복 발생 관리 기준 보완 필요 |\n| A동 복도 | 적재물 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 반복 발생 관리 기준 보완 필요 |\n| 집 | 화재 감지 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 반복 발생 관리 기준 보완 필요 |\n| 운동장 | 화재 감지 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 조치 이후 동일 유형 기록 재확인 필요, 반복 발생 관리 기준 보완 필요 |\n| B동 2층 | 화재 감지 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요, 조치 이후 동일 유형 기록 재확인 필요, 반복 발생 관리 기준 보완 필요 |\n| 기석님 집 | 화재 감지 | HIGH | 경영책임자 우선 검토 필요, 미조치 또는 승인 대기 현황 확인 필요 |\n\n위 표는 동일 구역과 동일 위험 유형이 반복 기록된 후보를 기준으로 정리한 것이다. 반복 위험 그룹은 8건, 고위험 기록은 12건, 미조치 또는 승인 대기 기록은 22건이다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "MANAGEMENT_DIRECTIVES",
         "heading": "경영책임자 지시사항",
-        "content": "1. C동 하역장과 B동 자재창고에서 반복 발생하는 위험에 대해 기존 조치의 효과성을 검토하고, 재발 방지 대책을 수립할 것.\n\n2. 고위험 화재 감지 위험에 대해 즉각적인 조치 및 승인 절차를 완료하도록 지시하고, 관련 프로세스의 신속성 확보 방안을 마련할 것.\n\n3. 조치 미완료 및 승인 대기 상태인 기록에 대해 우선순위를 정하여 신속히 처리할 수 있는 관리 체계를 강화할 것.\n\n4. 정기 점검 및 위험 관리 프로세스에서 동일 위험유형 및 장소의 반복 발생 여부를 지속적으로 모니터링하고, 개선 조치를 담당 부서에서 보고할 것.\n\n5. 위험 관리 시스템 내 조치 및 승인 현황을 실시간으로 파악할 수 있는 대시보드를 구축할 것.",
+        "content": "1. C동 하역장, B동 자재창고, D동 정문 등 반복 발생 구역에 대해 집중 점검 및 관련 사항 보고를 실시할 것\n2. 미조치 및 승인 대기 중인 고위험 항목에 대해 즉각적인 조치 완료 및 승인 절차 이행을 강력히 지시할 것\n3. 집과 기석님 집의 화재 감지 위험에 대해 긴급 안전 점검 및 조치 계획을 수립할 것\n4. 조치 완료 후에도 재발하는 위험 유형에 대해 관리체계 및 예방 대책의 실효성 검토를 실시하고 개선 방안을 마련할 것\n5. 정기 점검 및 조치 이력 관리 체계를 엄격히 운영하고 경영책임자 주기적 검토 및 승인 절차 강화 방안을 마련할 것",
         "related_event_ids": [],
         "evidence_ids": []
       },
       {
         "section_code": "OVERALL_OPINION",
         "heading": "종합의견",
-        "content": "본 검토 결과 C동 하역장과 B동 자재창고에서 동일 위험유형이 반복 발생하고 조치 및 승인 대기 상태가 지속되고 있음을 확인했다. 고위험 화재 감지 위험은 즉각적인 대응이 필요하며, 전체적으로 조치 미완료 및 승인 대기 건수가 많아 위험 노출 기간이 길어지고 있다. 반복 위험 관리와 조치 이행 점검을 우선 관리 대상으로 정한다. 신속한 조치 및 승인 프로세스 개선과 함께 재발 방지 대책 마련에 집중하겠다.",
+        "content": "본 검토 결과, 특정 구역에서 동일 위험 유형의 고위험 이상패턴이 반복 발생하고 있으며, 다수의 미조치 및 승인 대기 항목이 확인되었다. 신속한 조치 완료와 승인 절차 이행을 최우선으로 하며, 특히 집과 기석님 집의 화재 감지 위험에 대해 긴급 대응이 필요하다. 조치 후 재발 사례를 고려하여 관리체계 실효성 점검이 요구된다. 정기 점검과 조치 이력 관리 체계를 강화하여 위험 관리의 지속성을 확보하겠다.",
         "related_event_ids": [],
         "evidence_ids": []
       },
@@ -562,11 +995,10 @@
         "evidence_ids": []
       }
     ],
-    "conclusion": "본 검토 결과 C동 하역장과 B동 자재창고에서 동일 위험유형이 반복 발생하고 조치 및 승인 대기 상태가 지속되고 있음을 확인했다. 고위험 화재 감지 위험은 즉각적인 대응이 필요하며, 전체적으로 조치 미완료 및 승인 대기 건수가 많아 위험 노출 기간이 길어지고 있다. 반복 위험 관리와 조치 이행 점검을 우선 관리 대상으로 정한다. 신속한 조치 및 승인 프로세스 개선과 함께 재발 방지 대책 마련에 집중하겠다.",
+    "conclusion": "본 검토 결과, 특정 구역에서 동일 위험 유형의 고위험 이상패턴이 반복 발생하고 있으며, 다수의 미조치 및 승인 대기 항목이 확인되었다. 신속한 조치 완료와 승인 절차 이행을 최우선으로 하며, 특히 집과 기석님 집의 화재 감지 위험에 대해 긴급 대응이 필요하다. 조치 후 재발 사례를 고려하여 관리체계 실효성 점검이 요구된다. 정기 점검과 조치 이력 관리 체계를 강화하여 위험 관리의 지속성을 확보하겠다.",
     "limitations": [
-      "조치명과 조치내용이 대부분 미기재되어 구체적인 조치 내역 및 적절성 평가가 불가능하다.",
-      "승인자 정보가 부족하여 승인 지연 원인 분석에 한계가 있다.",
-      "사고 원인 및 작업자 과실 관련 데이터가 없어 근본 원인 분석은 수행하지 못했다."
+      "조치명과 조치내용이 일부 기록에서 누락되어 있어 조치의 구체적 이행 상태 파악에 한계가 있음.",
+      "승인자 정보가 일부 미기재되어 있어 승인 절차 진행 현황의 완전한 확인이 어려움."
     ]
   },
   "review": {
