@@ -39,3 +39,4 @@ test/result/*
 코랩_*
 fire_finetune_v2
 fire_finetuned_v3(fitness(0.32631)P(0.589)R(0.509)mAP50(0.549)).pt
+snapshots/
