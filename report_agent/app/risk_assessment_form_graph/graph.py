@@ -11,11 +11,10 @@ from app.risk_assessment_form_graph.correction import (
     risk_form_data_correction_agent,
     risk_form_data_correction_review_agent,
 )
-from app.risk_assessment_form_graph.form_writer import (
+from app.risk_assessment_form_graph.form_writer_word import (
     DEFAULT_FORM_PATH,
     DEFAULT_OUTPUT_PATH,
-    fill_risk_assessment_form,
-    resolved_xlsx_path_for,
+    fill_risk_assessment_form_docx,
 )
 from app.risk_assessment_form_graph.state import RiskAssessmentFormState
 from app.risk_assessment_form_graph.schemas import (
@@ -181,15 +180,14 @@ def risk_assessment_form_node(state):
     source_data = request.model_dump(mode="json")
     form_path = Path(request.form_path) if request.form_path else DEFAULT_FORM_PATH
     output_path = Path(request.output_path) if request.output_path else DEFAULT_OUTPUT_PATH
-    csv_output_path = fill_risk_assessment_form(
+    docx_output_path = fill_risk_assessment_form_docx(
         source_data,
         state["correction_result"],
         form_path=form_path,
         output_path=output_path,
     )
     return {
-        "csv_output_path": csv_output_path,
-        "xlsx_output_path": str(resolved_xlsx_path_for(csv_output_path)),
+        "docx_output_path": docx_output_path,
     }
 
 

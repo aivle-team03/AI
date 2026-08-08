@@ -64,6 +64,15 @@ def get_action_history() -> Any:
     return _items(_get_json("/api/action-histories?size=100"))
 
 
+def get_action_history_detail(action_history_id: Any) -> dict[str, Any]:
+    try:
+        result = _get_json(f"/api/action-histories/{action_history_id}")
+    except RuntimeError as exc:
+        print(f"[ERROR] action_history {action_history_id} GET failed: {exc}", file=sys.stderr)
+        return {}
+    return result if isinstance(result, dict) else {}
+
+
 def get_event() -> Any:
     return _items(_get_json("/api/monitoring/events"))
 

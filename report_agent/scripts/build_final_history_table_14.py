@@ -2,11 +2,16 @@
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from app.common.Report_data import get_action_history_detail
+
 EXTERNAL_OUTPUT_ROOT = PROJECT_ROOT.parent / "output"
 INSPECTION_DONE = "점검 완료"
 APPROVED = "승인 완료"
@@ -106,6 +111,18 @@ def _image_url_for_action(action: dict[str, Any]) -> str | None:
     return action.get("image_url")
 
 
+def _fill_action_content(rows: list[dict[str, Any]], action_history_ids: list[Any]) -> None:
+    # action_history list rows don't carry a "content" field; fetch it per-row from the
+    # detail endpoint as a final pass, once we know which rows have a real action.
+    for row, action_history_id in zip(rows, action_history_ids):
+        if action_history_id is None:
+            continue
+        detail = get_action_history_detail(action_history_id)
+        content = detail.get("content")
+        if content:
+            row["content"] = content
+
+
 def build_final_history_table_14(tables: dict[str, Any]) -> list[dict[str, Any]]:
     category_by_id = _index_by(tables.get("event_category", []), "category_id")
     inspection_by_id = _index_by(tables.get("inspection", []), "inspection_id")
@@ -135,6 +152,7 @@ def build_final_history_table_14(tables: dict[str, Any]) -> list[dict[str, Any]]
             approved_action_by_inspection_history_id[inspection_history_id] = action
 
     rows: list[dict[str, Any]] = []
+    action_history_ids: list[Any] = []
 
     for history in inspection_histories:
         if history.get("status") != INSPECTION_DONE:
@@ -155,6 +173,7 @@ def build_final_history_table_14(tables: dict[str, Any]) -> list[dict[str, Any]]
                 **_action_part(action),
             }
         )
+        action_history_ids.append(action.get("action_history_id") if action else None)
 
     for action in approved_actions:
         source_type = str(action.get("type") or action.get("source_type") or "").strip()
@@ -174,6 +193,9 @@ def build_final_history_table_14(tables: dict[str, Any]) -> list[dict[str, Any]]
                 **_action_part(action),
             }
         )
+        action_history_ids.append(action.get("action_history_id"))
+
+    _fill_action_content(rows, action_history_ids)
 
     return rows
 
