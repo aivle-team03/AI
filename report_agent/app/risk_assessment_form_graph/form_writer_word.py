@@ -1,12 +1,16 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import copy
+import io
 from datetime import date
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 from docx import Document
 from docx.oxml.ns import qn
+from docx.shared import Emu
 from docx.table import Table, _Cell
 
 from app.risk_assessment_form_graph.schemas import FinalHistoryRow, RiskDataCorrectionResult
@@ -14,18 +18,15 @@ from app.risk_assessment_form_graph.schemas import FinalHistoryRow, RiskDataCorr
 DEFAULT_FORM_PATH = Path(r"C:\Users\User\Desktop\KT에이블\빅프로젝트\AI\위험성평가표.docx")
 DEFAULT_OUTPUT_PATH = Path("output/risk_assessment_form/risk_assessment_form_filled.docx")
 
-# Template layout (0-based table.rows indices), confirmed by inspecting the docx table:
-# rows 0-1: title (vertically merged)
-# row 2: 사업장명 / company name / 생성 일자 / date
-# row 3: 평가 목적 (static, left untouched)
-# row 4: spacer
-# rows 5-6: header (vertically merged)
-# rows 7+: data rows, each logical row spans a "restart" + "continue" <w:tr> pair
 META_ROW_INDEX = 2
 COMPANY_NAME_TC_INDEX = 1
 GENERATED_DATE_TC_INDEX = 3
 DATA_START_ROW_INDEX = 7
 DATA_COLUMN_COUNT = 16
+
+# 0-based column indices that hold image URLs (조치 전 사진 / 조치 후 사진).
+IMAGE_COLUMN_INDEXES = {7, 13}
+IMAGE_WIDTH_EMU = 1143000
 
 
 def _value(value: Any) -> str:
@@ -95,13 +96,44 @@ def _form_row(row: FinalHistoryRow | dict[str, Any]) -> list[str]:
     ]
 
 
+def _download_image(url: str | None) -> bytes | None:
+    if not url or not url.startswith(("http://", "https://")):
+        return None
+    try:
+        request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urlopen(request, timeout=15) as response:
+            return response.read()
+    except (HTTPError, URLError, ValueError, TimeoutError):
+        return None
+
+
 def _row_tcs(table: Table, row_index: int):
     return table.rows[row_index]._tr.findall(qn("w:tc"))
 
 
+def _paragraph_mark_rpr(paragraph):
+    # Some template cells hold an empty paragraph whose formatting (font size etc.)
+    # lives only on the paragraph-mark rPr, with no actual <w:r> run underneath.
+    p_pr = paragraph._p.find(qn("w:pPr"))
+    if p_pr is None:
+        return None
+    return p_pr.find(qn("w:rPr"))
+
+
+def _new_run_with_paragraph_formatting(paragraph, text: str = ""):
+    run = paragraph.add_run(text)
+    if run._r.find(qn("w:rPr")) is not None:
+        return run
+    default_rpr = _paragraph_mark_rpr(paragraph)
+    if default_rpr is not None:
+        run._r.insert(0, copy.deepcopy(default_rpr))
+    return run
+
+
 def _set_tc_text(tc, table: Table, value: str) -> None:
     # Write through the first existing run so template formatting (font/color) survives;
-    # cell.text = value would replace the paragraph and drop that formatting.
+    # cell.text = value would replace the paragraph and drop that formatting. New runs
+    # (for cells with no run at all) borrow the paragraph-mark's rPr for the same reason.
     cell = _Cell(tc, table)
     paragraphs = cell.paragraphs
     if not paragraphs:
@@ -115,11 +147,34 @@ def _set_tc_text(tc, table: Table, value: str) -> None:
         for extra_run in runs[1:]:
             extra_run.text = ""
     else:
-        first_paragraph.add_run(value)
+        _new_run_with_paragraph_formatting(first_paragraph, value)
 
     for extra_paragraph in paragraphs[1:]:
         for run in extra_paragraph.runs:
             run.text = ""
+
+
+def _set_tc_image_or_text(tc, table: Table, value: str) -> None:
+    image_bytes = _download_image(value)
+    if not image_bytes:
+        _set_tc_text(tc, table, value)
+        return
+
+    cell = _Cell(tc, table)
+    paragraphs = cell.paragraphs
+    first_paragraph = paragraphs[0] if paragraphs else cell.add_paragraph()
+    for run in list(first_paragraph.runs):
+        run.text = ""
+    for extra_paragraph in paragraphs[1:]:
+        for run in extra_paragraph.runs:
+            run.text = ""
+
+    run = (
+        first_paragraph.runs[0]
+        if first_paragraph.runs
+        else _new_run_with_paragraph_formatting(first_paragraph)
+    )
+    run.add_picture(io.BytesIO(image_bytes), width=Emu(IMAGE_WIDTH_EMU))
 
 
 def _ensure_row_pair(table: Table, pair_index: int) -> int:
@@ -137,7 +192,11 @@ def _ensure_row_pair(table: Table, pair_index: int) -> int:
 def _write_data_row(table: Table, restart_index: int, values: list[str]) -> None:
     tcs = _row_tcs(table, restart_index)
     for column_index, value in enumerate(values[:DATA_COLUMN_COUNT]):
-        if column_index < len(tcs):
+        if column_index >= len(tcs):
+            continue
+        if column_index in IMAGE_COLUMN_INDEXES:
+            _set_tc_image_or_text(tcs[column_index], table, value)
+        else:
             _set_tc_text(tcs[column_index], table, value)
 
 

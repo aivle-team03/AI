@@ -20,7 +20,7 @@ from app.risk_assessment_form_graph.schemas import (
 
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_form"
 DEFAULT_RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_form_graph_response.json"
-DEFAULT_CSV_PATH = OUTPUT_DIR / "risk_assessment_form_filled.csv"
+DEFAULT_DOCX_PATH = OUTPUT_DIR / "risk_assessment_form_filled.docx"
 TIMEOUT_SECONDS = int(os.getenv("RISK_FORM_TIMEOUT_SECONDS", "1200"))
 CORRECTION_BATCH_SIZE = int(os.getenv("RISK_FORM_CORRECTION_BATCH_SIZE", "10"))
 
@@ -47,11 +47,11 @@ async def run_graph(request):
                 print("[3/4] 데이터 검토 agent 실행 중", flush=True)
             elif node_name == "data_correction_review_agent":
                 print("[3/4] 데이터 검토 agent 완료", flush=True)
-                print("[4/4] 위험성평가표 CSV 생성 중", flush=True)
+                print("[4/4] 위험성평가표 문서 생성 중", flush=True)
             elif node_name == "retry":
                 print("검토 결과 수정 필요: 데이터 수정 agent 재실행", flush=True)
             elif node_name == "fill_csv_form":
-                print("[4/4] 위험성평가표 CSV 생성 완료", flush=True)
+                print("[4/4] 위험성평가표 문서 생성 완료", flush=True)
 
     return state
 
@@ -64,7 +64,7 @@ async def main():
 
     request = RiskAssessmentFormRequest(
         correction_batch_size=CORRECTION_BATCH_SIZE,
-        output_path=str(DEFAULT_CSV_PATH),
+        output_path=str(DEFAULT_DOCX_PATH),
     )
 
     try:
@@ -76,17 +76,16 @@ async def main():
         ) from exc
 
     review_result = result["correction_review"]
-    csv_output_path = result.get("csv_output_path")
+    docx_output_path = result.get("docx_output_path")
     response = RiskAssessmentFormResponse(
-        status="COMPLETED" if review_result.approved and csv_output_path else "FAILED",
+        status="COMPLETED" if review_result.approved and docx_output_path else "FAILED",
         retry_count=result.get("retry_count", 0),
         correction_batch_size=result.get("correction_batch_size"),
         correction_batch_count=result.get("correction_batch_count"),
         final_history_rows=result.get("final_history_rows", []),
         correction_result=result["correction_result"],
         correction_review=review_result,
-        csv_output_path=csv_output_path,
-        xlsx_output_path=result.get("xlsx_output_path"),
+        docx_output_path=docx_output_path,
     )
 
     DEFAULT_RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -102,8 +101,7 @@ async def main():
         "corrections": len(response.correction_result.correction_notes),
         "review_approved": response.correction_review.approved,
         "review_score": response.correction_review.score,
-        "csv_output_path": response.csv_output_path,
-        "xlsx_output_path": response.xlsx_output_path,
+        "docx_output_path": response.docx_output_path,
         "response_path": str(DEFAULT_RESPONSE_PATH),
     }, ensure_ascii=False, indent=2), flush=True)
 

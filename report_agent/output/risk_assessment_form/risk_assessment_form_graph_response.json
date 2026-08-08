@@ -1,6 +1,6 @@
 ﻿{
-  "status": "COMPLETED",
-  "retry_count": 0,
+  "status": "FAILED",
+  "retry_count": 2,
   "correction_batch_size": 10,
   "correction_batch_count": 2,
   "final_history_rows": [
@@ -36,7 +36,7 @@
       "action_location": "운동장",
       "completed_at": "2026-08-03T10:33:50",
       "handler_name": "작업자10",
-      "content": null,
+      "content": "조치내용이 백엔드에뜨는지 테스트",
       "approver_name": "판교관리자",
       "type": "점검이력"
     },
@@ -198,7 +198,7 @@
       "action_location": "A동 복도",
       "completed_at": "2026-07-31T10:17:09",
       "handler_name": "작업자10",
-      "content": null,
+      "content": "조치",
       "approver_name": "판교관리자",
       "type": "점검이력"
     },
@@ -216,7 +216,7 @@
       "action_location": "B동 2층",
       "completed_at": "2026-07-29T02:43:54",
       "handler_name": "김작업",
-      "content": null,
+      "content": "소화기 가림 박스 치우고 통로 확보했습니다.",
       "approver_name": "현수",
       "type": "점검이력"
     },
@@ -234,7 +234,7 @@
       "action_location": "살려주세요",
       "completed_at": "2026-08-05T16:27:01",
       "handler_name": "작업자24",
-      "content": null,
+      "content": "치웠다",
       "approver_name": "판교관리자",
       "type": "게시판"
     },
@@ -252,7 +252,7 @@
       "action_location": "집",
       "completed_at": "2026-08-05T16:12:06",
       "handler_name": "작업자22",
-      "content": null,
+      "content": "살려주세요",
       "approver_name": "판교관리자",
       "type": "게시판"
     },
@@ -270,7 +270,7 @@
       "action_location": ",",
       "completed_at": "2026-08-03T10:18:24",
       "handler_name": "작업자10",
-      "content": null,
+      "content": "조치완료",
       "approver_name": "판교관리자",
       "type": "직접추가"
     },
@@ -288,7 +288,7 @@
       "action_location": "A동 복도",
       "completed_at": "2026-07-29T06:43:54",
       "handler_name": null,
-      "content": null,
+      "content": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
       "approver_name": "현수",
       "type": "게시판"
     }
@@ -327,7 +327,7 @@
         "action_location": "운동장",
         "completed_at": "2026-08-03T10:33:50",
         "handler_name": "작업자10",
-        "content": null,
+        "content": "조치 내용이 백엔드에 표시되는지 테스트했다.",
         "approver_name": "판교관리자",
         "type": "점검이력"
       },
@@ -485,11 +485,11 @@
         "inspection_content": "조치가 필요하다.",
         "image_url": "http://127.0.0.1:8000/static/uploads/board_1785227802.jpg",
         "inspection_image_url": null,
-        "action_name": "비상구 및 대피로 장애물 점검을 실시했다",
+        "action_name": "비상구 및 대피로 장애물 점검",
         "action_location": "A동 복도",
         "completed_at": "2026-07-31T10:17:09",
         "handler_name": "작업자10",
-        "content": null,
+        "content": "조치했다.",
         "approver_name": "판교관리자",
         "type": "점검이력"
       },
@@ -503,11 +503,11 @@
         "inspection_content": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요하다.",
         "image_url": "http://127.0.0.1:8000/static/uploads/board_1785206499.jpg",
         "inspection_image_url": null,
-        "action_name": "소화기 배치 상태 점검을 실시했다",
+        "action_name": "소화기 배치 상태 점검",
         "action_location": "B동 2층",
         "completed_at": "2026-07-29T02:43:54",
         "handler_name": "김작업",
-        "content": null,
+        "content": "소화기 가림 박스를 제거하고 통로를 확보했다.",
         "approver_name": "현수",
         "type": "점검이력"
       },
@@ -521,11 +521,11 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
         "inspection_image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
-        "action_name": "리포트에 이상이 있다",
+        "action_name": "리포트 이상 현상",
         "action_location": "살려주세요",
         "completed_at": "2026-08-05T16:27:01",
         "handler_name": "작업자24",
-        "content": null,
+        "content": "조치했다.",
         "approver_name": "판교관리자",
         "type": "게시판"
       },
@@ -539,11 +539,11 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
         "inspection_image_url": null,
-        "action_name": "게시판-조치테이블-담당자배정-리포트 생성",
+        "action_name": "게시판-조치테이블-담당자 배정-리포트 생성",
         "action_location": "집",
         "completed_at": "2026-08-05T16:12:06",
         "handler_name": "작업자22",
-        "content": null,
+        "content": "조치가 필요하다.",
         "approver_name": "판교관리자",
         "type": "게시판"
       },
@@ -557,11 +557,11 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_21_20260803101823659726_cdfaccd8.png",
         "inspection_image_url": null,
-        "action_name": "작업자10 조치를 실시했다",
+        "action_name": "작업자10 조치",
         "action_location": ",",
         "completed_at": "2026-08-03T10:18:24",
         "handler_name": "작업자10",
-        "content": null,
+        "content": "조치 완료했다.",
         "approver_name": "판교관리자",
         "type": "직접추가"
       },
@@ -575,11 +575,11 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/board_1785201730.jpg",
         "inspection_image_url": null,
-        "action_name": "A동 복도 소화기 배치 재점검을 요청했다",
+        "action_name": "A동 복도 소화기 배치 재점검 요청",
         "action_location": "A동 복도",
         "completed_at": "2026-07-29T06:43:54",
         "handler_name": null,
-        "content": null,
+        "content": "소화기 위치를 재배치하고 가압 상태 점검을 완료했다.",
         "approver_name": "현수",
         "type": "게시판"
       }
@@ -604,6 +604,13 @@
         "field": "action_name",
         "original_text": "점검조치프로세스 항목",
         "corrected_text": "점검 조치 프로세스 항목",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 1,
+        "field": "content",
+        "original_text": "조치내용이 백엔드에뜨는지 테스트",
+        "corrected_text": "조치 내용이 백엔드에 표시되는지 테스트했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -671,9 +678,9 @@
       },
       {
         "row_index": 10,
-        "field": "action_name",
-        "original_text": "비상구 및 대피로 장애물 점검",
-        "corrected_text": "비상구 및 대피로 장애물 점검을 실시했다",
+        "field": "content",
+        "original_text": "조치",
+        "corrected_text": "조치했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -685,62 +692,102 @@
       },
       {
         "row_index": 11,
-        "field": "action_name",
-        "original_text": "소화기 배치 상태 점검",
-        "corrected_text": "소화기 배치 상태 점검을 실시했다",
+        "field": "content",
+        "original_text": "소화기 가림 박스 치우고 통로 확보했습니다.",
+        "corrected_text": "소화기 가림 박스를 제거하고 통로를 확보했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 12,
         "field": "action_name",
         "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트에 이상이 있다",
+        "corrected_text": "리포트 이상 현상",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 12,
+        "field": "content",
+        "original_text": "치웠다",
+        "corrected_text": "조치했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 13,
         "field": "action_name",
         "original_text": "게시판-조치테이블-담당자배정-report 생성",
-        "corrected_text": "게시판-조치테이블-담당자배정-리포트 생성",
+        "corrected_text": "게시판-조치테이블-담당자 배정-리포트 생성",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 13,
+        "field": "content",
+        "original_text": "살려주세요",
+        "corrected_text": "조치가 필요하다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 14,
         "field": "action_name",
         "original_text": "worker10 조치",
-        "corrected_text": "작업자10 조치를 실시했다",
+        "corrected_text": "작업자10 조치",
+        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
+      },
+      {
+        "row_index": 14,
+        "field": "content",
+        "original_text": "조치완료",
+        "corrected_text": "조치 완료했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 15,
-        "field": "action_name",
-        "original_text": "A동 복도 소화기 배치 재점검 요청",
-        "corrected_text": "A동 복도 소화기 배치 재점검을 요청했다",
+        "field": "content",
+        "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
+        "corrected_text": "소화기 위치를 재배치하고 가압 상태 점검을 완료했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       }
     ],
     "unresolved_notes": []
   },
   "correction_review": {
-    "approved": true,
-    "final_decision": "APPROVED",
-    "score": 100,
+    "approved": false,
+    "final_decision": "REVISION_REQUIRED",
+    "score": 60,
     "issues": [
       {
         "row_index": 4,
         "field": "inspection_content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
+        "severity": "ERROR",
+        "category": "FABRICATED_FACT",
         "original_text": "보호구 불량",
         "corrected_text": "보호구 불량으로 확인됐다.",
-        "message": "원문에 없는 '으로 확인됐다'라는 표현이 추가되어 사실을 추측하는 뉘앙스를 줄 수 있습니다.",
-        "recommendation": "추측성 표현을 제거하고 원문과 동일한 사실만 간결하게 표현하세요."
+        "message": "원문에 없는 '확인됐다'라는 사실이 추가되어 추측성 표현 및 사실 추가에 해당합니다.",
+        "recommendation": "원문 의미를 유지하며 추측성 표현이나 사실 추가 없이 간결하게 수정하세요."
+      },
+      {
+        "row_index": 13,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "살려주세요",
+        "corrected_text": "조치가 필요하다.",
+        "message": "원문 '살려주세요'는 구어체 표현으로 위험성평가표에 부적합하므로 '조치가 필요하다.'로 수정한 것은 적절합니다.",
+        "recommendation": "보고서 문체에 맞게 간결하고 객관적인 표현을 유지하세요."
+      },
+      {
+        "row_index": 12,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "리포트가 이상해요",
+        "corrected_text": "리포트 이상 현상",
+        "message": "원문 '리포트가 이상해요'는 구어체이며 모호한 표현입니다. 수정된 '리포트 이상 현상'은 더 적합하지만 '이상 현상'이 다소 모호할 수 있습니다.",
+        "recommendation": "가능하면 더 구체적이고 명확한 표현으로 수정하는 것을 권장합니다."
       }
     ],
     "items_requiring_revision": [
-      "batch_start=0: inspection_content in row 4"
+      "batch_start=0: 5번째 행 inspection_content: '보호구 불량으로 확인됐다.' -> '보호구 불량'"
     ]
   },
-  "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
-  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
+  "docx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.docx"
 }

@@ -15,8 +15,7 @@ class RiskAssessmentFormState(TypedDict, total=False):
     correction_review: RiskDataCorrectionReviewResult
     correction_batch_size: int
     correction_batch_count: int
-    csv_output_path: str
-    xlsx_output_path: str
+    docx_output_path: str
     retry_count: int
     max_retry_count: int
     errors: list[str]

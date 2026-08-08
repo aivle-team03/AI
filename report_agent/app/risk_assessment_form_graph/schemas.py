@@ -94,5 +94,4 @@ class RiskAssessmentFormResponse(BaseModel):
     final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
     correction_result: RiskDataCorrectionResult
     correction_review: RiskDataCorrectionReviewResult
-    csv_output_path: str | None = None
-    xlsx_output_path: str | None = None
+    docx_output_path: str | None = None
