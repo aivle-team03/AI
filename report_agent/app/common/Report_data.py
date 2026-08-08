@@ -132,6 +132,7 @@ def build_worker_feedback_source_data() -> dict[str, Any]:
 
 
 def save_backend_data(
+    #output_path: str | Path = "output/risk_assessment_form/BackendData.json",
     output_path: str | Path = EXTERNAL_BACKEND_DATA_PATH,
 ) -> dict[str, Any]:
     output_path = Path(output_path)

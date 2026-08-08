@@ -9,7 +9,7 @@ from app.risk_assessment.agents import (
 )
 from app.risk_assessment.aggregation import aggregate_risk_assessment_report_data
 from app.risk_assessment.state import RiskAssessmentReportState
-from app.schemas import ReportSection, SectionCode
+from app.risk_assessment.schemas import ReportSection, SectionCode
 from scripts.build_final_history_table_14 import build_final_history_table_14
 
 
@@ -73,16 +73,17 @@ def _risk_summary_text(aggregated_data):
     high_rate = _risk_rate(kpi.get("high_or_critical_risk_rate", 0))
     action_total = kpi.get("action_total", 0)
     action_rate = _risk_rate(kpi.get("action_completion_rate", 0))
-    approval_completed = kpi.get("approval_completed", 0)
     approval_rate = _risk_rate(kpi.get("approval_completion_rate", 0))
-    unaddressed = kpi.get("unaddressed_assessment_records", 0)
-    unaddressed_high = kpi.get("unaddressed_high_risk_records", 0)
+    risk_recurrence_rate = kpi.get("risk_recurrence_rate", 0)
+    board_action_history_rate=kpi.get("board_action_history_rate",0)
+    cctv_action_history_rate=kpi.get("cctv_action_history_rate",0)
+
     return (
         f"평가기간 동안 총 {total}건의 위험성평가가 수행됐다. "
         f"고위험 및 중대위험 항목은 {high_or_critical}건으로 전체의 {high_rate}이다. "
         f"조치가 연결된 평가 항목은 {action_total}건이며, 전체 평가 항목 기준 조치 완료율은 {action_rate}이다. "
-        f"승인 완료 평가 항목은 {approval_completed}건이며, 전체 평가 항목 기준 승인 완료율은 {approval_rate}이다. "
-        f"미조치 평가 항목은 {unaddressed}건이고, 이 중 고위험 또는 중대위험 미조치 항목은 {unaddressed_high}건이다."
+        f"종사자가 신고하여 위험요인을 추가한 항목은 전체 중 {board_action_history_rate}% 이며, CCTV가 감지한 항목은 전체의 {cctv_action_history_rate}이다. "
+        f"재발 항목률 {risk_recurrence_rate}% 이다."
     )
 
 
@@ -95,8 +96,7 @@ def _risk_management_status_text(aggregated_data):
     action_total = kpi.get("action_total", 0)
     action_rate = _risk_rate(kpi.get("action_completion_rate", 0))
     approval_rate = _risk_rate(kpi.get("approval_completion_rate", 0))
-    unaddressed = kpi.get("unaddressed_assessment_records", 0)
-    unaddressed_high = kpi.get("unaddressed_high_risk_records", 0)
+    risk_recurrence_rate = kpi.get("risk_recurrence_rate", 0)
     return (
         "위험도 분포는 "
         f"중대위험 {risk_counts.get('CRITICAL', 0)}건, "
@@ -104,8 +104,8 @@ def _risk_management_status_text(aggregated_data):
         f"중간위험 {risk_counts.get('MEDIUM', 0)}건, "
         f"저위험 {risk_counts.get('LOW', 0)}건으로 확인됐다. "
         f"고위험 및 중대위험 항목은 총 {high_or_critical}건으로 전체 평가 항목 {total}건의 {high_rate}를 차지했다. "
-        f"조치가 연결된 평가 항목은 {action_total}건이며, 전체 평가 항목 기준 조치 완료율은 {action_rate}, 승인 완료율은 {approval_rate}이다. "
-        f"미조치 평가 항목은 {unaddressed}건이고, 이 중 고위험 또는 중대위험 미조치 항목은 {unaddressed_high}건으로 확인됐다."
+        f"조치가 연결된 평가 항목은 {action_total}건이며, 승인 완료율은 {approval_rate}이다. "
+        f"재발 항목률 {risk_recurrence_rate}% 이다."
     )
 
 
@@ -133,9 +133,8 @@ def _risk_conclusion_text(aggregated_data):
     return (
         f"위험성평가 결과 총 {kpi.get('assessment_records', 0)}건 중 "
         f"{kpi.get('high_or_critical_risk_records', 0)}건이 고위험 또는 중대위험으로 분류됐다. "
-        f"조치가 연결된 평가 항목은 {kpi.get('action_total', 0)}건이며, "
-        f"미조치 평가 항목은 {kpi.get('unaddressed_assessment_records', 0)}건으로 확인됐다. "
-        f"특히 고위험 또는 중대위험 미조치 항목 {kpi.get('unaddressed_high_risk_records', 0)}건은 우선 관리 대상으로 분류된다. "
+        f"조치가 연결된 평가 항목은 {kpi.get('action_total', 0)}건이다. "
+        f"특히 동일 항목에 대한 재현율은 {kpi.get('risk_recurrence_rate', 0)}%로 해당 항목은 우선 관리 대상으로 분류된다. "
         "본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다."
     )
 

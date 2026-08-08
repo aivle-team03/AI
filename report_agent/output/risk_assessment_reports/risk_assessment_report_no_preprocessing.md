@@ -29,6 +29,5 @@
 위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이다. 특히 동일 항목에 대한 재현율은 25.0%로 해당 항목은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.
 
 ## 한계
-- inspection_history_id 및 action_history_id가 모두 null로, 개별 점검 및 조치 이력 상세 확인이 불가함.
-- event_id가 제공되지 않아 특정 사건과의 연계 분석이 불가능함.
-- 고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음.
+- inspection_history_id 및 action_history_id가 모두 null로, 점검 및 조치 이력 상세 확인 불가.
+- 일부 고위험 항목에 대해 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음.

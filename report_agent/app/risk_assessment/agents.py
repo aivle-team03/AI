@@ -9,7 +9,7 @@ from app.risk_assessment.prompts import (
     RISK_ASSESSMENT_REPORT_REVIEW_PROMPT,
     RISK_ASSESSMENT_REPORT_WRITER_PROMPT,
 )
-from app.schemas import AnalysisResult, Audience, GeneratedReport, ReviewResult
+from app.risk_assessment.schemas import AnalysisResult, Audience, GeneratedReport, ReviewResult
 
 
 async def risk_assessment_report_analyze_agent(aggregated_data):

@@ -33,14 +33,15 @@ RISK_FORM_DATA_CORRECTION_PROMPT = """
 
 수정 대상 필드:
 - category_name
-- inspection_location
-- inspection_user_name
 - inspection_content
 - action_name
 - action_location
 - content
 
 보호 필드:
+- action_location
+- inspection_location
+- inspection_user_name
 - category
 - type
 - risk

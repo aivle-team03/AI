@@ -5,18 +5,13 @@ from pydantic import BaseModel, Field
 
 
 class Audience(str, Enum):
-    MANAGEMENT_RESPONSIBLE = "MANAGEMENT_RESPONSIBLE"
-
-
-class ReportType(str, Enum):
-    MANAGEMENT_REVIEW_ORDER = "management_review_order"
+    RISK_ASSESSMENT_REPORT = "RISK_ASSESSMENT_REPORT"
 
 
 class SectionCode(str, Enum):
-    MANAGEMENT_REVIEW_CONTENT = "MANAGEMENT_REVIEW_CONTENT"
-    MANAGEMENT_DIRECTIVES = "MANAGEMENT_DIRECTIVES"
-    OVERALL_OPINION = "OVERALL_OPINION"
-    APPROVAL_SIGNOFF = "APPROVAL_SIGNOFF"
+    EXECUTIVE_SUMMARY = "EXECUTIVE_SUMMARY"
+    RISK_DISTRIBUTION = "RISK_DISTRIBUTION"
+    HIGH_RISK_ITEMS = "HIGH_RISK_ITEMS"
 
 
 class AnalysisFinding(BaseModel):
@@ -24,14 +19,14 @@ class AnalysisFinding(BaseModel):
         "KPI",
         "TREND",
         "RISK_ASSESSMENT",
-        "ANOMALY",
-        "REPEATED_RISK",
         "UNRESOLVED",
         "PRIORITY",
     ]
     title: str
     description: str
-    evidence: list[str] = Field(default_factory=list)
+    related_event_ids: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+    severity: Literal["HIGH", "MEDIUM", "LOW", "INFO"]
 
 
 class AnalysisResult(BaseModel):
@@ -92,46 +87,6 @@ class FinalHistoryRow(BaseModel):
     type: str | None = None
 
 
-class DataCorrectionNote(BaseModel):
-    row_index: int
-    field: str
-    original_text: str
-    corrected_text: str
-    reason: str
-
-
-class RiskDataCorrectionResult(BaseModel):
-    corrected_rows: list[FinalHistoryRow] = Field(default_factory=list)
-    correction_notes: list[DataCorrectionNote] = Field(default_factory=list)
-    unresolved_notes: list[str] = Field(default_factory=list)
-
-
-class DataCorrectionReviewIssue(BaseModel):
-    row_index: int | None = None
-    field: str | None = None
-    severity: Literal["ERROR", "WARNING"]
-    category: Literal[
-        "MEANING_CHANGED",
-        "FABRICATED_FACT",
-        "REPORT_STYLE",
-        "UNNECESSARY_EDIT",
-        "MISSED_CORRECTION",
-        "PROTECTED_FIELD",
-    ]
-    original_text: str | None = None
-    corrected_text: str | None = None
-    message: str
-    recommendation: str
-
-
-class RiskDataCorrectionReviewResult(BaseModel):
-    approved: bool
-    final_decision: Literal["APPROVED", "REVISION_REQUIRED"]
-    score: int = Field(ge=0, le=100)
-    issues: list[DataCorrectionReviewIssue] = Field(default_factory=list)
-    items_requiring_revision: list[str] = Field(default_factory=list)
-
-
 class EvidenceContentRequest(BaseModel):
     company: dict[str, Any] | None = None
     user: list[dict[str, Any]] = Field(default_factory=list)
@@ -150,39 +105,17 @@ class EvidenceContentRequest(BaseModel):
     report_checklist_map: list[dict[str, Any]] = Field(default_factory=list)
     report_inspection_map: list[dict[str, Any]] = Field(default_factory=list)
     report_action_map: list[dict[str, Any]] = Field(default_factory=list)
+    signup_code: list[dict[str, Any]] = Field(default_factory=list)
 
 
-class SiteAnomalyReportRequest(EvidenceContentRequest):
+class RiskAssessmentReportRequest(EvidenceContentRequest):
     final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
 
 
-class SiteAnomalyReportResponse(BaseModel):
+class RiskAssessmentReportResponse(BaseModel):
     status: Literal["COMPLETED", "FAILED"]
     retry_count: int
     aggregated_data: dict[str, Any]
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
-
-
-class UnifiedReportRequest(EvidenceContentRequest):
-    report_type: ReportType
-    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
-    form_path: str | None = None
-    output_path: str | None = None
-
-
-class UnifiedReportResponse(BaseModel):
-    status: Literal["COMPLETED", "FAILED"]
-    report_type: ReportType
-    retry_count: int
-    preprocessing_retry_count: int
-    final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
-    correction_result: RiskDataCorrectionResult
-    correction_review: RiskDataCorrectionReviewResult
-    aggregated_data: dict[str, Any] | None = None
-    analysis_result: AnalysisResult | None = None
-    report: GeneratedReport | None = None
-    review: ReviewResult | None = None
-    csv_output_path: str | None = None
-    xlsx_output_path: str | None = None

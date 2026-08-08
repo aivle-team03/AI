@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import re
+from io import BytesIO
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 DEFAULT_TEMPLATE_PATH = Path(
-    r"C:\Users\User\Desktop\KT에이블\빅프로젝트\종사자에_의한_유해_위험요인_조사표.docx"
+    "output/종사자에_의한_유해_위험요인_조사표.docx"
 )
 DEFAULT_OUTPUT_DIR = Path("output/worker_feedback_reports")
 
@@ -17,20 +20,23 @@ ROW_PLACEHOLDER_MAP = {
     "category_name": "{{category_name}}",
     "board_contents": "{{board_contents}}",
     "status": "{{status}}",
-    "board_image_url": "{{board_image_url}}",
     "location": "{{location}}",
     "completed_at": "{{completed_at}}",
     "action_status": "{{action_status}}",
     "handler_name": "{{handler_name}}",
     "content": "{{content}}",
-    "image_url": "{{image_url}}",
     "user": "{{user}}",
-   
 }
 
 PLACEHOLDER_ALIASES = {
     "{{board_status}}": "status",
 }
+
+IMAGE_PLACEHOLDER_MAP = {
+    "board_image_url": "{{board_image_url}}",
+    "image_url": "{{image_url}}",
+}
+IMAGE_MAX_WIDTH_INCHES = 2.2
 
 
 def _load_document(template_path: Path):
@@ -43,6 +49,17 @@ def _load_document(template_path: Path):
         ) from exc
 
     return Document(template_path)
+
+
+def _download_image(url: str | None) -> bytes | None:
+    if not url:
+        return None
+    request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urlopen(request, timeout=15) as response:
+            return response.read()
+    except (HTTPError, URLError, ValueError, TimeoutError):
+        return None
 
 
 def _row_to_dict(row: Any) -> dict[str, Any]:
@@ -70,6 +87,16 @@ def _available_output_path(output_path: Path) -> Path:
             return candidate
 
     raise RuntimeError(f"Could not find available output path for {output_path}")
+
+
+REPORT_FILENAME_PREFIX = "종사자에 의한 유해 위험요인 보고서_"
+
+
+def _existing_report_for_board(output_dir: Path, board_id: Any) -> Path | None:
+    if board_id is None or not output_dir.exists():
+        return None
+    matches = sorted(output_dir.glob(f"{REPORT_FILENAME_PREFIX}{board_id}.docx"))
+    return matches[0] if matches else None
 
 
 def _replacement_map(row_data: dict[str, Any]) -> dict[str, str]:
@@ -119,6 +146,72 @@ def _replace_in_table(table, replacements: dict[str, str]) -> None:
                 _replace_in_table(nested_table, replacements)
 
 
+def _clear_placeholder_text(paragraph, placeholder: str) -> bool:
+    for run in paragraph.runs:
+        if placeholder in run.text:
+            run.text = run.text.replace(placeholder, "")
+            return True
+
+    if placeholder not in paragraph.text or not paragraph.runs:
+        return False
+
+    paragraph.runs[0].text = paragraph.text.replace(placeholder, "")
+    for run in paragraph.runs[1:]:
+        run.text = ""
+    return True
+
+
+def _embed_image_in_paragraph(paragraph, placeholder: str, image_bytes: bytes | None) -> None:
+    from docx.shared import Inches
+
+    if not _clear_placeholder_text(paragraph, placeholder):
+        return
+    if not image_bytes:
+        return
+
+    run = paragraph.runs[0] if paragraph.runs else paragraph.add_run()
+    try:
+        run.add_picture(BytesIO(image_bytes), width=Inches(IMAGE_MAX_WIDTH_INCHES))
+    except Exception:
+        pass
+
+
+def _embed_images_in_table(table, image_map: dict[str, bytes | None]) -> None:
+    for row in table.rows:
+        for cell in row.cells:
+            for paragraph in cell.paragraphs:
+                for placeholder, image_bytes in image_map.items():
+                    _embed_image_in_paragraph(paragraph, placeholder, image_bytes)
+            for nested_table in cell.tables:
+                _embed_images_in_table(nested_table, image_map)
+
+
+def _embed_row_images(document, row_data: dict[str, Any]) -> None:
+    image_map = {
+        placeholder: _download_image(row_data.get(field))
+        for field, placeholder in IMAGE_PLACEHOLDER_MAP.items()
+    }
+
+    for paragraph in document.paragraphs:
+        for placeholder, image_bytes in image_map.items():
+            _embed_image_in_paragraph(paragraph, placeholder, image_bytes)
+
+    for table in document.tables:
+        _embed_images_in_table(table, image_map)
+
+    for section in document.sections:
+        for paragraph in section.header.paragraphs:
+            for placeholder, image_bytes in image_map.items():
+                _embed_image_in_paragraph(paragraph, placeholder, image_bytes)
+        for table in section.header.tables:
+            _embed_images_in_table(table, image_map)
+        for paragraph in section.footer.paragraphs:
+            for placeholder, image_bytes in image_map.items():
+                _embed_image_in_paragraph(paragraph, placeholder, image_bytes)
+        for table in section.footer.tables:
+            _embed_images_in_table(table, image_map)
+
+
 def _replace_placeholders(document, row_data: dict[str, Any]) -> None:
     replacements = _replacement_map(row_data)
 
@@ -150,6 +243,7 @@ def fill_worker_feedback_word_report(
 
     document = _load_document(template_path)
     _replace_placeholders(document, row_data)
+    _embed_row_images(document, row_data)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path = _available_output_path(output_path)
@@ -167,12 +261,20 @@ def fill_worker_feedback_word_reports(
 
     for index, row in enumerate(corrected_rows, start=1):
         row_data = _row_to_dict(row)
-        name_part = _safe_filename_part(
-            row_data.get("category_name")
-            or row_data.get("category")
-            or row_data.get("location")
-        )
-        output_path = output_dir / f"worker_feedback_{index:03d}_{name_part}.docx"
+        board_id = row_data.get("board_id")
+
+        if _existing_report_for_board(output_dir, board_id) is not None:
+            continue
+
+        if board_id is not None:
+            output_path = output_dir / f"{REPORT_FILENAME_PREFIX}{board_id}.docx"
+        else:
+            name_part = _safe_filename_part(
+                row_data.get("category_name")
+                or row_data.get("category")
+                or row_data.get("location")
+            )
+            output_path = output_dir / f"{REPORT_FILENAME_PREFIX}{index:03d}_{name_part}.docx"
         output_paths.append(
             fill_worker_feedback_word_report(
                 row,

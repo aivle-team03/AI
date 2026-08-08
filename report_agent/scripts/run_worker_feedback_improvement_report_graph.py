@@ -20,7 +20,9 @@ from app.worker_feedback.schemas import (
 )
 
 INPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
-RESPONSE_PATH = PROJECT_ROOT / "output" / "worker_feedback_improvement_report_response.json"
+RESPONSE_PATH = PROJECT_ROOT / "output" /"worker_feedback_reports" / "worker_feedback_improvement_report_response.json"
+
+
 
 
 async def run_graph(request):
@@ -72,8 +74,9 @@ async def main() -> None:
 
     review_result = result["correction_review"]
     word_output_paths = result.get("word_output_paths", [])
+    has_rows = bool(result["correction_result"].corrected_rows)
     response = WorkerFeedbackImprovementReportResponse(
-        status="COMPLETED" if review_result.approved and word_output_paths else "FAILED",
+        status="COMPLETED" if review_result.approved and has_rows else "FAILED",
         retry_count=result.get("retry_count", 0),
         worker_feedback_rows=result.get("worker_feedback_rows", []),
         correction_result=result["correction_result"],

@@ -81,23 +81,28 @@ def _action_part(
     }
 
 
-def _image_url_for_action(
-    action: dict[str, Any],
+def _inspection_image_url_for_action(
+    action: dict[str, Any] | None,
     board_by_id: dict[Any, dict[str, Any]],
     event_by_id: dict[Any, dict[str, Any]],
 ) -> str | None:
+    if not action:
+        return None
+
     source_type = str(action.get("type") or action.get("source_type") or "").strip()
 
     if source_type == TYPE_BOARD:
         board_id = action.get("board_id") or action.get("source_id")
-        board = board_by_id.get(board_id, {})
-        return board.get("image_url") or action.get("image_url")
+        return board_by_id.get(board_id, {}).get("image_url")
 
     if source_type == TYPE_EVENT:
         event_id = action.get("event_id") or action.get("source_id")
-        event = event_by_id.get(event_id, {})
-        return event.get("image_url") or action.get("image_url")
+        return event_by_id.get(event_id, {}).get("image_url")
 
+    return None
+
+
+def _image_url_for_action(action: dict[str, Any]) -> str | None:
     return action.get("image_url")
 
 
@@ -145,7 +150,8 @@ def build_final_history_table_14(tables: dict[str, Any]) -> list[dict[str, Any]]
             {
                 **_category_part(category_id, category_by_id),
                 **_inspection_part(history),
-                "image_url": None,
+                "image_url": _image_url_for_action(action) if action else None,
+                "inspection_image_url": None,
                 **_action_part(action),
             }
         )
@@ -161,7 +167,10 @@ def build_final_history_table_14(tables: dict[str, Any]) -> list[dict[str, Any]]
             {
                 **_category_part(action.get("category_id"), category_by_id),
                 **_inspection_part(None),
-                "image_url": _image_url_for_action(action, board_by_id, event_by_id),
+                "image_url": _image_url_for_action(action),
+                "inspection_image_url": _inspection_image_url_for_action(
+                    action, board_by_id, event_by_id
+                ),
                 **_action_part(action),
             }
         )
