@@ -17,7 +17,7 @@ HEADER_ROW_INDEX = 7
 DATA_START_ROW_INDEX = 8
 COLUMN_COUNT = 25
 DEFAULT_FORM_PATH = Path(r"C:\Users\User\Downloads\위험성평가표 - 시트1.csv")
-DEFAULT_XLSX_TEMPLATE_PATH = Path(r"C:\Users\User\Downloads\위험성평가표_양식.xlsx")
+DEFAULT_XLSX_TEMPLATE_PATH = Path(r"C:\Users\User\Downloads\위험성평가표 - 시트1.xlsx")
 DEFAULT_OUTPUT_PATH = Path("output/risk_assessment_form/risk_assessment_form_filled.csv")
 
 COLUMN_WIDTHS = {
@@ -103,7 +103,7 @@ def _form_row(row: FinalHistoryRow | dict[str, Any]) -> list[str]:
     output[5] = _date_text(data.get("inspection_date"))
     output[7] = _value(data.get("inspection_user_name"))
     output[8] = _value(data.get("inspection_content"))
-    output[10] = _value(data.get("image_url"))
+    output[10] = _value(data.get("inspection_image_url"))
     output[12] = _value(data.get("action_name"))
     output[14] = _value(data.get("action_location"))
     output[15] = _date_text(data.get("completed_at"))

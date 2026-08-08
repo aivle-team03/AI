@@ -82,6 +82,7 @@ class FinalHistoryRow(BaseModel):
     inspection_user_name: str | None = None
     inspection_content: str | None = None
     image_url: str | None = None
+    inspection_image_url: str | None = None
     action_name: str | None = None
     action_location: str | None = None
     completed_at: str | None = None

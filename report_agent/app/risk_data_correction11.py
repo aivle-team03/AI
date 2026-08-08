@@ -8,6 +8,7 @@ PROTECTED_FIELDS = [
     "risk",
     "inspection_date",
     "image_url",
+    "inspection_image_url",
     "completed_at",
     "handler_name",
     "approver_name",

@@ -18,7 +18,7 @@ from app.risk_assessment.fill_risk_assessment_report_docx import DEFAULT_TEMPLAT
 from app.risk_assessment.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
 
 # INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_14.json"
-INPUT_PATH = PROJECT_ROOT / "output" /"risk_assessment_form"/ "risk_assessment_form_graph_response100.json"
+INPUT_PATH = PROJECT_ROOT / "output" /"risk_assessment_form"/ "final_history_table_14.json"
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_reports"
 RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing_response.json"
 REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.md"
