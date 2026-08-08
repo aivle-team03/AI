@@ -17,6 +17,11 @@ from app.risk_assessment_form_graph.form_writer import (
     fill_risk_assessment_form,
     resolved_xlsx_path_for,
 )
+from app.risk_assessment_form_graph.form_writer_word import (
+    DEFAULT_FORM_PATH as DEFAULT_WORD_FORM_PATH,
+    DEFAULT_OUTPUT_PATH as DEFAULT_WORD_OUTPUT_PATH,
+    fill_risk_assessment_form_docx,
+)
 from app.risk_assessment_form_graph.state import RiskAssessmentFormState
 from app.risk_assessment_form_graph.schemas import (
     RiskDataCorrectionResult,

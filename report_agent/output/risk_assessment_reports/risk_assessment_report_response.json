@@ -303,32 +303,32 @@
   "analysis_result": {
     "executive_insights": [
       "전체 평가 건수는 17건이며, 이 중 위험성 평가 건수는 12건으로 집계됨.",
-      "고위험 및 중대위험 비율은 33.3%로, 전체 위험성 평가 중 1/3 이상이 높은 위험도를 나타냄.",
-      "위험도 분포는 고위험 4건, 중위험 8건으로 중위험 이상이 전체 평가의 100%를 차지함.",
-      "최근 일별 평가 건수는 증가 추세이며, 특히 고위험 건수는 200% 증가하여 위험도 상승 신호를 보임.",
-      "평가 기준 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 편이며, 조치 이력은 3건 중 3건 완료됨."
+      "고위험 및 중대위험 비율은 33.3%로, 전체 위험성 평가 중 1/3 이상이 높은 위험도를 보임.",
+      "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 총 4건이 확인됨.",
+      "평가 기준 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 편임.",
+      "최근 일별 고위험 평가 건수가 증가하는 추세이며, 7월 28일 1건에서 8월 3일 3건으로 200% 증가함."
     ],
     "findings": [
       {
         "finding_type": "KPI",
-        "title": "평가 건수 및 위험도 분포 현황",
-        "description": "총 17건의 평가 중 12건이 위험성 평가이며, 고위험 이상은 4건(33.3%)으로 나타남. 중위험은 8건으로 전체 위험성 평가의 66.7%를 차지함.",
+        "title": "평가 건수 및 위험도 분포",
+        "description": "총 17건의 평가 중 12건이 위험성 평가이며, 고위험 이상 평가가 4건으로 33.3%를 차지함. 중위험은 8건, 저위험은 없음.",
         "related_event_ids": [],
         "evidence_ids": [],
         "severity": "HIGH"
       },
       {
         "finding_type": "TREND",
-        "title": "평가 건수 및 고위험 건수 일별 추세",
-        "description": "일별 평가 건수는 7월 28일 1건에서 8월 3일 4건으로 300% 증가하였으며, 고위험 건수도 같은 기간 1건에서 3건으로 200% 증가함.",
+        "title": "고위험 평가 건수 증가 추세",
+        "description": "일별 고위험 평가 건수가 7월 28일 1건에서 8월 3일 3건으로 200% 증가하였으며, 전체 평가 건수도 300% 증가하는 추세를 보임.",
         "related_event_ids": [],
         "evidence_ids": [],
-        "severity": "HIGH"
+        "severity": "MEDIUM"
       },
       {
         "finding_type": "RISK_ASSESSMENT",
-        "title": "위험도별 주요 분포 및 위치",
-        "description": "고위험 항목은 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 집, 운동장, 기석님 집, B동 2층 등으로 분포됨. 중위험은 '적재물'과 '충돌' 카테고리에 분포됨.",
+        "title": "고위험 항목 집중 현상",
+        "description": "고위험 항목 4건 모두 '화재 감지' 카테고리에 집중되어 있으며, 위치는 집, 운동장, 기석님 집, B동 2층으로 분포됨.",
         "related_event_ids": [],
         "evidence_ids": [
           "2026-08-03T09:00:00",
@@ -337,29 +337,29 @@
         "severity": "HIGH"
       },
       {
-        "finding_type": "PRIORITY",
-        "title": "고위험 항목 중 조치 및 승인 현황",
-        "description": "고위험 항목 4건 중 2건은 조치 및 승인이 완료되었으나, 2건은 조치 및 승인 미완료 상태임.",
+        "finding_type": "KPI",
+        "title": "조치 및 승인 완료율 저조",
+        "description": "전체 조치 건수는 3건이며, 완료된 조치도 3건이나 전체 평가 대비 조치 완료율은 25.0%에 불과함. 승인 완료율도 25.0%로 낮음.",
+        "related_event_ids": [],
+        "evidence_ids": [],
+        "severity": "MEDIUM"
+      },
+      {
+        "finding_type": "RISK_ASSESSMENT",
+        "title": "위험도별 관리 현황",
+        "description": "고위험 항목 중 일부는 조치 및 승인 완료되었으나, 다수는 미완료 상태로 관리 현황에 편차가 존재함.",
         "related_event_ids": [],
         "evidence_ids": [
           "2026-08-03T09:00:00"
         ],
-        "severity": "HIGH"
-      },
-      {
-        "finding_type": "KPI",
-        "title": "조치 및 승인 완료율 현황",
-        "description": "전체 조치 이력 3건 중 3건 완료되었으나, 전체 평가 대비 조치 완료율과 승인 완료율은 각각 25.0%로 낮은 수준임.",
-        "related_event_ids": [],
-        "evidence_ids": [],
         "severity": "MEDIUM"
       }
     ],
     "recommended_actions": [],
     "data_limitations": [
-      "inspection_history_id 및 action_history_id가 모두 null로, 개별 점검 및 조치 이력 상세 확인이 불가함.",
-      "event_id가 제공되지 않아 특정 사건과의 연계 분석이 불가능함.",
-      "고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음."
+      "inspection_history_id 및 action_history_id가 모두 null로, 점검 및 조치 이력의 상세 추적이 불가함.",
+      "고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음.",
+      "일부 평가 건에 대해 승인 완료 여부가 명확하지 않은 항목이 존재함."
     ]
   },
   "report": {
@@ -386,7 +386,10 @@
         "section_code": "HIGH_RISK_ITEMS",
         "heading": "주요 고위험 항목",
         "content": "1. 위치: 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n2. 위치: 운동장, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 점검자 메모프로세스 확인용\n- 조치 내용: -\n\n3. 위치: 기석님 집, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 미조치, 승인 상태: 승인 미완료\n- 점검 내용: Action is required for this inspection.\n- 조치 내용: -\n\n4. 위치: B동 2층, 위험유형: 화재 감지, 위험도: HIGH, 조치 상태: 조치 완료, 승인 상태: 승인 완료\n- 점검 내용: 소화기 앞 박스 적치물 발견 -> 제거 조치 필요\n- 조치 내용: -",
-        "related_event_ids": [],
+        "related_event_ids": [
+          "2026-08-03T09:00:00",
+          "2026-07-28T08:43:54"
+        ],
         "evidence_ids": [
           "2026-08-03T09:00:00",
           "2026-07-28T08:43:54"
@@ -395,9 +398,9 @@
     ],
     "conclusion": "위험성평가 결과 총 12건 중 4건이 고위험 또는 중대위험으로 분류됐다. 조치가 연결된 평가 항목은 3건이다. 특히 동일 항목에 대한 재현율은 25.0%로 해당 항목은 우선 관리 대상으로 분류된다. 본 보고서는 위험도 분포, 관리 현황, 주요 고위험 항목을 기준으로 사업장 위험성평가 결과를 종합한 것이다.",
     "limitations": [
-      "inspection_history_id 및 action_history_id가 모두 null로, 개별 점검 및 조치 이력 상세 확인이 불가함.",
-      "event_id가 제공되지 않아 특정 사건과의 연계 분석이 불가능함.",
-      "고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음."
+      "inspection_history_id 및 action_history_id가 모두 null로, 점검 및 조치 이력의 상세 추적이 불가함.",
+      "고위험 항목 중 일부는 action_name 및 action_content가 부재하여 조치 내용 파악에 제한이 있음.",
+      "일부 평가 건에 대해 승인 완료 여부가 명확하지 않은 항목이 존재함."
     ]
   },
   "review": {

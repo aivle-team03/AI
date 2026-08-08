@@ -18,8 +18,6 @@ from app.risk_assessment_form_graph.schemas import (
     RiskAssessmentFormResponse,
 )
 
-# INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
-INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_form"
 DEFAULT_RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_form_graph_response.json"
 DEFAULT_CSV_PATH = OUTPUT_DIR / "risk_assessment_form_filled.csv"
@@ -60,16 +58,11 @@ async def run_graph(request):
 
 async def main():
     print(f"프로젝트 경로: {PROJECT_ROOT}", flush=True)
-    print(f"입력 데이터: {INPUT_PATH}", flush=True)
 
     if not os.getenv("OPENAI_API_KEY"):
         print("OPENAI_API_KEY 환경변수를 확인합니다.", flush=True)
 
-    with INPUT_PATH.open("r", encoding="utf-8-sig") as file:
-        payload = json.load(file)
-
     request = RiskAssessmentFormRequest(
-        **payload,
         correction_batch_size=CORRECTION_BATCH_SIZE,
         output_path=str(DEFAULT_CSV_PATH),
     )

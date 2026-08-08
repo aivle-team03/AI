@@ -229,7 +229,7 @@
       "inspection_user_name": null,
       "inspection_content": null,
       "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
-      "inspection_image_url": null,
+      "inspection_image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
       "action_name": "리포트가 이상해요",
       "action_location": "살려주세요",
       "completed_at": "2026-08-05T16:27:01",
@@ -252,24 +252,6 @@
       "action_location": "집",
       "completed_at": "2026-08-05T16:12:06",
       "handler_name": "작업자22",
-      "content": null,
-      "approver_name": "판교관리자",
-      "type": "게시판"
-    },
-    {
-      "category": "기타",
-      "risk": "상",
-      "category_name": "ㄴㄴ",
-      "inspection_location": null,
-      "inspection_date": null,
-      "inspection_user_name": null,
-      "inspection_content": null,
-      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_42_20260805160825009402_7d15c7db.png",
-      "inspection_image_url": null,
-      "action_name": "조치 이름 Action_name에 들어가는 지 확인",
-      "action_location": "집",
-      "completed_at": "2026-08-05T16:08:25",
-      "handler_name": "작업자23",
       "content": null,
       "approver_name": "판교관리자",
       "type": "게시판"
@@ -538,7 +520,7 @@
         "inspection_user_name": null,
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
-        "inspection_image_url": null,
+        "inspection_image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
         "action_name": "리포트에 이상이 있다",
         "action_location": "살려주세요",
         "completed_at": "2026-08-05T16:27:01",
@@ -566,24 +548,6 @@
         "type": "게시판"
       },
       {
-        "category": "기타",
-        "risk": "상",
-        "category_name": "ㄴㄴ",
-        "inspection_location": null,
-        "inspection_date": null,
-        "inspection_user_name": null,
-        "inspection_content": null,
-        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_42_20260805160825009402_7d15c7db.png",
-        "inspection_image_url": null,
-        "action_name": "조치 이름이 Action_name에 들어가는지 확인했다",
-        "action_location": "집",
-        "completed_at": "2026-08-05T16:08:25",
-        "handler_name": "작업자23",
-        "content": null,
-        "approver_name": "판교관리자",
-        "type": "게시판"
-      },
-      {
         "category": "소방안전",
         "risk": "상",
         "category_name": "화재 감지",
@@ -593,7 +557,7 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_21_20260803101823659726_cdfaccd8.png",
         "inspection_image_url": null,
-        "action_name": "작업자10이 조치했다",
+        "action_name": "작업자10 조치를 실시했다",
         "action_location": ",",
         "completed_at": "2026-08-03T10:18:24",
         "handler_name": "작업자10",
@@ -743,19 +707,12 @@
       {
         "row_index": 14,
         "field": "action_name",
-        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
-        "corrected_text": "조치 이름이 Action_name에 들어가는지 확인했다",
+        "original_text": "worker10 조치",
+        "corrected_text": "작업자10 조치를 실시했다",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 15,
-        "field": "action_name",
-        "original_text": "worker10 조치",
-        "corrected_text": "작업자10이 조치했다",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 16,
         "field": "action_name",
         "original_text": "A동 복도 소화기 배치 재점검 요청",
         "corrected_text": "A동 복도 소화기 배치 재점검을 요청했다",
@@ -776,102 +733,14 @@
         "category": "REPORT_STYLE",
         "original_text": "보호구 불량",
         "corrected_text": "보호구 불량으로 확인됐다.",
-        "message": "'확인됐다'라는 표현은 다소 추측성으로 보일 수 있으나, 문체 개선 차원에서 허용 가능함.",
-        "recommendation": "가능하면 더 객관적이고 간결한 표현으로 수정 권장."
-      },
-      {
-        "row_index": 10,
-        "field": "inspection_content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "조치 필요합니다.",
-        "corrected_text": "조치가 필요하다.",
-        "message": "수정된 문장은 원문의 의미를 유지하면서 보고서 문체에 더 적합한 간결한 표현으로 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 10,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "비상구 및 대피로 장애물 점검",
-        "corrected_text": "비상구 및 대피로 장애물 점검을 실시했다",
-        "message": "수정된 문장은 원문의 의미를 유지하며 보고서 문체에 적합하도록 문장 종결 표현을 명확히 했습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 11,
-        "field": "inspection_content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
-        "corrected_text": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요하다.",
-        "message": "수정된 문장은 원문의 의미를 유지하며 보고서 문체에 적합하도록 문장 종결 표현과 문장 구조를 개선했습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 11,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "소화기 배치 상태 점검",
-        "corrected_text": "소화기 배치 상태 점검을 실시했다",
-        "message": "수정된 문장은 원문의 의미를 유지하며 보고서 문체에 적합하도록 문장 종결 표현을 명확히 했습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 12,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트에 이상이 있다",
-        "message": "수정된 문장은 구어체를 제거하고 보고서 문체에 적합한 객관적 표현으로 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 13,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "게시판-조치테이블-담당자배정-report 생성",
-        "corrected_text": "게시판-조치테이블-담당자배정-리포트 생성",
-        "message": "수정된 문장은 영어 단어를 한글로 바꾸어 보고서 문체에 더 적합하게 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 14,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
-        "corrected_text": "조치 이름이 Action_name에 들어가는지 확인했다",
-        "message": "수정된 문장은 문장 종결 표현과 띄어쓰기를 개선하여 보고서 문체에 적합하게 변경되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 15,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "worker10 조치",
-        "corrected_text": "작업자10이 조치했다",
-        "message": "수정된 문장은 구어체를 제거하고 보고서 문체에 적합한 표현으로 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
-      },
-      {
-        "row_index": 16,
-        "field": "action_name",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "A동 복도 소화기 배치 재점검 요청",
-        "corrected_text": "A동 복도 소화기 배치 재점검을 요청했다",
-        "message": "수정된 문장은 문장 종결 표현을 명확히 하여 보고서 문체에 적합하게 개선되었습니다.",
-        "recommendation": "이와 같은 문체 개선은 적절하므로 유지하세요."
+        "message": "원문에 없는 '으로 확인됐다'라는 표현이 추가되어 사실을 추측하는 뉘앙스를 줄 수 있습니다.",
+        "recommendation": "추측성 표현을 제거하고 원문과 동일한 사실만 간결하게 표현하세요."
       }
     ],
-    "items_requiring_revision": []
+    "items_requiring_revision": [
+      "batch_start=0: inspection_content in row 4"
+    ]
   },
   "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
-  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled_new.xlsx"
+  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
 }
