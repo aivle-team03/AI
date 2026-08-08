@@ -19,7 +19,7 @@ from app.risk_assessment_form_graph.schemas import (
 )
 
 # INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
-INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
+INPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_form"
 DEFAULT_RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_form_graph_response.json"
 DEFAULT_CSV_PATH = OUTPUT_DIR / "risk_assessment_form_filled.csv"
@@ -117,5 +117,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 

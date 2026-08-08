@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 import json
 from typing import Literal
 
@@ -24,7 +24,8 @@ from app.risk_assessment_form_graph.schemas import (
 )
 from scripts.build_final_history_table_14 import build_final_history_table_14
 
-BACKEND_DATA_OUTPUT_PATH = Path("output/risk_assessment_form/BackendData.json")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+BACKEND_DATA_OUTPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
 
 
 def _write_backend_data_snapshot(data):
@@ -216,3 +217,5 @@ def build_risk_assessment_form_graph():
 
 
 risk_assessment_form_graph = build_risk_assessment_form_graph()
+
+

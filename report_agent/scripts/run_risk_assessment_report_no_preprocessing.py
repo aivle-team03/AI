@@ -17,7 +17,7 @@ from app.risk_assessment.graph import risk_assessment_report_graph
 from app.risk_assessment.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 from app.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
 
-INPUT_PATH = PROJECT_ROOT / "output" / "final_history_table_14.json"
+INPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_form" / "risk_assessment_form_graph_response.json"
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_reports"
 RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing_response.json"
 REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.md"
@@ -135,3 +135,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+

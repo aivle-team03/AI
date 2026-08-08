@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import asyncio
 import json
@@ -19,7 +19,7 @@ from app.worker_feedback.schemas import (
     WorkerFeedbackImprovementReportResponse,
 )
 
-INPUT_PATH = PROJECT_ROOT / "output" / "BackendData.json"
+INPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" / "worker_feedback_improvement_report_response.json"
 
 
@@ -106,3 +106,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+

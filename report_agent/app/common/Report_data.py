@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import os
@@ -15,6 +15,8 @@ load_dotenv()
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL")
 BACKEND_AUTH_TOKEN = os.getenv("BACKEND_AUTH_TOKEN")
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+EXTERNAL_BACKEND_DATA_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
 
 def _headers() -> dict[str, str]:
     headers = {"Accept": "application/json"}
@@ -130,7 +132,7 @@ def build_worker_feedback_source_data() -> dict[str, Any]:
 
 
 def save_backend_data(
-    output_path: str | Path = "output/BackendData.json",
+    output_path: str | Path = EXTERNAL_BACKEND_DATA_PATH,
 ) -> dict[str, Any]:
     output_path = Path(output_path)
     data = build_backend_source_data()
@@ -160,3 +162,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

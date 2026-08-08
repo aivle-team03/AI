@@ -1,5 +1,5 @@
 ﻿{
-  "status": "FAILED",
+  "status": "COMPLETED",
   "retry_count": 2,
   "correction_batch_size": 10,
   "correction_batch_count": 2,
@@ -509,8 +509,8 @@
         "inspection_user_name": null,
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
-        "action_name": "리포트에 이상이 있다",
-        "action_location": "조치 위치를 확인해야 한다",
+        "action_name": "리포트가 이상하다",
+        "action_location": "살려주세요",
         "completed_at": "2026-08-05T16:27:01",
         "handler_name": "작업자24",
         "content": null,
@@ -526,7 +526,7 @@
         "inspection_user_name": null,
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
-        "action_name": "게시판-조치테이블-담당자 배정 및 보고서 생성",
+        "action_name": "게시판-조치테이블-담당자 배정-리포트 생성",
         "action_location": "집",
         "completed_at": "2026-08-05T16:12:06",
         "handler_name": "작업자22",
@@ -560,8 +560,8 @@
         "inspection_user_name": null,
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_21_20260803101823659726_cdfaccd8.png",
-        "action_name": "worker10 조치 완료",
-        "action_location": "",
+        "action_name": "worker10 조치",
+        "action_location": ",",
         "completed_at": "2026-08-03T10:18:24",
         "handler_name": "작업자10",
         "content": null,
@@ -682,21 +682,14 @@
         "row_index": 12,
         "field": "action_name",
         "original_text": "리포트가 이상해요",
-        "corrected_text": "리포트에 이상이 있다",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 12,
-        "field": "action_location",
-        "original_text": "살려주세요",
-        "corrected_text": "조치 위치를 확인해야 한다",
+        "corrected_text": "리포트가 이상하다",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 13,
         "field": "action_name",
         "original_text": "게시판-조치테이블-담당자배정-report 생성",
-        "corrected_text": "게시판-조치테이블-담당자 배정 및 보고서 생성",
+        "corrected_text": "게시판-조치테이블-담당자 배정-리포트 생성",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -705,28 +698,14 @@
         "original_text": "조치 이름 Action_name에 들어가는 지 확인",
         "corrected_text": "조치 이름이 Action_name에 들어가는지 확인",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 15,
-        "field": "action_name",
-        "original_text": "worker10 조치",
-        "corrected_text": "worker10 조치 완료",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 15,
-        "field": "action_location",
-        "original_text": ",",
-        "corrected_text": "",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       }
     ],
     "unresolved_notes": []
   },
   "correction_review": {
-    "approved": false,
-    "final_decision": "REVISION_REQUIRED",
-    "score": 60,
+    "approved": true,
+    "final_decision": "APPROVED",
+    "score": 100,
     "issues": [
       {
         "row_index": 4,
@@ -735,46 +714,62 @@
         "category": "REPORT_STYLE",
         "original_text": "보호구 불량",
         "corrected_text": "보호구 불량으로 확인됐다.",
-        "message": "원문에 없는 '확인됐다'라는 표현이 추가되어 다소 추측성 또는 판단이 포함된 문장으로 보일 수 있습니다.",
+        "message": "원문에 없던 '확인됐다'라는 표현이 추가되어 다소 추측성 또는 판단이 포함된 문장으로 보일 수 있습니다.",
         "recommendation": "객관적 사실만을 기술하는 간결한 문체로 수정하는 것이 바람직합니다."
       },
       {
-        "row_index": 12,
-        "field": "action_location",
-        "severity": "ERROR",
-        "category": "MEANING_CHANGED",
-        "original_text": "살려주세요",
-        "corrected_text": "조치 위치를 확인해야 한다",
-        "message": "원문 '살려주세요'는 의미가 모호하지만, 수정문은 구체적인 조치 위치 확인 필요로 의미가 달라졌습니다. 위험성평가표에 적합한 객관적 사실로 수정 필요합니다.",
-        "recommendation": "원문의 모호한 표현을 객관적이고 간결한 문장으로 수정하되, 의미를 임의로 추가하거나 변경하지 마세요."
+        "row_index": 10,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치 필요합니다.",
+        "corrected_text": "조치가 필요하다.",
+        "message": "수정된 문장은 원문의 의미를 유지하면서 보고서 문체에 더 적합한 표현으로 개선되었습니다.",
+        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
       },
       {
-        "row_index": 15,
+        "row_index": 11,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
+        "corrected_text": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요하다.",
+        "message": "수정된 문장은 원문의 의미를 유지하며, 보고서 문체에 적합하도록 문장 구조와 표현을 개선하였습니다.",
+        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
+      },
+      {
+        "row_index": 12,
         "field": "action_name",
         "severity": "WARNING",
         "category": "REPORT_STYLE",
-        "original_text": "worker10 조치",
-        "corrected_text": "worker10 조치 완료",
-        "message": "수정문에 '완료'라는 완료 여부가 추가되어 원문에 없는 사실이 포함되었습니다.",
-        "recommendation": "완료 여부를 명시하지 말고 원문 의미를 유지하는 문장으로 수정하세요."
+        "original_text": "리포트가 이상해요",
+        "corrected_text": "리포트가 이상하다",
+        "message": "수정된 문장은 구어체를 제거하고 보고서 문체에 적합한 표현으로 변경되었습니다.",
+        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
       },
       {
-        "row_index": 15,
-        "field": "action_location",
+        "row_index": 13,
+        "field": "action_name",
         "severity": "WARNING",
         "category": "REPORT_STYLE",
-        "original_text": ",",
-        "corrected_text": "",
-        "message": "원문의 ','는 부적절한 표현이나, 빈 문자열로 수정한 것은 문서 체계상 적절하나 위치 정보가 누락될 수 있습니다.",
-        "recommendation": "가능하면 정확한 위치 정보를 기입하거나 '미상' 등으로 명확히 표현하세요."
+        "original_text": "게시판-조치테이블-담당자배정-report 생성",
+        "corrected_text": "게시판-조치테이블-담당자 배정-리포트 생성",
+        "message": "띄어쓰기 및 표현을 정리하여 보고서 문체에 적합하도록 개선하였습니다.",
+        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
+      },
+      {
+        "row_index": 14,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치 이름 Action_name에 들어가는 지 확인",
+        "corrected_text": "조치 이름이 Action_name에 들어가는지 확인",
+        "message": "띄어쓰기 및 문장 구조를 개선하여 보고서 문체에 적합하도록 변경하였습니다.",
+        "recommendation": "이와 같은 문체 정리는 적절하며 유지하세요."
       }
     ],
-    "items_requiring_revision": [
-      "batch_start=10: 3번째 행 action_location: '살려주세요'의 의미를 객관적이고 간결한 문장으로 수정하되, 임의의 사실 추가 금지",
-      "batch_start=10: 6번째 행 action_name: '완료'라는 완료 여부 추가 삭제",
-      "batch_start=10: 6번째 행 action_location: 위치 정보 누락 방지를 위해 적절한 표현으로 수정"
-    ]
+    "items_requiring_revision": []
   },
-  "csv_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
-  "xlsx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
+  "csv_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.csv",
+  "xlsx_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.xlsx"
 }
