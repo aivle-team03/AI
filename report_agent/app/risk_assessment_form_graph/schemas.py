@@ -95,3 +95,4 @@ class RiskAssessmentFormResponse(BaseModel):
     correction_result: RiskDataCorrectionResult
     correction_review: RiskDataCorrectionReviewResult
     docx_output_path: str | None = None
+    s3_output_path: str | None = None

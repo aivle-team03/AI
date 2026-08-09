@@ -16,6 +16,7 @@ class RiskAssessmentFormState(TypedDict, total=False):
     correction_batch_size: int
     correction_batch_count: int
     docx_output_path: str
+    s3_output_path: str
     retry_count: int
     max_retry_count: int
     errors: list[str]

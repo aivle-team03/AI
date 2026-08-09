@@ -18,11 +18,6 @@ from app.risk_assessment_form_graph.schemas import (
     RiskAssessmentFormResponse,
 )
 
-<<<<<<< HEAD
-# INPUT_PATH = PROJECT_ROOT / "output" / "separated_history_dummy_tables.json"
-INPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
-=======
->>>>>>> origin/jung-report-ver2
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_form"
 DEFAULT_RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_form_graph_response.json"
 DEFAULT_DOCX_PATH = OUTPUT_DIR / "risk_assessment_form_filled.docx"
@@ -91,6 +86,7 @@ async def main():
         correction_result=result["correction_result"],
         correction_review=review_result,
         docx_output_path=docx_output_path,
+        s3_output_path=result.get("s3_output_path"),
     )
 
     DEFAULT_RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -107,6 +103,7 @@ async def main():
         "review_approved": response.correction_review.approved,
         "review_score": response.correction_review.score,
         "docx_output_path": response.docx_output_path,
+        "s3_output_path": response.s3_output_path,
         "response_path": str(DEFAULT_RESPONSE_PATH),
     }, ensure_ascii=False, indent=2), flush=True)
 

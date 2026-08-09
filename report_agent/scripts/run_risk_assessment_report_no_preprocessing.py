@@ -13,6 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
+from app.common.s3_upload import upload_docx_to_s3
 from app.risk_assessment.graph import risk_assessment_report_graph
 from app.risk_assessment.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 from app.risk_assessment.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
@@ -24,6 +25,7 @@ OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_reports"
 RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing_response.json"
 REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.md"
 DOCX_REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.docx"
+S3_PREFIX = "report/risk-assessment-report/"
 
 
 def _load_final_history_rows(path: Path) -> list[dict]:
@@ -119,6 +121,10 @@ async def main() -> None:
         DEFAULT_TEMPLATE_PATH,
         DOCX_REPORT_PATH,
     )
+    s3_output_path = upload_docx_to_s3(docx_report_path, S3_PREFIX)
+    response_payload["s3_output_path"] = s3_output_path
+    with RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
+        json.dump(response_payload, file, ensure_ascii=False, indent=2)
 
     print(json.dumps({
         "status": response.status,
@@ -132,6 +138,7 @@ async def main() -> None:
         "response_path": str(RESPONSE_PATH),
         "report_path": str(REPORT_PATH),
         "docx_report_path": str(docx_report_path),
+        "s3_output_path": s3_output_path,
     }, ensure_ascii=False, indent=2))
 
 

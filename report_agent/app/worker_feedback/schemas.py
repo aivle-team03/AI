@@ -81,3 +81,4 @@ class WorkerFeedbackImprovementReportResponse(BaseModel):
     correction_result: WorkerFeedbackCorrectionResult
     correction_review: WorkerFeedbackCorrectionReviewResult
     word_output_paths: list[str] = Field(default_factory=list)
+    s3_output_paths: list[str] = Field(default_factory=list)

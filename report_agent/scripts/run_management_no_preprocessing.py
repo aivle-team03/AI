@@ -13,6 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
+from app.common.s3_upload import upload_docx_to_s3
 from app.management.graph import management_review_order_no_preprocessing_graph
 from app.management.schemas import SiteAnomalyReportRequest, SiteAnomalyReportResponse
 from scripts.fill_management_review_order_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
@@ -23,6 +24,7 @@ OUTPUT_DIR = PROJECT_ROOT / "output" / "management_reports"
 RESPONSE_PATH = OUTPUT_DIR / "management_review_order_no_preprocessing_response.json"
 REPORT_PATH = OUTPUT_DIR / "management_review_order_no_preprocessing.md"
 DOCX_REPORT_PATH = OUTPUT_DIR / "management_review_order_no_preprocessing.docx"
+S3_PREFIX = "report/management-review-order/"
 
 
 def _load_final_history_rows(path: Path) -> list[dict]:
@@ -95,6 +97,10 @@ async def main() -> None:
         json.dump(response_payload, file, ensure_ascii=False, indent=2)
     REPORT_PATH.write_text(_markdown(response), encoding="utf-8-sig")
     docx_report_path = fill_docx_template(response_payload, DEFAULT_TEMPLATE_PATH, DOCX_REPORT_PATH)
+    s3_output_path = upload_docx_to_s3(docx_report_path, S3_PREFIX)
+    response_payload["s3_output_path"] = s3_output_path
+    with RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
+        json.dump(response_payload, file, ensure_ascii=False, indent=2)
 
     print(json.dumps({
         "status": response.status,
@@ -108,6 +114,7 @@ async def main() -> None:
         "response_path": str(RESPONSE_PATH),
         "report_path": str(REPORT_PATH),
         "docx_report_path": str(docx_report_path),
+        "s3_output_path": s3_output_path,
     }, ensure_ascii=False, indent=2))
 
 
