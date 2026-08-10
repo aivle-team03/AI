@@ -339,6 +339,69 @@
   ],
   "action_history": [
     {
+      "action_history_id": 149,
+      "source_type": "이벤트",
+      "source_id": 1000225,
+      "action_name": "화재 감지",
+      "category_id": 1,
+      "category": "소방안전",
+      "category_name": "화재 감지",
+      "category_level": 9,
+      "location": "창고 1",
+      "created_at": "2026-08-10T11:29:51",
+      "completed_at": null,
+      "handler_uid": null,
+      "handler_name": null,
+      "action_status": "조치 대기",
+      "image_url": "http://127.0.0.1:8001/snapshots/955898a0c3024b8db4fb9527df21fd9a",
+      "approval_status": null,
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
+      "action_history_id": 148,
+      "source_type": "이벤트",
+      "source_id": 1000224,
+      "action_name": "소화전 확인",
+      "category_id": 1000012,
+      "category": "소방안전",
+      "category_name": "소화전 확인",
+      "category_level": 1,
+      "location": "창고 1",
+      "created_at": "2026-08-10T11:29:18",
+      "completed_at": null,
+      "handler_uid": null,
+      "handler_name": null,
+      "action_status": "조치 대기",
+      "image_url": "http://127.0.0.1:8001/snapshots/edfa1531548e44478edd5bb0ad9cbccb",
+      "approval_status": null,
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
+      "action_history_id": 147,
+      "source_type": "직접추가",
+      "source_id": null,
+      "action_name": "소화기 위치 확인",
+      "category_id": 1000011,
+      "category": "소방안전",
+      "category_name": "소화기 위치확인",
+      "category_level": 1,
+      "location": "A동",
+      "created_at": "2026-08-10T01:17:22",
+      "completed_at": "2026-08-10T10:19:23",
+      "handler_uid": 22,
+      "handler_name": "작업자10",
+      "action_status": "조치 완료",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_147_20260810101923055455_b1c32ee3.jpg",
+      "approval_status": "승인 완료",
+      "approver_uid": 5,
+      "approver_name": "qqq",
+      "approval_date": "2026-08-10T10:19:47"
+    },
+    {
       "action_history_id": 146,
       "source_type": "직접추가",
       "source_id": null,
@@ -349,12 +412,12 @@
       "category_level": 9,
       "location": "1층",
       "created_at": "2026-08-10T00:50:27",
-      "completed_at": null,
+      "completed_at": "2026-08-10T09:51:17",
       "handler_uid": 22,
       "handler_name": "작업자10",
-      "action_status": "조치 대기",
-      "image_url": null,
-      "approval_status": null,
+      "action_status": "조치 완료",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_146_20260810095116289936_46b9d197.jpg",
+      "approval_status": "승인 대기",
       "approver_uid": null,
       "approver_name": null,
       "approval_date": null
@@ -433,12 +496,12 @@
       "category_level": 9,
       "location": "ㅂㅂㅂ",
       "created_at": "2026-08-07T07:38:44",
-      "completed_at": null,
+      "completed_at": "2026-08-10T09:53:19",
       "handler_uid": 22,
       "handler_name": "작업자10",
-      "action_status": "조치 대기",
-      "image_url": null,
-      "approval_status": null,
+      "action_status": "조치 완료",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_137_20260810095318634867_c873217e.jpg",
+      "approval_status": "승인 대기",
       "approver_uid": null,
       "approver_name": null,
       "approval_date": null
@@ -707,14 +770,14 @@
       "location": "A동",
       "created_at": "2026-08-05T00:49:20",
       "completed_at": null,
-      "handler_uid": null,
-      "handler_name": null,
+      "handler_uid": 22,
+      "handler_name": "작업자10",
       "action_status": "조치 대기",
-      "image_url": null,
-      "approval_status": null,
-      "approver_uid": null,
-      "approver_name": null,
-      "approval_date": null
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_35_20260810095929675671_ddfc82d4.jpg",
+      "approval_status": "반려",
+      "approver_uid": 5,
+      "approver_name": "qqq",
+      "approval_date": "2026-08-10T10:22:06"
     },
     {
       "action_history_id": 34,
@@ -727,12 +790,12 @@
       "category_level": 9,
       "location": "A동",
       "created_at": "2026-08-05T00:48:19",
-      "completed_at": null,
-      "handler_uid": null,
-      "handler_name": null,
-      "action_status": "조치 대기",
-      "image_url": null,
-      "approval_status": null,
+      "completed_at": "2026-08-10T10:15:19",
+      "handler_uid": 22,
+      "handler_name": "작업자10",
+      "action_status": "조치 완료",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_34_20260810101519089413_6eacd69e.jpg",
+      "approval_status": "승인 대기",
       "approver_uid": null,
       "approver_name": null,
       "approval_date": null
@@ -748,12 +811,12 @@
       "category_level": 9,
       "location": "A동",
       "created_at": "2026-08-05T00:44:19",
-      "completed_at": null,
-      "handler_uid": null,
-      "handler_name": null,
-      "action_status": "조치 대기",
-      "image_url": null,
-      "approval_status": null,
+      "completed_at": "2026-08-10T09:55:19",
+      "handler_uid": 22,
+      "handler_name": "작업자10",
+      "action_status": "조치 완료",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_33_20260810095518481655_f024fda2.jpg",
+      "approval_status": "승인 대기",
       "approver_uid": null,
       "approver_name": null,
       "approval_date": null
@@ -1208,7 +1271,7 @@
       "category_name": "화재 감지",
       "risk_level": "상",
       "level": 9,
-      "frequency": 1
+      "frequency": 2
     },
     {
       "category_id": 2,
@@ -1298,7 +1361,7 @@
       "category_name": "소화전 확인",
       "risk_level": "하",
       "level": 1,
-      "frequency": 1
+      "frequency": 2
     }
   ],
   "inspection": [
@@ -2280,6 +2343,48 @@
     }
   ],
   "event": [
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1,
+      "cctv_id": 1,
+      "date": "2026-08-10T11:29:51",
+      "image_url": "http://127.0.0.1:8001/snapshots/955898a0c3024b8db4fb9527df21fd9a",
+      "category": {
+        "category_id": 1,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "화재 감지"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 대기"
+    },
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1000012,
+      "cctv_id": 1,
+      "date": "2026-08-10T11:29:18",
+      "image_url": "http://127.0.0.1:8001/snapshots/edfa1531548e44478edd5bb0ad9cbccb",
+      "category": {
+        "category_id": 1000012,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "소화전 확인"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 대기"
+    },
     {
       "event_id": null,
       "company_id": 1,
