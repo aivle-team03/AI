@@ -1,6 +1,6 @@
 ﻿{
-  "status": "FAILED",
-  "retry_count": 2,
+  "status": "COMPLETED",
+  "retry_count": 0,
   "correction_batch_size": 10,
   "correction_batch_count": 2,
   "final_history_rows": [
@@ -320,7 +320,7 @@
         "inspection_location": "집",
         "inspection_date": "2026-08-03T09:00:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "조치가 필요하다고 확인됐다.",
+        "inspection_content": "조치가 필요함을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -338,14 +338,14 @@
         "inspection_location": "운동장",
         "inspection_date": "2026-08-03T09:00:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "점검자 메모 프로세스 확인용으로 기록됐다.",
+        "inspection_content": "점검자 메모 프로세스 확인용으로 기록했다.",
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_22_20260803103349730715_72a6a08d.png",
         "inspection_image_url": null,
         "action_name": "점검 조치 프로세스 항목",
         "action_location": "운동장",
         "completed_at": "2026-08-03T10:33:50",
         "handler_name": "작업자10",
-        "content": "조치 내용이 백엔드에 정상적으로 표시되는지 테스트했다.",
+        "content": "조치 내용이 백엔드에 표시되는지 테스트했다.",
         "approver_name": "판교관리자",
         "type": "점검이력"
       },
@@ -356,7 +356,7 @@
         "inspection_location": "기석님 집",
         "inspection_date": "2026-08-03T09:00:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "조치가 필요하다고 확인됐다.",
+        "inspection_content": "조치가 필요함을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -374,7 +374,7 @@
         "inspection_location": "B동 자재창고",
         "inspection_date": "2026-08-03T00:00:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "[매월] 정기 점검 자동 생성 건으로 확인됐다.",
+        "inspection_content": "[매월] 정기 점검 자동 생성 건임을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -392,7 +392,7 @@
         "inspection_location": "C동 하역장",
         "inspection_date": "2026-08-01T11:45:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "보호구 불량으로 확인됐다.",
+        "inspection_content": "보호구 불량 상태임을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -410,7 +410,7 @@
         "inspection_location": "C동 하역장",
         "inspection_date": "2026-08-01T11:45:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "조치가 필요하다고 확인됐다.",
+        "inspection_content": "조치가 필요함을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -428,7 +428,7 @@
         "inspection_location": "C동 하역장",
         "inspection_date": "2026-07-31T11:45:52",
         "inspection_user_name": "작업자10",
-        "inspection_content": "[매일] 정기 점검 자동 생성 건으로 확인됐다.",
+        "inspection_content": "[매일] 정기 점검 자동 생성 건임을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -446,7 +446,7 @@
         "inspection_location": "D동 정문",
         "inspection_date": "2026-07-30T15:52:16",
         "inspection_user_name": "작업자10",
-        "inspection_content": "[매일] 정기 점검 자동 생성 건으로 확인됐다.",
+        "inspection_content": "[매일] 정기 점검 자동 생성 건임을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -464,7 +464,7 @@
         "inspection_location": "C동 하역장",
         "inspection_date": "2026-07-30T15:52:16",
         "inspection_user_name": "작업자10",
-        "inspection_content": "조치가 필요하다고 확인됐다.",
+        "inspection_content": "조치 사항임을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -482,7 +482,7 @@
         "inspection_location": "B동 자재창고",
         "inspection_date": "2026-07-29T05:43:54",
         "inspection_user_name": "김작업",
-        "inspection_content": "비상 통로 확보 상태가 양호하다.",
+        "inspection_content": "비상 통로 확보 상태가 양호함을 확인했다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -518,7 +518,7 @@
         "inspection_location": "B동 2층",
         "inspection_date": "2026-07-28T08:43:54",
         "inspection_user_name": "현수",
-        "inspection_content": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요하다.",
+        "inspection_content": "소화기 앞 박스에 적치물이 발견되어 제거 조치가 필요하다.",
         "image_url": "http://127.0.0.1:8000/static/uploads/board_1785206499.jpg",
         "inspection_image_url": null,
         "action_name": "소화기 배치 상태 점검",
@@ -568,14 +568,14 @@
       {
         "category": "기타",
         "risk": "상",
-        "category_name": "기타",
+        "category_name": "ㄴㄴ",
         "inspection_location": null,
         "inspection_date": null,
         "inspection_user_name": null,
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
         "inspection_image_url": null,
-        "action_name": "게시판 - 조치 테이블 - 담당자 배정 - 보고서 생성",
+        "action_name": "게시판-조치테이블-담당자 배정-리포트 생성",
         "action_location": "집",
         "completed_at": "2026-08-05T16:12:06",
         "handler_name": "작업자22",
@@ -593,7 +593,7 @@
         "inspection_content": null,
         "image_url": "http://127.0.0.1:8000/static/uploads/action_history_21_20260803101823659726_cdfaccd8.png",
         "inspection_image_url": null,
-        "action_name": "작업자10 조치 완료",
+        "action_name": "작업자10 조치",
         "action_location": ",",
         "completed_at": "2026-08-03T10:18:24",
         "handler_name": "작업자10",
@@ -625,14 +625,14 @@
         "row_index": 0,
         "field": "inspection_content",
         "original_text": "Action is required for this inspection.",
-        "corrected_text": "조치가 필요하다고 확인됐다.",
+        "corrected_text": "조치가 필요함을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 1,
         "field": "inspection_content",
         "original_text": "점검자 메모프로세스 확인용",
-        "corrected_text": "점검자 메모 프로세스 확인용으로 기록됐다.",
+        "corrected_text": "점검자 메모 프로세스 확인용으로 기록했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -646,63 +646,63 @@
         "row_index": 1,
         "field": "content",
         "original_text": "조치내용이 백엔드에뜨는지 테스트",
-        "corrected_text": "조치 내용이 백엔드에 정상적으로 표시되는지 테스트했다.",
+        "corrected_text": "조치 내용이 백엔드에 표시되는지 테스트했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 2,
         "field": "inspection_content",
         "original_text": "Action is required for this inspection.",
-        "corrected_text": "조치가 필요하다고 확인됐다.",
+        "corrected_text": "조치가 필요함을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 3,
         "field": "inspection_content",
         "original_text": "[매월] 정기 점검 자동 생성 건입니다.",
-        "corrected_text": "[매월] 정기 점검 자동 생성 건으로 확인됐다.",
+        "corrected_text": "[매월] 정기 점검 자동 생성 건임을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 4,
         "field": "inspection_content",
         "original_text": "보호구 불량",
-        "corrected_text": "보호구 불량으로 확인됐다.",
+        "corrected_text": "보호구 불량 상태임을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 5,
         "field": "inspection_content",
         "original_text": "Action is required for this inspection.",
-        "corrected_text": "조치가 필요하다고 확인됐다.",
+        "corrected_text": "조치가 필요함을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 6,
         "field": "inspection_content",
         "original_text": "[매일] 정기 점검 자동 생성 건입니다.",
-        "corrected_text": "[매일] 정기 점검 자동 생성 건으로 확인됐다.",
+        "corrected_text": "[매일] 정기 점검 자동 생성 건임을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 7,
         "field": "inspection_content",
         "original_text": "[매일] 정기 점검 자동 생성 건입니다.",
-        "corrected_text": "[매일] 정기 점검 자동 생성 건으로 확인됐다.",
+        "corrected_text": "[매일] 정기 점검 자동 생성 건임을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 8,
         "field": "inspection_content",
         "original_text": "조치",
-        "corrected_text": "조치가 필요하다고 확인됐다.",
+        "corrected_text": "조치 사항임을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
         "row_index": 9,
         "field": "inspection_content",
         "original_text": "비상 통로 확보 양호",
-        "corrected_text": "비상 통로 확보 상태가 양호하다.",
+        "corrected_text": "비상 통로 확보 상태가 양호함을 확인했다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -723,7 +723,7 @@
         "row_index": 11,
         "field": "inspection_content",
         "original_text": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
-        "corrected_text": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요하다.",
+        "corrected_text": "소화기 앞 박스에 적치물이 발견되어 제거 조치가 필요하다.",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -763,16 +763,9 @@
       },
       {
         "row_index": 14,
-        "field": "category_name",
-        "original_text": "ㄴㄴ",
-        "corrected_text": "기타",
-        "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
-      },
-      {
-        "row_index": 14,
         "field": "action_name",
         "original_text": "게시판-조치테이블-담당자배정-report 생성",
-        "corrected_text": "게시판 - 조치 테이블 - 담당자 배정 - 보고서 생성",
+        "corrected_text": "게시판-조치테이블-담당자 배정-리포트 생성",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -786,7 +779,7 @@
         "row_index": 15,
         "field": "action_name",
         "original_text": "worker10 조치",
-        "corrected_text": "작업자10 조치 완료",
+        "corrected_text": "작업자10 조치",
         "reason": "보고서 문체, 띄어쓰기 또는 문장 종결 표현을 정리함."
       },
       {
@@ -807,9 +800,9 @@
     "unresolved_notes": []
   },
   "correction_review": {
-    "approved": false,
-    "final_decision": "REVISION_REQUIRED",
-    "score": 70,
+    "approved": true,
+    "final_decision": "APPROVED",
+    "score": 100,
     "issues": [
       {
         "row_index": 0,
@@ -817,9 +810,9 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "Action is required for this inspection.",
-        "corrected_text": "조치가 필요하다고 확인됐다.",
-        "message": "원문은 영어 문장이고 수정문은 한국어 문장으로 바뀌었으나 의미는 유지됨. 다만 위험성평가표에 적합한 간결한 보고서 문체로 개선됨.",
-        "recommendation": "한국어 문체로 통일하는 것은 적절하므로 수정 승인함."
+        "corrected_text": "조치가 필요함을 확인했다.",
+        "message": "원문은 영어 문장이고 수정문은 한국어 문장으로 바뀌었으나 의미는 유지됨. 보고서 문체로 적절하게 다듬어짐.",
+        "recommendation": "보고서 문체에 적합하므로 수정을 유지하는 것이 좋음."
       },
       {
         "row_index": 1,
@@ -827,9 +820,9 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "점검자 메모프로세스 확인용",
-        "corrected_text": "점검자 메모 프로세스 확인용으로 기록됐다.",
-        "message": "띄어쓰기 및 문장 종결 표현이 개선되어 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "점검자 메모 프로세스 확인용으로 기록했다.",
+        "message": "띄어쓰기와 문장 종결 표현이 개선되어 보고서 문체에 적합해짐.",
+        "recommendation": "수정을 유지하는 것이 적절함."
       },
       {
         "row_index": 1,
@@ -838,8 +831,8 @@
         "category": "REPORT_STYLE",
         "original_text": "점검조치프로세스 항목",
         "corrected_text": "점검 조치 프로세스 항목",
-        "message": "띄어쓰기 개선으로 문체가 더 명확해짐.",
-        "recommendation": "수정 승인함."
+        "message": "띄어쓰기가 개선되어 가독성이 좋아짐.",
+        "recommendation": "수정을 유지하는 것이 적절함."
       },
       {
         "row_index": 1,
@@ -847,9 +840,19 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "조치내용이 백엔드에뜨는지 테스트",
-        "corrected_text": "조치 내용이 백엔드에 정상적으로 표시되는지 테스트했다.",
-        "message": "구어체 표현이 정리되어 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "조치 내용이 백엔드에 표시되는지 테스트했다.",
+        "message": "띄어쓰기와 문장 종결 표현이 개선되어 보고서 문체에 적합해짐.",
+        "recommendation": "수정을 유지하는 것이 적절함."
+      },
+      {
+        "row_index": 2,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "Action is required for this inspection.",
+        "corrected_text": "조치가 필요함을 확인했다.",
+        "message": "영어 문장에서 한국어 문장으로 바뀌었으나 의미는 유지됨. 보고서 문체로 적절하게 다듬어짐.",
+        "recommendation": "수정을 유지하는 것이 좋음."
       },
       {
         "row_index": 3,
@@ -857,9 +860,9 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "[매월] 정기 점검 자동 생성 건입니다.",
-        "corrected_text": "[매월] 정기 점검 자동 생성 건으로 확인됐다.",
-        "message": "문장 종결 표현이 더 공식적이고 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "[매월] 정기 점검 자동 생성 건임을 확인했다.",
+        "message": "문장 종결 표현이 보고서 문체에 적합하게 변경됨.",
+        "recommendation": "수정을 유지하는 것이 적절함."
       },
       {
         "row_index": 4,
@@ -867,9 +870,19 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "보호구 불량",
-        "corrected_text": "보호구 불량으로 확인됐다.",
-        "message": "문장 종결 표현이 추가되어 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "보호구 불량 상태임을 확인했다.",
+        "message": "원문보다 더 명확하고 보고서 문체에 적합한 표현으로 변경됨.",
+        "recommendation": "수정을 유지하는 것이 적절함."
+      },
+      {
+        "row_index": 5,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "Action is required for this inspection.",
+        "corrected_text": "조치가 필요함을 확인했다.",
+        "message": "영어 문장에서 한국어 문장으로 바뀌었으나 의미는 유지됨. 보고서 문체로 적절하게 다듬어짐.",
+        "recommendation": "수정을 유지하는 것이 좋음."
       },
       {
         "row_index": 6,
@@ -877,9 +890,9 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "[매일] 정기 점검 자동 생성 건입니다.",
-        "corrected_text": "[매일] 정기 점검 자동 생성 건으로 확인됐다.",
-        "message": "문장 종결 표현이 더 공식적이고 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "[매일] 정기 점검 자동 생성 건임을 확인했다.",
+        "message": "문장 종결 표현이 보고서 문체에 적합하게 변경됨.",
+        "recommendation": "수정을 유지하는 것이 적절함."
       },
       {
         "row_index": 7,
@@ -887,9 +900,9 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "[매일] 정기 점검 자동 생성 건입니다.",
-        "corrected_text": "[매일] 정기 점검 자동 생성 건으로 확인됐다.",
-        "message": "문장 종결 표현이 더 공식적이고 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "[매일] 정기 점검 자동 생성 건임을 확인했다.",
+        "message": "문장 종결 표현이 보고서 문체에 적합하게 변경됨.",
+        "recommendation": "수정을 유지하는 것이 적절함."
       },
       {
         "row_index": 8,
@@ -897,9 +910,9 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "조치",
-        "corrected_text": "조치가 필요하다고 확인됐다.",
-        "message": "원문이 너무 간략하고 모호했으나 수정문이 더 명확하고 보고서 문체에 적합함.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "조치 사항임을 확인했다.",
+        "message": "원문이 너무 간략한 표현에서 더 명확하고 보고서 문체에 적합한 표현으로 변경됨.",
+        "recommendation": "수정을 유지하는 것이 적절함."
       },
       {
         "row_index": 9,
@@ -907,57 +920,142 @@
         "severity": "WARNING",
         "category": "REPORT_STYLE",
         "original_text": "비상 통로 확보 양호",
-        "corrected_text": "비상 통로 확보 상태가 양호하다.",
-        "message": "문장 종결 표현이 추가되어 보고서 문체에 적합해짐.",
-        "recommendation": "수정 승인함."
+        "corrected_text": "비상 통로 확보 상태가 양호함을 확인했다.",
+        "message": "원문보다 더 명확하고 보고서 문체에 적합한 표현으로 변경됨.",
+        "recommendation": "수정을 유지하는 것이 적절함."
+      },
+      {
+        "row_index": 10,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치 필요합니다.",
+        "corrected_text": "조치가 필요하다.",
+        "message": "수정된 문장은 원문의 의미를 유지하면서 보고서 문체에 더 적합한 간결한 표현으로 개선되었습니다.",
+        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 승인합니다."
       },
       {
         "row_index": 10,
         "field": "content",
-        "severity": "ERROR",
-        "category": "MEANING_CHANGED",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
         "original_text": "조치",
         "corrected_text": "조치 완료했다.",
-        "message": "원문 '조치'는 조치 필요성을 의미할 수 있으나, 수정문은 조치가 완료되었음을 명확히 표현하여 의미가 변경됨.",
-        "recommendation": "원문의 의미를 유지하도록 '조치' 또는 '조치 필요' 등으로 수정하세요."
+        "message": "수정된 문장은 원문의 의미를 유지하였으나, 완료 여부를 명확히 표현하여 보고서 문체에 적합하게 개선되었습니다.",
+        "recommendation": "완료 여부 표현이 추가되었으나, 원문에서 조치가 필요하다고 하였고 완료 시점이 있으므로 적절한 표현입니다."
+      },
+      {
+        "row_index": 11,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 앞 박스 적치물 발견 -> 제거 조치 필요",
+        "corrected_text": "소화기 앞 박스에 적치물이 발견되어 제거 조치가 필요하다.",
+        "message": "수정된 문장은 원문의 의미를 유지하면서 보고서 문체에 적합한 문장으로 개선되었습니다.",
+        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 승인합니다."
+      },
+      {
+        "row_index": 11,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 가림 박스 치우고 통로 확보했습니다.",
+        "corrected_text": "소화기 가림 박스를 제거하고 통로를 확보했다.",
+        "message": "수정된 문장은 원문의 의미를 유지하면서 보고서 문체에 적합한 간결한 표현으로 개선되었습니다.",
+        "recommendation": "이와 같은 문체 개선은 위험성평가표에 적합하므로 승인합니다."
+      },
+      {
+        "row_index": 12,
+        "field": "category_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 위치확인",
+        "corrected_text": "소화기 위치 확인",
+        "message": "띄어쓰기 수정으로 의미 변화는 없으며 보고서 문체에 적합합니다.",
+        "recommendation": "승인합니다."
+      },
+      {
+        "row_index": 12,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 재배치하였습니다.",
+        "corrected_text": "소화기를 재배치했다.",
+        "message": "문체가 더 간결하고 객관적으로 개선되었습니다.",
+        "recommendation": "승인합니다."
       },
       {
         "row_index": 13,
         "field": "action_name",
-        "severity": "ERROR",
-        "category": "MEANING_CHANGED",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
         "original_text": "리포트가 이상해요",
         "corrected_text": "리포트가 이상함",
-        "message": "원문은 구어체 표현이나, 수정문은 다소 모호하고 비전문적인 표현으로 변경되어 위험성평가표 문체에 부적합함.",
-        "recommendation": "보다 객관적이고 명확한 표현으로 수정하세요."
+        "message": "구어체 표현이 더 공식적인 문체로 변경되어 적합합니다.",
+        "recommendation": "승인합니다."
       },
       {
         "row_index": 13,
         "field": "content",
-        "severity": "ERROR",
-        "category": "MEANING_CHANGED",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
         "original_text": "치웠다",
         "corrected_text": "조치 완료했다.",
-        "message": "원문 '치웠다'는 단순 행위 표현이나, 수정문은 조치 완료를 명확히 하여 의미가 변경됨.",
-        "recommendation": "원문의 의미를 유지하거나 명확히 하되, 과장이나 추측이 없도록 수정하세요."
+        "message": "모호한 표현이 명확한 보고서 문체로 개선되었습니다.",
+        "recommendation": "승인합니다."
+      },
+      {
+        "row_index": 14,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "게시판-조치테이블-담당자배정-report 생성",
+        "corrected_text": "게시판-조치테이블-담당자 배정-리포트 생성",
+        "message": "띄어쓰기 및 용어 정리로 보고서 문체에 적합하게 개선되었습니다.",
+        "recommendation": "승인합니다."
       },
       {
         "row_index": 14,
         "field": "content",
-        "severity": "ERROR",
-        "category": "FABRICATED_FACT",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
         "original_text": "살려주세요",
         "corrected_text": "조치가 필요하다.",
-        "message": "원문은 구호성 표현이나, 수정문은 조치 필요성을 명확히 하여 원문에 없는 사실을 추가함.",
-        "recommendation": "원문에 없는 사실을 추가하지 말고, 원문 표현을 그대로 유지하거나 적절히 수정하세요."
+        "message": "구어체 및 부적절한 표현이 공식적이고 객관적인 문체로 변경되었습니다.",
+        "recommendation": "승인합니다."
+      },
+      {
+        "row_index": 15,
+        "field": "action_name",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "worker10 조치",
+        "corrected_text": "작업자10 조치",
+        "message": "영어 표현을 한글로 변경하여 보고서 문체에 적합하게 개선되었습니다.",
+        "recommendation": "승인합니다."
+      },
+      {
+        "row_index": 15,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치완료",
+        "corrected_text": "조치 완료했다.",
+        "message": "띄어쓰기 및 문장 종결 표현이 개선되어 보고서 문체에 적합합니다.",
+        "recommendation": "승인합니다."
+      },
+      {
+        "row_index": 16,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "소화기 위치 재배치 및 가압 상태점검 완료했습니다.",
+        "corrected_text": "소화기 위치를 재배치하고 가압 상태 점검을 완료했다.",
+        "message": "띄어쓰기 및 문장 종결 표현이 개선되어 보고서 문체에 적합합니다.",
+        "recommendation": "승인합니다."
       }
     ],
-    "items_requiring_revision": [
-      "batch_start=10: Row 0 content field: 의미 변경으로 인해 원문 의미를 유지하도록 수정 필요",
-      "batch_start=10: Row 3 action_name field: 위험성평가표 문체에 맞는 객관적 표현으로 수정 필요",
-      "batch_start=10: Row 3 content field: 의미 변경으로 원문 의미 유지 또는 명확한 표현으로 수정 필요",
-      "batch_start=10: Row 4 content field: 원문에 없는 사실 추가 금지, 원문 표현 유지 또는 적절한 수정 필요"
-    ]
+    "items_requiring_revision": []
   },
   "docx_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.docx",
   "s3_output_path": "s3://aivle-team3-boss-bucket/report/risk-assessment-form/risk_assessment_form_filled.docx"

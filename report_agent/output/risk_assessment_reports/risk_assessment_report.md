@@ -30,5 +30,5 @@
 
 ## 한계
 - inspection_history_id가 모두 null로 점검 이력 상세 확인이 불가하다.
-- action_history_id가 null인 경우가 있어 일부 조치 이력의 상세 내역 파악에 제한이 있다.
+- action_history_id가 null인 경우가 있어 일부 조치 이력의 상세 추적이 제한된다.
 - event_id가 제공되지 않아 특정 사건과의 연계 분석이 불가능하다.

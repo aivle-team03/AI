@@ -339,6 +339,111 @@
   ],
   "action_history": [
     {
+      "action_history_id": 154,
+      "source_type": "이벤트",
+      "source_id": 1000230,
+      "action_name": "소화전 확인",
+      "category_id": 1000012,
+      "category": "소방안전",
+      "category_name": "소화전 확인",
+      "category_level": 1,
+      "location": "창고 1",
+      "created_at": "2026-08-10T13:08:57",
+      "completed_at": null,
+      "handler_uid": null,
+      "handler_name": null,
+      "action_status": "조치 대기",
+      "image_url": null,
+      "approval_status": null,
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
+      "action_history_id": 153,
+      "source_type": "이벤트",
+      "source_id": 1000229,
+      "action_name": "소화전 확인",
+      "category_id": 1000012,
+      "category": "소방안전",
+      "category_name": "소화전 확인",
+      "category_level": 1,
+      "location": "창고 1",
+      "created_at": "2026-08-10T12:01:15",
+      "completed_at": null,
+      "handler_uid": null,
+      "handler_name": null,
+      "action_status": "조치 대기",
+      "image_url": null,
+      "approval_status": null,
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
+      "action_history_id": 152,
+      "source_type": "이벤트",
+      "source_id": 1000228,
+      "action_name": "소화전 확인",
+      "category_id": 1000012,
+      "category": "소방안전",
+      "category_name": "소화전 확인",
+      "category_level": 1,
+      "location": "창고 1",
+      "created_at": "2026-08-10T11:59:12",
+      "completed_at": null,
+      "handler_uid": null,
+      "handler_name": null,
+      "action_status": "조치 대기",
+      "image_url": null,
+      "approval_status": null,
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
+      "action_history_id": 151,
+      "source_type": "이벤트",
+      "source_id": 1000227,
+      "action_name": "소화전 확인",
+      "category_id": 1000012,
+      "category": "소방안전",
+      "category_name": "소화전 확인",
+      "category_level": 1,
+      "location": "창고 1",
+      "created_at": "2026-08-10T11:39:28",
+      "completed_at": "2026-08-10T11:47:45",
+      "handler_uid": 22,
+      "handler_name": "작업자10",
+      "action_status": "조치 완료",
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_151_20260810114744476086_c8827539.jpg",
+      "approval_status": "승인 대기",
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
+      "action_history_id": 150,
+      "source_type": "이벤트",
+      "source_id": 1000226,
+      "action_name": "소화전 확인",
+      "category_id": 1000012,
+      "category": "소방안전",
+      "category_name": "소화전 확인",
+      "category_level": 1,
+      "location": "창고 1",
+      "created_at": "2026-08-10T11:34:51",
+      "completed_at": null,
+      "handler_uid": null,
+      "handler_name": null,
+      "action_status": "조치 대기",
+      "image_url": "http://127.0.0.1:8001/snapshots/bbb5107ad55d4c8d92ad8269ce62c7c7",
+      "approval_status": null,
+      "approver_uid": null,
+      "approver_name": null,
+      "approval_date": null
+    },
+    {
       "action_history_id": 149,
       "source_type": "이벤트",
       "source_id": 1000225,
@@ -1361,7 +1466,7 @@
       "category_name": "소화전 확인",
       "risk_level": "하",
       "level": 1,
-      "frequency": 2
+      "frequency": 7
     }
   ],
   "inspection": [
@@ -2343,6 +2448,111 @@
     }
   ],
   "event": [
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1000012,
+      "cctv_id": 1,
+      "date": "2026-08-10T13:08:57",
+      "image_url": "http://127.0.0.1:8001/snapshots/0a612350c33f4a729361a6c829770896",
+      "category": {
+        "category_id": 1000012,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "소화전 확인"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 대기"
+    },
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1000012,
+      "cctv_id": 1,
+      "date": "2026-08-10T12:01:15",
+      "image_url": "http://127.0.0.1:8001/snapshots/57b05fdb36054a34a883240952e2c6eb",
+      "category": {
+        "category_id": 1000012,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "소화전 확인"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 대기"
+    },
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1000012,
+      "cctv_id": 1,
+      "date": "2026-08-10T11:59:12",
+      "image_url": "http://127.0.0.1:8001/snapshots/ade38236c9e5412da344c208ac3feb7e",
+      "category": {
+        "category_id": 1000012,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "소화전 확인"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 대기"
+    },
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1000012,
+      "cctv_id": 1,
+      "date": "2026-08-10T11:39:28",
+      "image_url": "http://127.0.0.1:8001/snapshots/238539ad643f45f7ab26f7d164f804fd",
+      "category": {
+        "category_id": 1000012,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "소화전 확인"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 완료"
+    },
+    {
+      "event_id": null,
+      "company_id": 1,
+      "category_id": 1000012,
+      "cctv_id": 1,
+      "date": "2026-08-10T11:34:51",
+      "image_url": "http://127.0.0.1:8001/snapshots/bbb5107ad55d4c8d92ad8269ce62c7c7",
+      "category": {
+        "category_id": 1000012,
+        "company_id": 1,
+        "category": "소방안전",
+        "category_name": "소화전 확인"
+      },
+      "cctv": {
+        "cctv_id": null,
+        "company_id": 1,
+        "cctv_name": null,
+        "location": "창고 1"
+      },
+      "current_status": "조치 대기"
+    },
     {
       "event_id": null,
       "company_id": 1,
