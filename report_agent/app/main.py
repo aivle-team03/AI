@@ -1,17 +1,18 @@
 ﻿from pathlib import Path
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.common.s3_upload import upload_docx_to_s3
 from app.config import MAX_RETRY_COUNT
-from app.evidence_report import build_evidence_content
-from app.graph import (
-    risk_assessment_form_graph,
-    risk_assessment_report_graph,
+from app.daily_report_scheduler import (
+    shutdown_daily_report_scheduler,
+    start_daily_report_scheduler,
 )
+from app.evidence_report import build_evidence_content
 from app.management.graph import management_review_order_no_preprocessing_graph
-from app.risk_assessment_form_graph.daily_outputs import write_daily_outputs
 from app.risk_assessment_form_graph.graph import (
     risk_assessment_form_graph as risk_assessment_form_docx_graph,
 )
@@ -19,20 +20,13 @@ from app.risk_assessment_form_graph.schemas import (
     RiskAssessmentFormRequest,
     RiskAssessmentFormResponse,
 )
-from app.management.schemas import (
+from app.schemas import (
     EvidenceContentRequest,
     EvidenceContentResponse,
-    RiskAssessmentFormRequest,
-    RiskAssessmentReportRequest,
-    RiskAssessmentFormResponse,
-    RiskAssessmentReportResponse,
+)
+from app.management.schemas import (
     SiteAnomalyReportRequest,
     SiteAnomalyReportResponse,
-)
-from app.risk_assessment_form_graph.graph import risk_assessment_form_graph
-from app.risk_assessment_form_graph.schemas import (
-    RiskAssessmentFormRequest,
-    RiskAssessmentFormResponse,
 )
 
 from scripts.fill_management_review_order_docx import (
@@ -43,7 +37,21 @@ from scripts.fill_management_review_order_docx import (
 MANAGEMENT_REVIEW_ORDER_OUTPUT_DIR = Path("output") / "management_reports"
 MANAGEMENT_REVIEW_ORDER_S3_PREFIX = "report/management-review-order/"
 
-app = FastAPI(title="Warehouse Safety AI Report API", version="2.0.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    start_daily_report_scheduler()
+    try:
+        yield
+    finally:
+        shutdown_daily_report_scheduler()
+
+
+app = FastAPI(
+    title="Warehouse Safety AI Report API",
+    version="2.0.0",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,

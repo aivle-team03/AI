@@ -33,6 +33,10 @@ def _row_date(row) -> str:
     return _date_key(data.get("completed_at")) or _date_key(data.get("inspection_date")) or "unknown"
 
 
+def _file_date(day: str) -> str:
+    return day.replace("-", "_")
+
+
 def _daily_response_payload(response: RiskAssessmentFormResponse, rows) -> dict:
     payload = response.model_dump(mode="json")
     payload["final_history_rows"] = [
@@ -51,16 +55,22 @@ def write_daily_outputs(
     response: RiskAssessmentFormResponse,
     source_data: dict,
     output_dir: Path = DEFAULT_OUTPUT_DIR,
+    target_date: str | None = None,
 ) -> list[dict]:
     rows_by_date = defaultdict(list)
     for row in response.correction_result.corrected_rows:
-        rows_by_date[_row_date(row)].append(row)
+        day = _row_date(row)
+        if target_date and day != target_date:
+            continue
+        rows_by_date[day].append(row)
+    if target_date and target_date not in rows_by_date:
+        rows_by_date[target_date] = []
 
     uploads = []
     for day, rows in sorted(rows_by_date.items()):
         daily_payload = _daily_response_payload(response, rows)
         json_path = output_dir / day / f"risk_assessment_form_graph_response_{day}.json"
-        docx_path = output_dir / day / f"risk_assessment_form_filled_{day}.docx"
+        docx_path = output_dir / day / f"위험성평가표_{_file_date(day)}.docx"
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open("w", encoding="utf-8-sig") as file:
             json.dump(daily_payload, file, ensure_ascii=False, indent=2)

@@ -49,6 +49,10 @@ def _row_date(row) -> str:
     return _date_key(data.get("completed_at")) or _date_key(data.get("inspection_date")) or "unknown"
 
 
+def _file_date(day: str) -> str:
+    return day.replace("-", "_")
+
+
 def _daily_response_payload(response: RiskAssessmentFormResponse, rows) -> dict:
     payload = response.model_dump(mode="json")
     payload["final_history_rows"] = [
@@ -72,7 +76,7 @@ def _write_daily_outputs(response: RiskAssessmentFormResponse, source_data: dict
     for day, rows in sorted(rows_by_date.items()):
         daily_payload = _daily_response_payload(response, rows)
         json_path = OUTPUT_DIR / day / f"risk_assessment_form_graph_response_{day}.json"
-        docx_path = OUTPUT_DIR / day / f"risk_assessment_form_filled_{day}.docx"
+        docx_path = OUTPUT_DIR / day / f"위험성평가표_{_file_date(day)}.docx"
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open("w", encoding="utf-8-sig") as file:
             json.dump(daily_payload, file, ensure_ascii=False, indent=2)

@@ -1,0 +1,153 @@
+﻿{
+  "status": "COMPLETED",
+  "retry_count": 0,
+  "correction_batch_size": 10,
+  "correction_batch_count": 2,
+  "final_history_rows": [
+    {
+      "category": "시설안전",
+      "risk": "중",
+      "category_name": "적재물",
+      "inspection_location": "B동 자재창고",
+      "inspection_date": "2026-07-29T05:43:54",
+      "inspection_user_name": "김작업",
+      "inspection_content": "비상 통로 확보 상태가 양호함을 확인했다.",
+      "image_url": null,
+      "inspection_image_url": null,
+      "action_name": null,
+      "action_location": null,
+      "completed_at": null,
+      "handler_name": null,
+      "content": null,
+      "approver_name": null,
+      "type": null
+    },
+    {
+      "category": "소방안전",
+      "risk": "상",
+      "category_name": "화재 감지",
+      "inspection_location": "B동 2층",
+      "inspection_date": "2026-07-28T08:43:54",
+      "inspection_user_name": "현수",
+      "inspection_content": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요함을 확인했다.",
+      "image_url": "http://127.0.0.1:8000/static/uploads/board_1785206499.jpg",
+      "inspection_image_url": null,
+      "action_name": "소화기 배치 상태 점검을 실시했다.",
+      "action_location": "B동 2층",
+      "completed_at": "2026-07-29T02:43:54",
+      "handler_name": "김작업",
+      "content": "소화기 가림 박스를 제거하고 통로를 확보했다.",
+      "approver_name": "현수",
+      "type": "점검이력"
+    },
+    {
+      "category": "소방안전",
+      "risk": "상",
+      "category_name": "화재 감지",
+      "inspection_location": null,
+      "inspection_date": null,
+      "inspection_user_name": null,
+      "inspection_content": null,
+      "image_url": "http://127.0.0.1:8000/static/uploads/board_1785201730.jpg",
+      "inspection_image_url": null,
+      "action_name": "A동 복도 소화기 배치 재점검 요청",
+      "action_location": "A동 복도",
+      "completed_at": "2026-07-29T06:43:54",
+      "handler_name": null,
+      "content": "소화기 위치를 재배치하고 가압 상태를 점검 완료했다.",
+      "approver_name": "현수",
+      "type": "게시판"
+    }
+  ],
+  "correction_result": {
+    "corrected_rows": [
+      {
+        "category": "시설안전",
+        "risk": "중",
+        "category_name": "적재물",
+        "inspection_location": "B동 자재창고",
+        "inspection_date": "2026-07-29T05:43:54",
+        "inspection_user_name": "김작업",
+        "inspection_content": "비상 통로 확보 상태가 양호함을 확인했다.",
+        "image_url": null,
+        "inspection_image_url": null,
+        "action_name": null,
+        "action_location": null,
+        "completed_at": null,
+        "handler_name": null,
+        "content": null,
+        "approver_name": null,
+        "type": null
+      },
+      {
+        "category": "소방안전",
+        "risk": "상",
+        "category_name": "화재 감지",
+        "inspection_location": "B동 2층",
+        "inspection_date": "2026-07-28T08:43:54",
+        "inspection_user_name": "현수",
+        "inspection_content": "소화기 앞 박스 적치물이 발견되어 제거 조치가 필요함을 확인했다.",
+        "image_url": "http://127.0.0.1:8000/static/uploads/board_1785206499.jpg",
+        "inspection_image_url": null,
+        "action_name": "소화기 배치 상태 점검을 실시했다.",
+        "action_location": "B동 2층",
+        "completed_at": "2026-07-29T02:43:54",
+        "handler_name": "김작업",
+        "content": "소화기 가림 박스를 제거하고 통로를 확보했다.",
+        "approver_name": "현수",
+        "type": "점검이력"
+      },
+      {
+        "category": "소방안전",
+        "risk": "상",
+        "category_name": "화재 감지",
+        "inspection_location": null,
+        "inspection_date": null,
+        "inspection_user_name": null,
+        "inspection_content": null,
+        "image_url": "http://127.0.0.1:8000/static/uploads/board_1785201730.jpg",
+        "inspection_image_url": null,
+        "action_name": "A동 복도 소화기 배치 재점검 요청",
+        "action_location": "A동 복도",
+        "completed_at": "2026-07-29T06:43:54",
+        "handler_name": null,
+        "content": "소화기 위치를 재배치하고 가압 상태를 점검 완료했다.",
+        "approver_name": "현수",
+        "type": "게시판"
+      }
+    ],
+    "correction_notes": [],
+    "unresolved_notes": []
+  },
+  "correction_review": {
+    "approved": true,
+    "final_decision": "APPROVED",
+    "score": 100,
+    "issues": [
+      {
+        "row_index": 2,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "점검자 메모프로세스 확인용",
+        "corrected_text": "점검자 메모 프로세스 확인용으로 작성했다.",
+        "message": "수정문이 문체를 더 공식적이고 명확하게 다듬었으나 '작성했다'라는 표현이 다소 구어체 느낌을 줄 수 있습니다.",
+        "recommendation": "더 간결하고 객관적인 문체로 다듬는 것을 권장합니다."
+      },
+      {
+        "row_index": 2,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치내용이 백엔드에뜨는지 테스트",
+        "corrected_text": "조치 내용이 백엔드에 정상적으로 표시되는지 테스트했다.",
+        "message": "수정문이 문체를 다듬었으나 '테스트했다'라는 표현이 다소 구어체 느낌을 줄 수 있습니다.",
+        "recommendation": "더 공식적이고 간결한 표현으로 수정하는 것을 권장합니다."
+      }
+    ],
+    "items_requiring_revision": []
+  },
+  "docx_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.docx",
+  "s3_output_path": null,
+  "daily_uploads": []
+}

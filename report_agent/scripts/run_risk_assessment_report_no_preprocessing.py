@@ -25,7 +25,6 @@ INPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_form" / "risk_assessment
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_reports"
 RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing_response.json"
 REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.md"
-DOCX_REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.docx"
 S3_PREFIX = "report/risk-assessment-report/"
 DAILY_JSON_S3_PREFIX = "report/daily-json/"
 
@@ -59,6 +58,27 @@ def _load_final_history_rows_for_period(start_date: str | None, end_date: str | 
         DAILY_JSON_S3_PREFIX,
     )
     return rows, f"s3://aivle-team3-boss-bucket/{DAILY_JSON_S3_PREFIX}{start_date}..{end_date}"
+
+
+def _date_key(value):
+    if not value:
+        return None
+    text = str(value)
+    return text[:10] if len(text) >= 10 else None
+
+
+def _row_date(row: dict) -> str | None:
+    return _date_key(row.get("completed_at")) or _date_key(row.get("inspection_date"))
+
+
+def _period_suffix(start_date: str | None, end_date: str | None, rows: list[dict]) -> str:
+    if start_date and end_date:
+        return f"{start_date.replace('-', '_')}_{end_date.replace('-', '_')}"
+
+    dates = sorted(day for row in rows if (day := _row_date(row)))
+    if not dates:
+        return "unknown"
+    return f"{dates[0].replace('-', '_')}_{dates[-1].replace('-', '_')}"
 
 
 def _dedupe_repeated_sentences(text: str) -> str:
@@ -142,10 +162,11 @@ async def main() -> None:
     with RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
         json.dump(response_payload, file, ensure_ascii=False, indent=2)
     REPORT_PATH.write_text(_markdown(response), encoding="utf-8-sig")
+    docx_output_path = OUTPUT_DIR / f"위험성평가보고서_{_period_suffix(args.start_date, args.end_date, final_history_rows)}.docx"
     docx_report_path = fill_docx_template(
         response_payload,
         DEFAULT_TEMPLATE_PATH,
-        DOCX_REPORT_PATH,
+        docx_output_path,
     )
     s3_output_path = upload_docx_to_s3(docx_report_path, S3_PREFIX)
     response_payload["s3_output_path"] = s3_output_path

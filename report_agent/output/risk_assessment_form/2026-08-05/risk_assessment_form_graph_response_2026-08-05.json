@@ -1,0 +1,117 @@
+﻿{
+  "status": "COMPLETED",
+  "retry_count": 0,
+  "correction_batch_size": 10,
+  "correction_batch_count": 2,
+  "final_history_rows": [
+    {
+      "category": "소방안전",
+      "risk": "중",
+      "category_name": "현수님",
+      "inspection_location": null,
+      "inspection_date": null,
+      "inspection_user_name": null,
+      "inspection_content": null,
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
+      "inspection_image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
+      "action_name": "리포트 이상 현상",
+      "action_location": "살려주세요",
+      "completed_at": "2026-08-05T16:27:01",
+      "handler_name": "작업자24",
+      "content": "적치물을 제거했다.",
+      "approver_name": "판교관리자",
+      "type": "게시판"
+    },
+    {
+      "category": "기타",
+      "risk": "상",
+      "category_name": "ㄴㄴ",
+      "inspection_location": null,
+      "inspection_date": null,
+      "inspection_user_name": null,
+      "inspection_content": null,
+      "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
+      "inspection_image_url": null,
+      "action_name": "게시판-조치테이블-담당자 배정 및 보고서 생성",
+      "action_location": "집",
+      "completed_at": "2026-08-05T16:12:06",
+      "handler_name": "작업자22",
+      "content": "조치가 필요함을 보고했다.",
+      "approver_name": "판교관리자",
+      "type": "게시판"
+    }
+  ],
+  "correction_result": {
+    "corrected_rows": [
+      {
+        "category": "소방안전",
+        "risk": "중",
+        "category_name": "현수님",
+        "inspection_location": null,
+        "inspection_date": null,
+        "inspection_user_name": null,
+        "inspection_content": null,
+        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_45_20260805162700961975_0b300863.png",
+        "inspection_image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
+        "action_name": "리포트 이상 현상",
+        "action_location": "살려주세요",
+        "completed_at": "2026-08-05T16:27:01",
+        "handler_name": "작업자24",
+        "content": "적치물을 제거했다.",
+        "approver_name": "판교관리자",
+        "type": "게시판"
+      },
+      {
+        "category": "기타",
+        "risk": "상",
+        "category_name": "ㄴㄴ",
+        "inspection_location": null,
+        "inspection_date": null,
+        "inspection_user_name": null,
+        "inspection_content": null,
+        "image_url": "http://127.0.0.1:8000/static/uploads/action_history_44_20260805161205525013_78ff6b6a.png",
+        "inspection_image_url": null,
+        "action_name": "게시판-조치테이블-담당자 배정 및 보고서 생성",
+        "action_location": "집",
+        "completed_at": "2026-08-05T16:12:06",
+        "handler_name": "작업자22",
+        "content": "조치가 필요함을 보고했다.",
+        "approver_name": "판교관리자",
+        "type": "게시판"
+      }
+    ],
+    "correction_notes": [],
+    "unresolved_notes": []
+  },
+  "correction_review": {
+    "approved": true,
+    "final_decision": "APPROVED",
+    "score": 100,
+    "issues": [
+      {
+        "row_index": 2,
+        "field": "inspection_content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "점검자 메모프로세스 확인용",
+        "corrected_text": "점검자 메모 프로세스 확인용으로 작성했다.",
+        "message": "수정문이 문체를 더 공식적이고 명확하게 다듬었으나 '작성했다'라는 표현이 다소 구어체 느낌을 줄 수 있습니다.",
+        "recommendation": "더 간결하고 객관적인 문체로 다듬는 것을 권장합니다."
+      },
+      {
+        "row_index": 2,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "조치내용이 백엔드에뜨는지 테스트",
+        "corrected_text": "조치 내용이 백엔드에 정상적으로 표시되는지 테스트했다.",
+        "message": "수정문이 문체를 다듬었으나 '테스트했다'라는 표현이 다소 구어체 느낌을 줄 수 있습니다.",
+        "recommendation": "더 공식적이고 간결한 표현으로 수정하는 것을 권장합니다."
+      }
+    ],
+    "items_requiring_revision": []
+  },
+  "docx_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.docx",
+  "s3_output_path": null,
+  "daily_uploads": []
+}
