@@ -22,6 +22,9 @@ Ultralytics/
 runs/
 evaluation_result/
 evaluation_dataset/
+ai_vision/runs/
+ai_vision/evaluation_result/
+ai_vision/evaluation_dataset/
 *_result.mp4
 *_result.avi
 
@@ -36,7 +39,9 @@ test/result/*
 *.md
 !README.md
 !README(CCTV).md
+!ai_vision/README(CCTV).md
 snapshots/
+ai_vision/snapshots/
 .venv/
 .DS_Store
 .env

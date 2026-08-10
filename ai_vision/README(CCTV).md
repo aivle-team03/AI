@@ -13,7 +13,7 @@ AI 테스트 영상/모델 → ai_server:8001 → 프론트 분석 스트림
 
 ## 실행
 
-백엔드와 프론트를 실행한 뒤 AI 폴더에서 다음을 실행합니다.
+백엔드와 프론트를 실행한 뒤 `AI/ai_vision` 폴더에서 다음을 실행합니다.
 
 ```powershell
 pip install -r requirements.txt
@@ -24,7 +24,7 @@ python -m uvicorn ai_server:app --host 127.0.0.1 --port 8001
 - 화재 분석 스트림: `http://127.0.0.1:8001/streams/fire-01`
 - 지게차 분석 스트림: `http://127.0.0.1:8001/streams/forklift-03`
 
-테스트 입력은 `test3.mp4`(화재), `test1.mp4`(지게차)이며 AI 폴더에 둡니다.
+테스트 입력은 `test3.mp4`(화재), `test1.mp4`(지게차)이며 `AI/ai_vision` 폴더에 둡니다.
 프론트에는 원본 MP4를 복사하지 않습니다.
 
 ## 현재 설정 주의사항
