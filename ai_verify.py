@@ -19,14 +19,23 @@ openai_client = OpenAI(api_key=api_key)
 @app.post("/api/ai/verify-action")
 async def verify_action_endpoint(
     after_img: UploadFile = File(...),
+    before_img: UploadFile | None = File(None),
     category_name: str = Form("안전 위험 요인"),
     action_content: str = Form(""),
 ):
     """조치 사진(after_img)을 받아 OpenAI VLM으로 해소 여부 판독"""
     try:
-        image_bytes = await after_img.read()
-        base64_image = base64.b64encode(image_bytes).decode("utf-8")
-        mime_type = after_img.content_type or "image/jpeg"
+        after_bytes = await after_img.read()
+        after_b64 = base64.b64encode(after_bytes).decode("utf-8")
+        after_mime = after_img.content_type or "image/jpeg"
+        
+        before_b64 = None
+        before_mime = "image/jpeg"
+        if before_img:
+            before_bytes = await before_img.read()
+            if before_bytes:
+                before_b64 = base64.b64encode(before_bytes).decode("utf-8")
+                before_mime = before_img.content_type or "image/jpeg"
 
         prompt = f"""
         당신은 산업현장 AI 안전 검사관입니다.
@@ -51,6 +60,13 @@ async def verify_action_endpoint(
 
         4. [조치 내용 검증]
            - 작성된 [조치 내용]이 사진 속 실제 조치 상태와 일치해야 합니다.
+           
+        [판단 규칙 2]
+        1. '조치 전 사진'이 함께 제공된 경우:
+        - 조치 전 사진의 위험 상태(방치물, 불씨, 안전장비 미비 등)가 '조치 후 사진'에서 깔끔하게 해결/정리되었는지 비교 검증하세요.
+        2. '조치 후 사진'만 제공된 경우:
+        - 해당 사진 내에서 [{category_name}] 위험이 해소되었는지 단독 판단하세요.
+        3. 작업자가 작성한 [조치 내용]이 실제 조치 후 사진 속 모습과 모순되지 않아야 승인(is_resolved: true)합니다.
 
         [주의사항]
         - 제공된 **[{category_name}]** 이외의 다른 현장 상태나 위험 요소는 판단에 반영하지 마세요.
@@ -68,21 +84,33 @@ async def verify_action_endpoint(
           "analysis_summary": string
         }}
         """
+        user_content = [{"type": "text", "text": prompt}]
+
+        if before_b64:
+            user_content.append({"type": "text", "text": "[조치 전 위험 사진]"})
+            user_content.append({
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:{before_mime};base64,{before_b64}",
+                    "detail": "high"
+                }
+            })
+            
+        user_content.append({"type": "text", "text": "[조치 후 사진]"})
+        user_content.append({
+            "type": "image_url",
+            "image_url": {
+                "url": f"data:{after_mime};base64,{after_b64}",
+                "detail": "high"
+            }
+        })
+        
         response = openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {
                     "role": "user",
-                    "content": [
-                        {"type": "text", "text": prompt},
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:{mime_type};base64,{base64_image}",
-                                "detail": "high"
-                            },
-                        },
-                    ],
+                    "content": user_content,
                 }
             ],
             response_format={"type": "json_object"},
