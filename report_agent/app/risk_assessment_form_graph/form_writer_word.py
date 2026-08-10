@@ -78,9 +78,9 @@ def _form_row(row: FinalHistoryRow | dict[str, Any]) -> list[str]:
     # Order matches the template header: 카테고리/위험도/점검이름/구역/점검일시/담당자/내용/
     # 조치 전 사진/조치이름/구역/조치 일시/담당자/조치 내용/조치 후 사진/승인자/타입
     return [
-        _value(data.get("category_name")),
-        _value(data.get("risk")),
         _value(data.get("category")),
+        _value(data.get("risk")),
+        _value(data.get("category_name")),
         _value(data.get("inspection_location")),
         _date_text(data.get("inspection_date")),
         _value(data.get("inspection_user_name")),
