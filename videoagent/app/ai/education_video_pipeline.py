@@ -249,6 +249,7 @@ def _extract_clip_audio_sync(video_path: str) -> Optional[str]:
 # 두 신호를 함께 본다. 유사도는 단어 누락·추가에, 발음점수는 음소 수준 왜곡에 각각 민감하다.
 AUDIO_MATCH_THRESHOLD = 0.75
 AUDIO_PRONUNCIATION_THRESHOLD = 80
+VISUAL_QUALITY_THRESHOLD = 70
 
 
 def _normalize_speech(text: str) -> str:
@@ -425,19 +426,18 @@ async def review_video_visually(
         if raw_resp:
             parsed = _clean_and_parse_json_for_veo(raw_resp, context="시각 QA 검수")
             if isinstance(parsed, dict) and "visual_score" in parsed:
-                # parsed["passed"] = parsed.get("visual_score", 0) >= 70 and parsed.get("no_unwanted_text", True)
-                parsed["passed"] = True  # 임시 주석 처리: 점수 미달이어도 통과(True)로 처리
-                print(f"[VisualQA] SUCCESS: AI 시각 검수 완료 (점수: {parsed.get('visual_score')}점, 임시 통과 적용)")
+                parsed["passed"] = parsed.get("visual_score", 0) >= VISUAL_QUALITY_THRESHOLD
+                print(f"[VisualQA] SUCCESS: AI 시각 검수 완료 (점수: {parsed.get('visual_score')}점, 통과 기준: {VISUAL_QUALITY_THRESHOLD}점)")
                 return parsed
     except Exception as e:
         print(f"[VisualQA] 시각 검수 진행 중 예외: {e}")
 
     return {
-        "no_unwanted_text": True,
-        "scene_context_relevance": True,
-        "visual_score": 85,
-        "visual_summary": "시각 검수 완료 (기본 품질 기준 통과)",
-        "passed": True
+        "no_unwanted_text": False,
+        "scene_context_relevance": False,
+        "visual_score": 0,
+        "visual_summary": "시각 품질 점수를 확인하지 못해 관리자 검수가 필요합니다.",
+        "passed": False
     }
 
 
@@ -480,7 +480,8 @@ async def inspect_video_quality_async(
     base_report["audio_qa"] = audio_report
     base_report["checks"]["audio_matches_script"] = audio_report["passed"]
     base_report["structural_passed"] = base_report["passed"]
-    # AI 시각/오디오 검수 미달 시 HITL(관리자 직접 검수 대기) 플래그 설정
-    base_report["hitl_required"] = not visual_report.get("passed", True) or not audio_report["passed"]
+    # 관리자 검수는 시각 품질 점수(70점 미만) 기준으로만 전환한다.
+    # 음성 QA 결과는 품질 리포트에 보존하되 자동 등록 여부는 막지 않는다.
+    base_report["hitl_required"] = not visual_report.get("passed", True)
     base_report["passed"] = base_report["structural_passed"]
     return base_report

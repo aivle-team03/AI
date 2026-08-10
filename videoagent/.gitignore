@@ -24,3 +24,4 @@ htmlcov/
 output/
 *.mp4
 service-account.json
+video_create.json
