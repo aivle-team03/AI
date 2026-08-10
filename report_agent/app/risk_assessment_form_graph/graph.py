@@ -1,5 +1,6 @@
 ﻿from pathlib import Path
 import json
+import time
 from typing import Literal
 
 from langgraph.graph import END, START, StateGraph
@@ -93,11 +94,17 @@ async def data_correction_node(state):
             f"({start + 1}-{start + len(batch)}행)",
             flush=True,
         )
+        batch_started_at = time.perf_counter()
         raw_result = await risk_form_data_correction_agent(
             batch,
             protected_fields=PROTECTED_FIELDS,
             previous_result=None,
             review_result=None,
+        )
+        print(
+            f"[2/4] batch {batch_count}/{total_batches} LLM 호출 소요시간: "
+            f"{time.perf_counter() - batch_started_at:.1f}초",
+            flush=True,
         )
         safe_result = enforce_history_table_invariants(
             batch,
@@ -162,7 +169,13 @@ async def data_correction_review_node(state):
             ],
             unresolved_notes=state["correction_result"].unresolved_notes,
         )
+        batch_started_at = time.perf_counter()
         review = await risk_form_data_correction_review_agent(batch, correction_result)
+        print(
+            f"[3/4] batch {batch_index}/{total_batches} LLM 호출 소요시간: "
+            f"{time.perf_counter() - batch_started_at:.1f}초",
+            flush=True,
+        )
         for issue in review.issues:
             if issue.row_index is not None:
                 issue.row_index += start
@@ -200,7 +213,7 @@ def build_risk_assessment_form_graph():
     graph.add_node("retry", retry_node)
     graph.add_node("fill_csv_form", risk_assessment_form_node)
 
-    graph.add_edge(START, "fetch_backend_data")
+    graph.add_edge(START, "data_correction_agent")
     graph.add_edge("fetch_backend_data", "build_final_history_table_14")
     graph.add_edge("build_final_history_table_14", "data_correction_agent")
     graph.add_edge("data_correction_agent", "data_correction_review_agent")

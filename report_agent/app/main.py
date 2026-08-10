@@ -1,18 +1,27 @@
-﻿from pathlib import Path
-
+import json
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.common.s3_upload import upload_docx_to_s3
+from app.common.s3_upload import upload_docx_files_to_s3, upload_docx_to_s3
 from app.config import MAX_RETRY_COUNT
 from app.daily_report_scheduler import (
     shutdown_daily_report_scheduler,
     start_daily_report_scheduler,
 )
-from app.evidence_report import build_evidence_content
 from app.management.graph import management_review_order_no_preprocessing_graph
+from app.management.schemas import SiteAnomalyReportRequest, SiteAnomalyReportResponse
+from app.risk_assessment.graph import risk_assessment_report_graph
+from app.risk_assessment.schemas import (
+    RiskAssessmentReportRequest,
+    RiskAssessmentReportResponse,
+)
+from app.risk_assessment_form_graph.daily_outputs import (
+    DEFAULT_OUTPUT_DIR as RISK_ASSESSMENT_FORM_OUTPUT_DIR,
+    write_daily_outputs,
+)
 from app.risk_assessment_form_graph.graph import (
     risk_assessment_form_graph as risk_assessment_form_docx_graph,
 )
@@ -20,13 +29,10 @@ from app.risk_assessment_form_graph.schemas import (
     RiskAssessmentFormRequest,
     RiskAssessmentFormResponse,
 )
-from app.schemas import (
-    EvidenceContentRequest,
-    EvidenceContentResponse,
-)
-from app.management.schemas import (
-    SiteAnomalyReportRequest,
-    SiteAnomalyReportResponse,
+from app.worker_feedback.graph import worker_feedback_improvement_graph
+from app.worker_feedback.schemas import (
+    WorkerFeedbackImprovementReportRequest,
+    WorkerFeedbackImprovementReportResponse,
 )
 
 from scripts.fill_management_review_order_docx import (
@@ -36,6 +42,11 @@ from scripts.fill_management_review_order_docx import (
 
 MANAGEMENT_REVIEW_ORDER_OUTPUT_DIR = Path("output") / "management_reports"
 MANAGEMENT_REVIEW_ORDER_S3_PREFIX = "report/management-review-order/"
+WORKER_FEEDBACK_S3_PREFIX = "report/worker-feedback/"
+RISK_ASSESSMENT_FORM_S3_PREFIX = "report/risk-assessment-form/"
+RISK_ASSESSMENT_FORM_RESPONSE_PATH = (
+    RISK_ASSESSMENT_FORM_OUTPUT_DIR / "risk_assessment_form_graph_response.json"
+)
 
 
 @asynccontextmanager
@@ -67,29 +78,72 @@ def health():
     return {"status": "ok"}
 
 
+# 위험성평가표 + json 파일
 @app.post(
-    "/api/reports/evidence-content",
-    response_model=EvidenceContentResponse,
+    "/api/report/risk-assessment/form/generate",
+    response_model=RiskAssessmentFormResponse,
     tags=["report-generation"],
 )
-async def generate_evidence_content(req: EvidenceContentRequest):
+async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
+    print(
+        f"[risk-assessment-form] rows={len(req.final_history_rows)} "
+        f"batch_size={req.correction_batch_size}",
+        flush=True,
+    )
     try:
-        return build_evidence_content(req)
+        result = await risk_assessment_form_docx_graph.ainvoke(
+            {
+                "request": req,
+                "final_history_rows": [
+                    row.model_dump(mode="json") if hasattr(row, "model_dump") else row
+                    for row in req.final_history_rows
+                ],
+                "retry_count": 0,
+                "max_retry_count": MAX_RETRY_COUNT,
+                "errors": [],
+            }
+        )
+        review_result = result["correction_review"]
+        docx_output_path = result.get("docx_output_path")
+        s3_output_path = (
+            upload_docx_to_s3(docx_output_path, RISK_ASSESSMENT_FORM_S3_PREFIX)
+            if docx_output_path
+            else None
+        )
+        response = RiskAssessmentFormResponse(
+            status="COMPLETED" if review_result.approved and docx_output_path else "FAILED",
+            retry_count=result.get("retry_count", 0),
+            correction_batch_size=result.get("correction_batch_size"),
+            correction_batch_count=result.get("correction_batch_count"),
+            final_history_rows=result.get("final_history_rows", []),
+            correction_result=result["correction_result"],
+            correction_review=review_result,
+            docx_output_path=docx_output_path,
+            s3_output_path=s3_output_path,
+        )
+        response.daily_uploads = write_daily_outputs(response, req.model_dump(mode="json"))
+
+        RISK_ASSESSMENT_FORM_RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with RISK_ASSESSMENT_FORM_RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
+            json.dump(response.model_dump(mode="json"), file, ensure_ascii=False, indent=2)
+
+        return response
     except Exception as exc:
         raise HTTPException(
             500,
-            f"Failed to build evidence report content: {exc}",
+            f"Failed to generate risk assessment form: {exc}",
         ) from exc
 
 
+# 위험성평가 보고서
 @app.post(
-    "/api/reports/management-report/generate",
-    response_model=SiteAnomalyReportResponse,
+    "/api/report/risk-assessment/report/generate",
+    response_model=RiskAssessmentReportResponse,
     tags=["report-generation"],
 )
-async def generate_management_report(req: SiteAnomalyReportRequest):
+async def generate_risk_assessment_report(req: RiskAssessmentReportRequest):
     try:
-        result = await management_review_order_no_preprocessing_graph.ainvoke(
+        result = await risk_assessment_report_graph.ainvoke(
             {
                 "request": req,
                 "retry_count": 0,
@@ -98,7 +152,7 @@ async def generate_management_report(req: SiteAnomalyReportRequest):
             }
         )
         review_result = result["review_result"]
-        return SiteAnomalyReportResponse(
+        return RiskAssessmentReportResponse(
             status="COMPLETED" if review_result.passed else "FAILED",
             retry_count=result.get("retry_count", 0),
             aggregated_data=result["aggregated_data"],
@@ -109,80 +163,13 @@ async def generate_management_report(req: SiteAnomalyReportRequest):
     except Exception as exc:
         raise HTTPException(
             500,
-            f"Failed to generate management report: {exc}",
+            f"Failed to generate risk assessment report: {exc}",
         ) from exc
 
 
+# 경영책임자 검토 지시서
 @app.post(
-    "/api/reports/risk-assessment/form/generate",
-    response_model=RiskAssessmentFormResponse,
-    tags=["report-generation"],
-)
-async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
-    try:
-        result = await risk_assessment_form_docx_graph.ainvoke(
-            {
-                "request": req,
-                "retry_count": 0,
-                "max_retry_count": MAX_RETRY_COUNT,
-                "errors": [],
-            }
-        )
-        review_result = result["correction_review"]
-        docx_output_path = result.get("docx_output_path")
-        return RiskAssessmentFormResponse(
-            status="COMPLETED" if review_result.approved and docx_output_path else "FAILED",
-            retry_count=result.get("retry_count", 0),
-            correction_batch_size=result.get("correction_batch_size"),
-            correction_batch_count=result.get("correction_batch_count"),
-            final_history_rows=result.get("final_history_rows", []),
-            correction_result=result["correction_result"],
-            correction_review=review_result,
-            docx_output_path=docx_output_path,
-            s3_output_path=result.get("s3_output_path"),
-        )
-        return response
-    except Exception as exc:
-        raise HTTPException(
-            500,
-            f"Failed to generate risk assessment form: {exc}",
-        ) from exc
-
-
-
-# @app.post(
-#     "/api/reports/risk-assessment/report/generate",
-#     response_model=RiskAssessmentReportResponse,
-#     tags=["report-generation"],
-# )
-# async def generate_risk_assessment_report(req: RiskAssessmentReportRequest):
-#     try:
-#         result = await risk_assessment_report_graph.ainvoke(
-#             {
-#                 "request": req,
-#                 "retry_count": 0,
-#                 "max_retry_count": MAX_RETRY_COUNT,
-#                 "errors": [],
-#             }
-#         )
-#         review_result = result["review_result"]
-#         return RiskAssessmentReportResponse(
-#             status="COMPLETED" if review_result.passed else "FAILED",
-#             retry_count=result.get("retry_count", 0),
-#             aggregated_data=result["aggregated_data"],
-#             analysis_result=result["analysis_result"],
-#             report=result["generated_report"],
-#             review=review_result,
-#         )
-#     except Exception as exc:
-#         raise HTTPException(
-#             500,
-#             f"Failed to generate risk assessment report: {exc}",
-#         ) from exc
-
-
-@app.post(
-    "/api/reports/management-review-order/generate",
+    "/api/report/management-review-order/generate",
     tags=["report-generation"],
 )
 async def generate_management_review_order(req: SiteAnomalyReportRequest):
@@ -223,5 +210,37 @@ async def generate_management_review_order(req: SiteAnomalyReportRequest):
         ) from exc
 
 
-
-
+# 종사자 의견청취 개선 보고서
+@app.post(
+    "/api/report/worker-feedback/generate",
+    response_model=WorkerFeedbackImprovementReportResponse,
+    tags=["report-generation"],
+)
+async def generate_worker_feedback_improvement_report(req: WorkerFeedbackImprovementReportRequest):
+    try:
+        result = await worker_feedback_improvement_graph.ainvoke(
+            {
+                "request": req,
+                "retry_count": 0,
+                "max_retry_count": MAX_RETRY_COUNT,
+                "errors": [],
+            }
+        )
+        review_result = result["correction_review"]
+        word_output_paths = result.get("word_output_paths", [])
+        s3_output_paths = upload_docx_files_to_s3(word_output_paths, WORKER_FEEDBACK_S3_PREFIX)
+        has_rows = bool(result["correction_result"].corrected_rows)
+        return WorkerFeedbackImprovementReportResponse(
+            status="COMPLETED" if review_result.approved and has_rows else "FAILED",
+            retry_count=result.get("retry_count", 0),
+            worker_feedback_rows=result.get("worker_feedback_rows", []),
+            correction_result=result["correction_result"],
+            correction_review=review_result,
+            word_output_paths=word_output_paths,
+            s3_output_paths=s3_output_paths,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            500,
+            f"Failed to generate worker feedback improvement report: {exc}",
+        ) from exc

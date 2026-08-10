@@ -17,7 +17,7 @@ from app.risk_assessment_form_graph.schemas import FinalHistoryRow, RiskDataCorr
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_FORM_PATH =  PROJECT_ROOT / "report_template" / "위험성평가표.docx"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT/"risk_assessment_form"/"risk_assessment_form_filled.docx"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT/"output"/"risk_assessment_form"/"risk_assessment_form_filled.docx"
 
 META_ROW_INDEX = 2
 COMPANY_NAME_TC_INDEX = 1

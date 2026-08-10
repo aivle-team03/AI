@@ -17,7 +17,7 @@ from app.agents import (
 from app.common.Report_data import build_backend_source_data, has_backend_table_data
 from app.risk_assessment_form import DEFAULT_FORM_PATH, DEFAULT_OUTPUT_PATH
 from app.risk_assessment_form import fill_risk_assessment_form, resolved_xlsx_path_for
-from app.risk_assessment_report_aggregation import aggregate_risk_assessment_report_data
+# from app.risk_assessment_report_aggregation import aggregate_risk_assessment_report_data
 from app.risk_data_correction import PROTECTED_FIELDS, enforce_history_table_invariants
 from app.site_anomaly_aggregation import aggregate_site_anomaly_data
 from app.schemas import (
