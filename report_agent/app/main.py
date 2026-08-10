@@ -56,25 +56,7 @@ def health():
 #             {
 #                 "request": req,
 #                 "retry_count": 0,
-#                 "max_retry_count": MAX_RETRY_COUNT,
-#                 "errors": [],
-#             }
-#         )
-#         review_result = result["review_result"]
-#         return SiteAnomalyReportResponse(
-#             status="COMPLETED" if review_result.passed else "FAILED",
-#             retry_count=result.get("retry_count", 0),
-#             aggregated_data=result["aggregated_data"],
-#             analysis_result=result["analysis_result"],
-#             report=result["generated_report"],
-#             review=review_result,
-#         )
-#     except Exception as exc:
-#         raise HTTPException(
-#             500,
-#             f"Failed to generate site anomaly report: {exc}",
-#         ) from exc
-
+#  
 
 @app.post(
     "/api/reports/risk-assessment/form/generate",
