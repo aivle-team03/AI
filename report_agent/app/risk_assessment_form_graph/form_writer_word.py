@@ -15,8 +15,9 @@ from docx.table import Table, _Cell
 
 from app.risk_assessment_form_graph.schemas import FinalHistoryRow, RiskDataCorrectionResult
 
-DEFAULT_FORM_PATH = Path(r"C:\Users\User\Desktop\KT에이블\빅프로젝트\AI\위험성평가표.docx")
-DEFAULT_OUTPUT_PATH = Path("output/risk_assessment_form/risk_assessment_form_filled.docx")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_FORM_PATH =  PROJECT_ROOT / "report_template" / "위험성평가표.docx"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT/"risk_assessment_form"/"risk_assessment_form_filled.docx"
 
 META_ROW_INDEX = 2
 COMPANY_NAME_TC_INDEX = 1

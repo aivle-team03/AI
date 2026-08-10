@@ -10,7 +10,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "output" / "risk_assessment_report_template.docx"
+DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "report_template" / "risk_assessment_report_template.docx"
 DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "risk_assessment_reports" / "risk_assessment_report_response.json"
 DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_reports" / "risk_assessment_report.docx"
 
