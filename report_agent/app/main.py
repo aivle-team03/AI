@@ -4,16 +4,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import MAX_RETRY_COUNT
 from app.evidence_report import build_evidence_content
 from app.graph import (
-    risk_assessment_form_graph,
     risk_assessment_report_graph,
-    site_anomaly_full_graph,
+)
+from app.management.graph import management_review_order_no_preprocessing_graph
+from app.risk_assessment_form_graph.daily_outputs import write_daily_outputs
+from app.risk_assessment_form_graph.graph import (
+    risk_assessment_form_graph as risk_assessment_form_docx_graph,
+)
+from app.risk_assessment_form_graph.schemas import (
+    RiskAssessmentFormRequest,
+    RiskAssessmentFormResponse,
 )
 from app.schemas import (
     EvidenceContentRequest,
     EvidenceContentResponse,
-    RiskAssessmentFormRequest,
     RiskAssessmentReportRequest,
-    RiskAssessmentFormResponse,
     RiskAssessmentReportResponse,
     SiteAnomalyReportRequest,
     SiteAnomalyReportResponse,
@@ -51,13 +56,13 @@ async def generate_evidence_content(req: EvidenceContentRequest):
 
 
 @app.post(
-    "/api/reports/site-anomaly/generate",
+    "/api/reports/management-report/generate",
     response_model=SiteAnomalyReportResponse,
     tags=["report-generation"],
 )
-async def generate_site_anomaly_report(req: SiteAnomalyReportRequest):
+async def generate_management_report(req: SiteAnomalyReportRequest):
     try:
-        result = await site_anomaly_full_graph.ainvoke(
+        result = await management_review_order_no_preprocessing_graph.ainvoke(
             {
                 "request": req,
                 "retry_count": 0,
@@ -77,7 +82,7 @@ async def generate_site_anomaly_report(req: SiteAnomalyReportRequest):
     except Exception as exc:
         raise HTTPException(
             500,
-            f"Failed to generate site anomaly report: {exc}",
+            f"Failed to generate management report: {exc}",
         ) from exc
 
 
@@ -88,7 +93,7 @@ async def generate_site_anomaly_report(req: SiteAnomalyReportRequest):
 )
 async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
     try:
-        result = await risk_assessment_form_graph.ainvoke(
+        result = await risk_assessment_form_docx_graph.ainvoke(
             {
                 "request": req,
                 "retry_count": 0,
@@ -97,16 +102,22 @@ async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
             }
         )
         review_result = result["correction_review"]
-        csv_output_path = result.get("csv_output_path")
-        return RiskAssessmentFormResponse(
-            status="COMPLETED" if review_result.approved and csv_output_path else "FAILED",
+        docx_output_path = result.get("docx_output_path")
+        response = RiskAssessmentFormResponse(
+            status="COMPLETED" if review_result.approved and docx_output_path else "FAILED",
             retry_count=result.get("retry_count", 0),
+            correction_batch_size=result.get("correction_batch_size"),
+            correction_batch_count=result.get("correction_batch_count"),
             final_history_rows=result.get("final_history_rows", []),
             correction_result=result["correction_result"],
             correction_review=review_result,
-            csv_output_path=csv_output_path,
-            xlsx_output_path=result.get("xlsx_output_path"),
+            docx_output_path=docx_output_path,
         )
+        response.daily_uploads = write_daily_outputs(
+            response,
+            result.get("backend_data") or req.model_dump(mode="json"),
+        )
+        return response
     except Exception as exc:
         raise HTTPException(
             500,

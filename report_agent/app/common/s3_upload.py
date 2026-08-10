@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 
 
@@ -57,3 +58,40 @@ def load_json_objects_from_s3(prefix: str) -> list[dict]:
             body = client.get_object(Bucket=S3_BUCKET, Key=key)["Body"].read()
             payloads.append(json.loads(body.decode("utf-8-sig")))
     return payloads
+
+
+def _date_key(value):
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value)).date().isoformat()
+    except ValueError:
+        text = str(value)
+        return text[:10] if len(text) >= 10 else None
+
+
+def _row_date(row: dict) -> str | None:
+    return _date_key(row.get("completed_at")) or _date_key(row.get("inspection_date"))
+
+
+def _rows_from_payload(payload: dict) -> list[dict]:
+    if isinstance(payload.get("final_history_rows"), list):
+        return payload["final_history_rows"]
+    correction_result = payload.get("correction_result") or {}
+    if isinstance(correction_result.get("corrected_rows"), list):
+        return correction_result["corrected_rows"]
+    return []
+
+
+def load_final_history_rows_from_s3_period(
+    start_date: str,
+    end_date: str,
+    prefix: str = "report/daily-json/",
+) -> list[dict]:
+    rows = []
+    for payload in load_json_objects_from_s3(prefix):
+        for row in _rows_from_payload(payload):
+            day = _row_date(row)
+            if day and start_date <= day <= end_date:
+                rows.append(row)
+    return rows

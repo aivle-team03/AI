@@ -26,7 +26,7 @@ Swagger: http://127.0.0.1:8001/docs
 
 - GET `/health`
 - POST `/api/reports/evidence-content`
-- POST `/api/reports/site-anomaly/generate`
+- POST `/api/reports/management-report/generate`
 - POST `/api/reports/risk-assessment-form/generate`
 - POST `/api/reports/risk-assessment-report/generate`
 - POST `/api/reports/unified/generate`

@@ -1,11 +1,10 @@
 ﻿from __future__ import annotations
 
+import argparse
 import asyncio
 import json
-import os
 import sys
 import warnings
-from datetime import datetime
 from pathlib import Path
 
 warnings.filterwarnings("ignore", category=Warning, module="langgraph")
@@ -15,7 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.common.s3_upload import load_json_objects_from_s3, upload_docx_to_s3
+from app.common.s3_upload import load_final_history_rows_from_s3_period, upload_docx_to_s3
 from app.risk_assessment.graph import risk_assessment_report_graph
 from app.risk_assessment.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 from app.risk_assessment.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
@@ -50,41 +49,15 @@ def _load_final_history_rows(path: Path) -> list[dict]:
     raise ValueError(f"Unsupported final history JSON format: {path}")
 
 
-def _date_key(value):
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(str(value)).date().isoformat()
-    except ValueError:
-        text = str(value)
-        return text[:10] if len(text) >= 10 else None
-
-
-def _row_date(row: dict) -> str | None:
-    return _date_key(row.get("completed_at")) or _date_key(row.get("inspection_date"))
-
-
-def _rows_from_payload(payload: dict) -> list[dict]:
-    if isinstance(payload.get("final_history_rows"), list):
-        return payload["final_history_rows"]
-    correction_result = payload.get("correction_result") or {}
-    if isinstance(correction_result.get("corrected_rows"), list):
-        return correction_result["corrected_rows"]
-    return []
-
-
-def _load_final_history_rows_for_period() -> tuple[list[dict], str]:
-    start_date = os.getenv("REPORT_START_DATE")
-    end_date = os.getenv("REPORT_END_DATE")
+def _load_final_history_rows_for_period(start_date: str | None, end_date: str | None) -> tuple[list[dict], str]:
     if not start_date or not end_date:
         return _load_final_history_rows(INPUT_PATH), str(INPUT_PATH)
 
-    rows = []
-    for payload in load_json_objects_from_s3(DAILY_JSON_S3_PREFIX):
-        for row in _rows_from_payload(payload):
-            day = _row_date(row)
-            if day and start_date <= day <= end_date:
-                rows.append(row)
+    rows = load_final_history_rows_from_s3_period(
+        start_date,
+        end_date,
+        DAILY_JSON_S3_PREFIX,
+    )
     return rows, f"s3://aivle-team3-boss-bucket/{DAILY_JSON_S3_PREFIX}{start_date}..{end_date}"
 
 
@@ -131,8 +104,20 @@ def _markdown(response: RiskAssessmentReportResponse) -> str:
 
 
 async def main() -> None:
-    final_history_rows, input_source = _load_final_history_rows_for_period()
-    request = RiskAssessmentReportRequest(final_history_rows=final_history_rows)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start-date")
+    parser.add_argument("--end-date")
+    args = parser.parse_args()
+
+    final_history_rows, input_source = _load_final_history_rows_for_period(
+        args.start_date,
+        args.end_date,
+    )
+    request = RiskAssessmentReportRequest(
+        final_history_rows=final_history_rows,
+        start_date=args.start_date,
+        end_date=args.end_date,
+    )
 
     result = await risk_assessment_report_graph.ainvoke(
         {

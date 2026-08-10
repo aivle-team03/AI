@@ -96,3 +96,4 @@ class RiskAssessmentFormResponse(BaseModel):
     correction_review: RiskDataCorrectionReviewResult
     docx_output_path: str | None = None
     s3_output_path: str | None = None
+    daily_uploads: list[dict[str, Any]] = Field(default_factory=list)
