@@ -12,6 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
+from app.common.s3_upload import upload_json_to_s3
 from app.risk_assessment_form_graph.graph import risk_assessment_form_graph
 from app.risk_assessment_form_graph.schemas import (
     RiskAssessmentFormRequest,
@@ -21,6 +22,7 @@ from app.risk_assessment_form_graph.schemas import (
 OUTPUT_DIR = PROJECT_ROOT / "output" / "risk_assessment_form"
 DEFAULT_RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_form_graph_response.json"
 DEFAULT_DOCX_PATH = OUTPUT_DIR / "risk_assessment_form_filled.docx"
+DAILY_JSON_S3_PREFIX = "report/daily-json/"
 TIMEOUT_SECONDS = int(os.getenv("RISK_FORM_TIMEOUT_SECONDS", "1200"))
 CORRECTION_BATCH_SIZE = int(os.getenv("RISK_FORM_CORRECTION_BATCH_SIZE", "10"))
 
@@ -90,8 +92,10 @@ async def main():
     )
 
     DEFAULT_RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    response_payload = response.model_dump(mode="json")
     with DEFAULT_RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
-        json.dump(response.model_dump(mode="json"), file, ensure_ascii=False, indent=2)
+        json.dump(response_payload, file, ensure_ascii=False, indent=2)
+    s3_json_output_path = upload_json_to_s3(DEFAULT_RESPONSE_PATH, DAILY_JSON_S3_PREFIX)
 
     print(json.dumps({
         "status": response.status,
@@ -104,6 +108,7 @@ async def main():
         "review_score": response.correction_review.score,
         "docx_output_path": response.docx_output_path,
         "s3_output_path": response.s3_output_path,
+        "s3_json_output_path": s3_json_output_path,
         "response_path": str(DEFAULT_RESPONSE_PATH),
     }, ensure_ascii=False, indent=2), flush=True)
 

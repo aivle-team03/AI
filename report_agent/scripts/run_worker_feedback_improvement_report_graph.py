@@ -13,6 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
+from app.common.s3_upload import upload_docx_files_to_s3
 from app.worker_feedback.graph import worker_feedback_improvement_graph
 from app.worker_feedback.schemas import (
     WorkerFeedbackImprovementReportRequest,
@@ -21,6 +22,7 @@ from app.worker_feedback.schemas import (
 
 INPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
 RESPONSE_PATH = PROJECT_ROOT / "output" /"worker_feedback_reports" / "worker_feedback_improvement_report_response.json"
+S3_PREFIX = "report/worker-feedback/"
 
 
 
@@ -74,6 +76,7 @@ async def main() -> None:
 
     review_result = result["correction_review"]
     word_output_paths = result.get("word_output_paths", [])
+    s3_output_paths = upload_docx_files_to_s3(word_output_paths, S3_PREFIX)
     has_rows = bool(result["correction_result"].corrected_rows)
     response = WorkerFeedbackImprovementReportResponse(
         status="COMPLETED" if review_result.approved and has_rows else "FAILED",
@@ -82,6 +85,7 @@ async def main() -> None:
         correction_result=result["correction_result"],
         correction_review=review_result,
         word_output_paths=word_output_paths,
+        s3_output_paths=s3_output_paths,
     )
 
     RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -98,6 +102,7 @@ async def main() -> None:
                 "review_approved": response.correction_review.approved,
                 "review_score": response.correction_review.score,
                 "word_output_paths": response.word_output_paths,
+                "s3_output_paths": response.s3_output_paths,
                 "response_path": str(RESPONSE_PATH),
             },
             ensure_ascii=False,

@@ -7,9 +7,18 @@ S3_BUCKET = "aivle-team3-boss-bucket"
 DOCX_CONTENT_TYPE = (
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 )
+JSON_CONTENT_TYPE = "application/json"
 
 
 def upload_docx_to_s3(local_path: str | Path, prefix: str) -> str:
+    return upload_file_to_s3(local_path, prefix, DOCX_CONTENT_TYPE)
+
+
+def upload_json_to_s3(local_path: str | Path, prefix: str) -> str:
+    return upload_file_to_s3(local_path, prefix, JSON_CONTENT_TYPE)
+
+
+def upload_file_to_s3(local_path: str | Path, prefix: str, content_type: str) -> str:
     path = Path(local_path)
     key = f"{prefix.rstrip('/')}/{path.name}"
 
@@ -19,7 +28,7 @@ def upload_docx_to_s3(local_path: str | Path, prefix: str) -> str:
         str(path),
         S3_BUCKET,
         key,
-        ExtraArgs={"ContentType": DOCX_CONTENT_TYPE},
+        ExtraArgs={"ContentType": content_type},
     )
     return f"s3://{S3_BUCKET}/{key}"
 
