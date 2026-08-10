@@ -1,0 +1,117 @@
+﻿{
+  "status": "COMPLETED",
+  "retry_count": 0,
+  "correction_batch_size": 10,
+  "correction_batch_count": 2,
+  "final_history_rows": [
+    {
+      "category": "산업안전",
+      "risk": "중",
+      "category_name": "충돌",
+      "inspection_location": "C동 하역장",
+      "inspection_date": "2026-07-30T15:52:16",
+      "inspection_user_name": null,
+      "inspection_content": "조치가 필요하다.",
+      "image_url": null,
+      "inspection_image_url": null,
+      "action_name": null,
+      "action_location": null,
+      "completed_at": null,
+      "handler_name": null,
+      "content": null,
+      "approver_name": null,
+      "type": null
+    },
+    {
+      "category": "산업안전",
+      "risk": "중",
+      "category_name": "충돌",
+      "inspection_location": "D동 정문",
+      "inspection_date": "2026-07-30T15:52:16",
+      "inspection_user_name": "작업자10",
+      "inspection_content": "[매일] 정기 점검 자동 생성 건이다.",
+      "image_url": null,
+      "inspection_image_url": null,
+      "action_name": null,
+      "action_location": null,
+      "completed_at": null,
+      "handler_name": null,
+      "content": null,
+      "approver_name": null,
+      "type": null
+    }
+  ],
+  "correction_result": {
+    "corrected_rows": [
+      {
+        "category": "산업안전",
+        "risk": "중",
+        "category_name": "충돌",
+        "inspection_location": "C동 하역장",
+        "inspection_date": "2026-07-30T15:52:16",
+        "inspection_user_name": null,
+        "inspection_content": "조치가 필요하다.",
+        "image_url": null,
+        "inspection_image_url": null,
+        "action_name": null,
+        "action_location": null,
+        "completed_at": null,
+        "handler_name": null,
+        "content": null,
+        "approver_name": null,
+        "type": null
+      },
+      {
+        "category": "산업안전",
+        "risk": "중",
+        "category_name": "충돌",
+        "inspection_location": "D동 정문",
+        "inspection_date": "2026-07-30T15:52:16",
+        "inspection_user_name": "작업자10",
+        "inspection_content": "[매일] 정기 점검 자동 생성 건이다.",
+        "image_url": null,
+        "inspection_image_url": null,
+        "action_name": null,
+        "action_location": null,
+        "completed_at": null,
+        "handler_name": null,
+        "content": null,
+        "approver_name": null,
+        "type": null
+      }
+    ],
+    "correction_notes": [],
+    "unresolved_notes": []
+  },
+  "correction_review": {
+    "approved": true,
+    "final_decision": "APPROVED",
+    "score": 100,
+    "issues": [
+      {
+        "row_index": 15,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "살려주세요",
+        "corrected_text": "지원 요청했다.",
+        "message": "원문 '살려주세요'는 구어체 표현으로 위험성평가표에 부적합하므로 '지원 요청했다.'로 수정한 것은 적절함.",
+        "recommendation": "보고서 문체에 맞게 간결하고 객관적인 표현으로 유지하세요."
+      },
+      {
+        "row_index": 16,
+        "field": "action_location",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "살려주세요",
+        "corrected_text": "지원 요청",
+        "message": "원문 '살려주세요'는 구어체 표현으로 위험성평가표에 부적합하므로 '지원 요청'으로 수정한 것은 적절함.",
+        "recommendation": "보고서 문체에 맞게 간결하고 객관적인 표현으로 유지하세요."
+      }
+    ],
+    "items_requiring_revision": []
+  },
+  "docx_output_path": "C:\\Users\\User\\Desktop\\KT에이블\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.docx",
+  "s3_output_path": "s3://aivle-team3-boss-bucket/report/risk-assessment-form/risk_assessment_form_filled.docx",
+  "daily_uploads": []
+}
