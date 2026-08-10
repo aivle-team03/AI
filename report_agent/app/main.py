@@ -6,12 +6,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.common.s3_upload import upload_docx_to_s3
 from app.config import MAX_RETRY_COUNT
 from app.evidence_report import build_evidence_content
-# from app.graph import (
-#     risk_assessment_report_graph,
-#     site_anomaly_full_graph,
-# )
+from app.graph import (
+    risk_assessment_form_graph,
+    risk_assessment_report_graph,
+)
 from app.management.graph import management_review_order_no_preprocessing_graph
+from app.risk_assessment_form_graph.daily_outputs import write_daily_outputs
+from app.risk_assessment_form_graph.graph import (
+    risk_assessment_form_graph as risk_assessment_form_docx_graph,
+)
+from app.risk_assessment_form_graph.schemas import (
+    RiskAssessmentFormRequest,
+    RiskAssessmentFormResponse,
+)
 from app.management.schemas import (
+    EvidenceContentRequest,
+    EvidenceContentResponse,
+    RiskAssessmentFormRequest,
+    RiskAssessmentReportRequest,
+    RiskAssessmentFormResponse,
+    RiskAssessmentReportResponse,
     SiteAnomalyReportRequest,
     SiteAnomalyReportResponse,
 )
@@ -56,7 +70,25 @@ def health():
 #             {
 #                 "request": req,
 #                 "retry_count": 0,
-#  
+#                 "max_retry_count": MAX_RETRY_COUNT,
+#                 "errors": [],
+#             }
+#         )
+#         review_result = result["review_result"]
+#         return SiteAnomalyReportResponse(
+#             status="COMPLETED" if review_result.passed else "FAILED",
+#             retry_count=result.get("retry_count", 0),
+#             aggregated_data=result["aggregated_data"],
+#             analysis_result=result["analysis_result"],
+#             report=result["generated_report"],
+#             review=review_result,
+#         )
+#     except Exception as exc:
+#         raise HTTPException(
+#             500,
+#             f"Failed to generate site anomaly report: {exc}",
+#         ) from exc
+
 
 @app.post(
     "/api/reports/risk-assessment/form/generate",
@@ -65,7 +97,7 @@ def health():
 )
 async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
     try:
-        result = await risk_assessment_form_graph.ainvoke(
+        result = await risk_assessment_form_docx_graph.ainvoke(
             {
                 "request": req,
                 "retry_count": 0,
@@ -86,6 +118,7 @@ async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
             docx_output_path=docx_output_path,
             s3_output_path=result.get("s3_output_path"),
         )
+        return response
     except Exception as exc:
         raise HTTPException(
             500,

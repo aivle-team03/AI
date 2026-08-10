@@ -5,7 +5,6 @@ from typing import Literal
 from langgraph.graph import END, START, StateGraph
 
 from app.common.Report_data import has_backend_table_data, save_backend_data
-from app.common.s3_upload import upload_docx_to_s3
 from app.risk_assessment_form_graph.correction import (
     PROTECTED_FIELDS,
     enforce_history_table_invariants,
@@ -26,7 +25,6 @@ from scripts.build_final_history_table_14 import build_final_history_table_14
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BACKEND_DATA_OUTPUT_PATH = PROJECT_ROOT.parent / "output" / "risk_assessment_form" / "BackendData.json"
-S3_PREFIX = "report/risk-assessment-form/"
 
 
 def _write_backend_data_snapshot(data):
@@ -188,10 +186,8 @@ def risk_assessment_form_node(state):
         form_path=form_path,
         output_path=output_path,
     )
-    s3_output_path = upload_docx_to_s3(docx_output_path, S3_PREFIX)
     return {
         "docx_output_path": docx_output_path,
-        "s3_output_path": s3_output_path,
     }
 
 

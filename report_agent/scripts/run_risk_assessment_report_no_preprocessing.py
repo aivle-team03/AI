@@ -1,5 +1,6 @@
 ﻿from __future__ import annotations
 
+import argparse
 import asyncio
 import json
 import sys
@@ -13,7 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import MAX_RETRY_COUNT
-from app.common.s3_upload import upload_docx_to_s3
+from app.common.s3_upload import load_final_history_rows_from_s3_period, upload_docx_to_s3
 from app.risk_assessment.graph import risk_assessment_report_graph
 from app.risk_assessment.fill_risk_assessment_report_docx import DEFAULT_TEMPLATE_PATH, fill_docx_template
 from app.risk_assessment.schemas import RiskAssessmentReportRequest, RiskAssessmentReportResponse
@@ -26,6 +27,7 @@ RESPONSE_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing_response.j
 REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.md"
 DOCX_REPORT_PATH = OUTPUT_DIR / "risk_assessment_report_no_preprocessing.docx"
 S3_PREFIX = "report/risk-assessment-report/"
+DAILY_JSON_S3_PREFIX = "report/daily-json/"
 
 
 def _load_final_history_rows(path: Path) -> list[dict]:
@@ -45,6 +47,18 @@ def _load_final_history_rows(path: Path) -> list[dict]:
             return result["corrected_rows"]
 
     raise ValueError(f"Unsupported final history JSON format: {path}")
+
+
+def _load_final_history_rows_for_period(start_date: str | None, end_date: str | None) -> tuple[list[dict], str]:
+    if not start_date or not end_date:
+        return _load_final_history_rows(INPUT_PATH), str(INPUT_PATH)
+
+    rows = load_final_history_rows_from_s3_period(
+        start_date,
+        end_date,
+        DAILY_JSON_S3_PREFIX,
+    )
+    return rows, f"s3://aivle-team3-boss-bucket/{DAILY_JSON_S3_PREFIX}{start_date}..{end_date}"
 
 
 def _dedupe_repeated_sentences(text: str) -> str:
@@ -90,8 +104,20 @@ def _markdown(response: RiskAssessmentReportResponse) -> str:
 
 
 async def main() -> None:
-    final_history_rows = _load_final_history_rows(INPUT_PATH)
-    request = RiskAssessmentReportRequest(final_history_rows=final_history_rows)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start-date")
+    parser.add_argument("--end-date")
+    args = parser.parse_args()
+
+    final_history_rows, input_source = _load_final_history_rows_for_period(
+        args.start_date,
+        args.end_date,
+    )
+    request = RiskAssessmentReportRequest(
+        final_history_rows=final_history_rows,
+        start_date=args.start_date,
+        end_date=args.end_date,
+    )
 
     result = await risk_assessment_report_graph.ainvoke(
         {
@@ -130,7 +156,7 @@ async def main() -> None:
         "status": response.status,
         "report_type": "risk_assessment_report",
         "preprocessing": False,
-        "input_path": str(INPUT_PATH),
+        "input_path": input_source,
         "final_history_rows": len(final_history_rows),
         "retry_count": response.retry_count,
         "review_passed": response.review.passed,

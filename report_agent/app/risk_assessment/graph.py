@@ -2,6 +2,7 @@ from typing import Literal
 
 from langgraph.graph import END, START, StateGraph
 
+from app.common.s3_upload import load_final_history_rows_from_s3_period
 from app.risk_assessment.agents import (
     risk_assessment_report_analyze_agent,
     risk_assessment_report_review_agent,
@@ -25,6 +26,18 @@ def route(state) -> Literal["finish", "retry"]:
 
 def risk_assessment_report_aggregate_node(state):
     request = state["request"]
+    if not request.final_history_rows and request.start_date and request.end_date:
+        final_history_rows = load_final_history_rows_from_s3_period(
+            request.start_date,
+            request.end_date,
+        )
+        request = request.model_copy(update={"final_history_rows": final_history_rows})
+        return {
+            "request": request,
+            "final_history_rows": final_history_rows,
+            "aggregated_data": aggregate_risk_assessment_report_data(request),
+        }
+
     if not request.final_history_rows:
         final_history_rows = build_final_history_table_14(request.model_dump(mode="json"))
         request = request.model_copy(update={"final_history_rows": final_history_rows})

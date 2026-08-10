@@ -206,10 +206,14 @@ class RiskAssessmentFormResponse(BaseModel):
 
 class SiteAnomalyReportRequest(EvidenceContentRequest):
     final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    start_date: str | None = None
+    end_date: str | None = None
 
 
 class RiskAssessmentReportRequest(EvidenceContentRequest):
     final_history_rows: list[FinalHistoryRow] = Field(default_factory=list)
+    start_date: str | None = None
+    end_date: str | None = None
 
 
 
