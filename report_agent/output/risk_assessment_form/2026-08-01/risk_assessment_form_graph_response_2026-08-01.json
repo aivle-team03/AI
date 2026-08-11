@@ -7,11 +7,11 @@
     {
       "category": "산업안전",
       "risk": "중",
-      "category_name": "충돌 위험",
+      "category_name": "충돌",
       "inspection_location": "C동 하역장",
       "inspection_date": "2026-08-01T11:45:00",
       "inspection_user_name": "작업자10",
-      "inspection_content": "보호구 불량 상태로 확인했다.",
+      "inspection_content": "이 점검에 대해 조치가 필요하다.",
       "image_url": null,
       "inspection_image_url": null,
       "action_name": null,
@@ -25,11 +25,11 @@
     {
       "category": "산업안전",
       "risk": "중",
-      "category_name": "충돌 위험",
+      "category_name": "충돌",
       "inspection_location": "C동 하역장",
       "inspection_date": "2026-08-01T11:45:00",
       "inspection_user_name": "작업자10",
-      "inspection_content": "본 점검에 대해 조치가 필요하다.",
+      "inspection_content": "보호구가 불량 상태이다.",
       "image_url": null,
       "inspection_image_url": null,
       "action_name": null,
@@ -46,11 +46,11 @@
       {
         "category": "산업안전",
         "risk": "중",
-        "category_name": "충돌 위험",
+        "category_name": "충돌",
         "inspection_location": "C동 하역장",
         "inspection_date": "2026-08-01T11:45:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "보호구 불량 상태로 확인했다.",
+        "inspection_content": "이 점검에 대해 조치가 필요하다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -64,11 +64,11 @@
       {
         "category": "산업안전",
         "risk": "중",
-        "category_name": "충돌 위험",
+        "category_name": "충돌",
         "inspection_location": "C동 하역장",
         "inspection_date": "2026-08-01T11:45:00",
         "inspection_user_name": "작업자10",
-        "inspection_content": "본 점검에 대해 조치가 필요하다.",
+        "inspection_content": "보호구가 불량 상태이다.",
         "image_url": null,
         "inspection_image_url": null,
         "action_name": null,
@@ -89,29 +89,29 @@
     "score": 100,
     "issues": [
       {
-        "row_index": 2,
-        "field": "inspection_content",
-        "severity": "WARNING",
-        "category": "REPORT_STYLE",
-        "original_text": "점검자 메모프로세스 확인용",
-        "corrected_text": "점검자 메모 프로세스 확인용으로 작성했다.",
-        "message": "수정문이 문체를 더 공식적이고 명확하게 다듬었으나 '작성했다'라는 표현이 다소 구어체 느낌을 줄 수 있습니다.",
-        "recommendation": "더 간결하고 객관적인 문체로 다듬는 것을 권장합니다."
-      },
-      {
-        "row_index": 2,
+        "row_index": 15,
         "field": "content",
         "severity": "WARNING",
         "category": "REPORT_STYLE",
-        "original_text": "조치내용이 백엔드에뜨는지 테스트",
-        "corrected_text": "조치 내용이 백엔드에 정상적으로 표시되는지 테스트했다.",
-        "message": "수정문이 문체를 다듬었으나 '테스트했다'라는 표현이 다소 구어체 느낌을 줄 수 있습니다.",
-        "recommendation": "더 공식적이고 간결한 표현으로 수정하는 것을 권장합니다."
+        "original_text": "살려주세요",
+        "corrected_text": "지원 요청을 접수했다.",
+        "message": "원문 '살려주세요'는 구어체 표현으로 위험성평가표에 부적합하므로, '지원 요청을 접수했다.'로 수정한 것은 적절함.",
+        "recommendation": "보고서 문체에 맞게 간결하고 객관적인 표현으로 수정하는 것이 바람직함."
+      },
+      {
+        "row_index": 16,
+        "field": "content",
+        "severity": "WARNING",
+        "category": "REPORT_STYLE",
+        "original_text": "치웠다",
+        "corrected_text": "문제를 해결했다.",
+        "message": "원문 '치웠다'는 구어체 표현으로 위험성평가표에 부적합하므로, '문제를 해결했다.'로 수정한 것은 적절함.",
+        "recommendation": "보고서 문체에 맞게 간결하고 객관적인 표현으로 수정하는 것이 바람직함."
       }
     ],
     "items_requiring_revision": []
   },
   "docx_output_path": "C:\\Users\\User\\Desktop\\에이블스쿨\\빅프로젝트\\AI\\report_agent\\output\\risk_assessment_form\\risk_assessment_form_filled.docx",
-  "s3_output_path": null,
+  "s3_output_path": "s3://aivle-team3-boss-bucket/report/risk-assessment-form/risk_assessment_form_filled.docx",
   "daily_uploads": []
 }
