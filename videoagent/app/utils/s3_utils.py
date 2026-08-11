@@ -1,8 +1,8 @@
 """생성된 교육 영상을 AWS S3에 올린다.
 
 백엔드가 게시판·조치이력 이미지에 쓰는 것과 같은 규칙을 따른다.
-  S3 키   media/videos/2026/08/11/{task_id}.mp4
-  재생 URL {MEDIA_BASE_URL}/media/videos/2026/08/11/{task_id}.mp4
+  S3 키   media/videos/2026_08_11/{task_id}.mp4
+  재생 URL {MEDIA_BASE_URL}/media/videos/2026_08_11/{task_id}.mp4
 
 백엔드는 videoagent 가 돌려준 video_url 을 그대로 education 테이블에
 저장하므로, 여기서 재생 가능한 절대 URL 을 만들어 돌려줘야 한다.
@@ -52,7 +52,7 @@ async def upload_video_to_s3(file_path: str, task_id: str) -> str:
             "MEDIA_BASE_URL 이 설정되지 않아 재생 URL 을 만들 수 없습니다."
         )
 
-    relative_path = f"videos/{datetime.now():%Y/%m/%d}/{task_id}.mp4"
+    relative_path = f"videos/{datetime.now():%Y_%m_%d}/{task_id}.mp4"
     key = f"{MEDIA_S3_PREFIX}{relative_path}"
 
     def _upload() -> None:

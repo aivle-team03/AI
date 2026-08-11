@@ -52,7 +52,7 @@ def upload_snapshot_to_s3(snapshot: bytes, camera_id: str) -> str:
     if not bucket:
         raise RuntimeError("AWS_S3_MEDIA_BUCKET is required for AI snapshots")
 
-    object_path = f"ai-snapshots/{camera_id}/{time.strftime('%Y/%m/%d')}/{uuid4().hex}.jpg"
+    object_path = f"{camera_id}/{time.strftime('%Y_%m_%d')}/{uuid4().hex}.jpg"
     key = f"{SNAPSHOT_S3_PREFIX}/{object_path}"
     try:
         boto3.client(
