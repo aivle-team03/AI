@@ -38,7 +38,7 @@ test/result/*
 # Keep the project README, but do not commit local working notes.
 *.md
 !README.md
-!README(CCTV).md
+!Vision.md
 !ai_vision/README(CCTV).md
 snapshots/
 ai_vision/snapshots/

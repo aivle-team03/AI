@@ -7,7 +7,7 @@ MJPEG 스트림을 제공하고, 위험 감지 때는 스냅샷 URL을 포함해
 저장 요청을 보냅니다.
 
 ```text
-AI 테스트 영상/모델 → ai_server:8001 → 프론트 분석 스트림
+AI 테스트 영상/모델 → ai_server:8002 → 프론트 분석 스트림
                                  └→ backend /api/ai/events → DB 이벤트 이력
 ```
 
@@ -17,12 +17,12 @@ AI 테스트 영상/모델 → ai_server:8001 → 프론트 분석 스트림
 
 ```powershell
 pip install -r requirements.txt
-python -m uvicorn ai_server:app --host 127.0.0.1 --port 8001
+python -m uvicorn ai_server:app --host 127.0.0.1 --port 8002
 ```
 
-- 상태 확인: `http://127.0.0.1:8001/health`
-- 화재 분석 스트림: `http://127.0.0.1:8001/streams/fire-01`
-- 지게차 분석 스트림: `http://127.0.0.1:8001/streams/forklift-03`
+- 상태 확인: `http://127.0.0.1:8002/health`
+- 화재 분석 스트림: `http://127.0.0.1:8002/streams/fire-01`
+- 지게차 분석 스트림: `http://127.0.0.1:8002/streams/forklift-03`
 
 테스트 입력은 `test3.mp4`(화재), `test1.mp4`(지게차)이며 `AI/ai_vision` 폴더에 둡니다.
 프론트에는 원본 MP4를 복사하지 않습니다.

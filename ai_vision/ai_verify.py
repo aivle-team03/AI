@@ -1,7 +1,17 @@
+"""
+
+프로젝트 루트에서 아래 명령어로 AI 서버를 실행합니다. (cd ai_vision 불필요)
+실행: python -m uvicorn ai_vision.ai_verify:app --host 127.0.0.1 --port 8003
+
+"""
+
+
+
 import base64
 import json
 import os
 from pathlib import Path
+import uvicorn
 from openai import OpenAI
 from dotenv import load_dotenv
 from fastapi import UploadFile, File, Form, HTTPException, FastAPI
@@ -134,3 +144,7 @@ async def verify_action_endpoint(
             "confidence": 0.0,
             "analysis_summary": f"VLM 분석 중 오류 발생: {str(e)}",
         }
+
+
+if __name__ == "__main__":
+    uvicorn.run("ai_verify:app", host="127.0.0.1", port=8003)

@@ -1,6 +1,6 @@
 """BOSS CCTV AI 데모 서버.
 
-실행: python -m uvicorn ai_server:app --host 127.0.0.1 --port 8001
+실행: python -m uvicorn ai_server:app --host 127.0.0.1 --port 8002
 
 테스트 영상은 이 AI 서비스가 소유하고, 프론트에는 분석 결과만 MJPEG로
 제공한다. 위험 감지 시에는 캡처 URL과 함께 백엔드 이벤트 API에도 저장한다.
@@ -36,7 +36,7 @@ BASE_DIR = Path(__file__).resolve().parent
 # AI 프로젝트 루트의 .env를 사용한다. 실제 비밀값은 절대 커밋하지 않는다.
 load_dotenv(BASE_DIR.parent / ".env")
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
-PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
+PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8002")
 MEDIA_URL_PREFIX = "/media/"
 SNAPSHOT_S3_PREFIX = "media/ai-snapshots"
 
