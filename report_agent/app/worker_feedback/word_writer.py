@@ -8,7 +8,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 DEFAULT_TEMPLATE_PATH = Path(
-    "output/종사자에_의한_유해_위험요인_조사표.docx"
+    "report_template/종사자에_의한_유해_위험요인_조사표.docx"
 )
 DEFAULT_OUTPUT_DIR = Path("output/worker_feedback_reports")
 
