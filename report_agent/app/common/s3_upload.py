@@ -17,27 +17,57 @@ def upload_docx_to_s3(local_path: str | Path, prefix: str) -> str:
     return upload_file_to_s3(local_path, prefix, DOCX_CONTENT_TYPE)
 
 
+def upload_docx_to_s3_if_missing(local_path: str | Path, prefix: str) -> str:
+    return upload_file_to_s3(local_path, prefix, DOCX_CONTENT_TYPE, skip_existing=True)
+
+
 def upload_json_to_s3(local_path: str | Path, prefix: str) -> str:
     return upload_file_to_s3(local_path, prefix, JSON_CONTENT_TYPE)
 
 
-def upload_file_to_s3(local_path: str | Path, prefix: str, content_type: str) -> str:
+def upload_file_to_s3(
+    local_path: str | Path,
+    prefix: str,
+    content_type: str,
+    skip_existing: bool = False,
+) -> str:
     path = Path(local_path)
     key = f"{prefix.rstrip('/')}/{path.name}"
+    s3_uri = f"s3://{S3_BUCKET}/{key}"
 
     import boto3
+    from botocore.exceptions import ClientError
 
-    boto3.client("s3").upload_file(
+    client = boto3.client("s3")
+    if skip_existing:
+        try:
+            client.head_object(Bucket=S3_BUCKET, Key=key)
+            print(f"[S3] skip existing file: {s3_uri}", flush=True)
+            return s3_uri
+        except ClientError as exc:
+            error_code = str(exc.response.get("Error", {}).get("Code"))
+            if error_code not in {"404", "NoSuchKey", "NotFound"}:
+                raise
+
+    print(f"[S3] upload file: {path} -> {s3_uri}", flush=True)
+    client.upload_file(
         str(path),
         S3_BUCKET,
         key,
         ExtraArgs={"ContentType": content_type},
     )
-    return f"s3://{S3_BUCKET}/{key}"
+    return s3_uri
 
 
 def upload_docx_files_to_s3(local_paths: list[str | Path], prefix: str) -> list[str]:
     return [upload_docx_to_s3(path, prefix) for path in local_paths if path]
+
+
+def upload_docx_files_to_s3_if_missing(
+    local_paths: list[str | Path],
+    prefix: str,
+) -> list[str]:
+    return [upload_docx_to_s3_if_missing(path, prefix) for path in local_paths if path]
 
 
 def load_json_objects_from_s3(prefix: str) -> list[dict]:

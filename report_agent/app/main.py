@@ -4,7 +4,10 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.common.s3_upload import upload_docx_files_to_s3, upload_docx_to_s3
+from app.common.s3_upload import (
+    upload_docx_files_to_s3_if_missing,
+    upload_docx_to_s3,
+)
 from app.config import MAX_RETRY_COUNT
 
 from app.management.graph import management_review_order_no_preprocessing_graph
@@ -209,7 +212,18 @@ async def generate_worker_feedback_improvement_report(req: WorkerFeedbackImprove
         )
         review_result = result["correction_review"]
         word_output_paths = result.get("word_output_paths", [])
-        s3_output_paths = upload_docx_files_to_s3(word_output_paths, WORKER_FEEDBACK_S3_PREFIX)
+        print(
+            f"[worker-feedback] word_output_paths={len(word_output_paths)}",
+            flush=True,
+        )
+        s3_output_paths = upload_docx_files_to_s3_if_missing(
+            word_output_paths,
+            WORKER_FEEDBACK_S3_PREFIX,
+        )
+        print(
+            f"[worker-feedback] s3_output_paths={len(s3_output_paths)}",
+            flush=True,
+        )
         has_rows = bool(result["correction_result"].corrected_rows)
         return WorkerFeedbackImprovementReportResponse(
             status="COMPLETED" if review_result.approved and has_rows else "FAILED",

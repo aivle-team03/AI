@@ -263,7 +263,9 @@ def fill_worker_feedback_word_reports(
         row_data = _row_to_dict(row)
         board_id = row_data.get("board_id")
 
-        if _existing_report_for_board(output_dir, board_id) is not None:
+        existing_report_path = _existing_report_for_board(output_dir, board_id)
+        if existing_report_path is not None:
+            output_paths.append(str(existing_report_path))
             continue
 
         if board_id is not None:

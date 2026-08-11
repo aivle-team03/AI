@@ -72,6 +72,7 @@ class WorkerFeedbackCorrectionReviewResult(BaseModel):
 class WorkerFeedbackImprovementReportRequest(EvidenceContentRequest):
     word_template_path: str | None = None
     word_output_dir: str | None = None
+    worker_feedback_rows: list[WorkerFeedbackRow] = Field(default_factory=list)
 
 
 class WorkerFeedbackImprovementReportResponse(BaseModel):
