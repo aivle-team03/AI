@@ -33,7 +33,7 @@ def _row_date(row) -> str:
     return _date_key(data.get("completed_at")) or _date_key(data.get("inspection_date")) or "unknown"
 
 
-def _file_date(day: str) -> str:
+def _date_for_filename(day: str) -> str:
     return day.replace("-", "_")
 
 
@@ -69,8 +69,9 @@ def write_daily_outputs(
     uploads = []
     for day, rows in sorted(rows_by_date.items()):
         daily_payload = _daily_response_payload(response, rows)
-        json_path = output_dir / day / f"risk_assessment_form_graph_response_{day}.json"
-        docx_path = output_dir / day / f"위험성평가표_{_file_date(day)}.docx"
+        filename_day = _date_for_filename(day)
+        json_path = output_dir / day / f"위험성평가결과_{filename_day}.json"
+        docx_path = output_dir / day / f"위험성평가표_{filename_day}.docx"
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open("w", encoding="utf-8-sig") as file:
             json.dump(daily_payload, file, ensure_ascii=False, indent=2)

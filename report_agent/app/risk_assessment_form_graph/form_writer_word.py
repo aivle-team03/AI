@@ -6,6 +6,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
+from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
 from docx import Document
@@ -13,6 +14,7 @@ from docx.oxml.ns import qn
 from docx.shared import Emu
 from docx.table import Table, _Cell
 
+from app.common.Report_data import BACKEND_BASE_URL
 from app.risk_assessment_form_graph.schemas import FinalHistoryRow, RiskDataCorrectionResult
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -97,11 +99,22 @@ def _form_row(row: FinalHistoryRow | dict[str, Any]) -> list[str]:
     ]
 
 
+def _resolve_image_url(url: str | None) -> str | None:
+    if not url:
+        return None
+    if url.startswith(("http://", "https://")):
+        return url
+    if BACKEND_BASE_URL:
+        return urljoin(BACKEND_BASE_URL, url)
+    return None
+
+
 def _download_image(url: str | None) -> bytes | None:
-    if not url or not url.startswith(("http://", "https://")):
+    resolved_url = _resolve_image_url(url)
+    if not resolved_url:
         return None
     try:
-        request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        request = Request(resolved_url, headers={"User-Agent": "Mozilla/5.0"})
         with urlopen(request, timeout=15) as response:
             return response.read()
     except (HTTPError, URLError, ValueError, TimeoutError):

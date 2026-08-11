@@ -121,3 +121,5 @@ class RiskAssessmentReportResponse(BaseModel):
     analysis_result: AnalysisResult
     report: GeneratedReport
     review: ReviewResult
+    docx_output_path: str | None = None
+    s3_output_path: str | None = None

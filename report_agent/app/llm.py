@@ -10,6 +10,6 @@ def create_llm():
         api_key=OPENAI_API_KEY,
         model=OPENAI_MODEL,
         temperature=0,
-        timeout=90,
+        timeout=180,
         max_retries=MAX_RETRY_COUNT,
     )
