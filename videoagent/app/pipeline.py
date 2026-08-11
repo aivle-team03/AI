@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from app.celery_app import celery_app
 from app.config import OUTPUT_DIR
 from app.task_store import create_task, get_task, update_task
-from app.utils.cloudinary_utils import upload_video_to_cloudinary
+from app.utils.s3_utils import upload_video_to_s3
 
 from app.ai.veo.constants import MAX_CLIP_SECONDS
 from app.ai.veo.pipelines import _cleanup_temp_clips, generate_veo_video_from_storyboard
@@ -161,13 +161,13 @@ async def process_veo_summary_video_pipeline(
 
         update_task(task_id, progress_percent=80)
 
-        # Cloudinary 클라우드 스토리지 동영상 업로드
-        local_video_url = render_result.get("video_url", f"/{output_video_path}")
-        cloudinary_url = await upload_video_to_cloudinary(output_video_path, folder="veo_safety_videos", public_id=task_id)
-        video_url = cloudinary_url if cloudinary_url else local_video_url
+        # S3 업로드. 실패하면 예외가 올라가 작업이 FAILED 로 기록된다.
+        # 실패를 삼키고 로컬 경로를 쓰면 이 서비스가 서빙하지 않는 주소가
+        # 교육 자료로 등록되어 재생되지 않는다.
+        video_url = await upload_video_to_s3(output_video_path, task_id)
 
         # 휴지통 비우기: 업로드 성공 시 로컬 비디오 파일 삭제
-        if cloudinary_url and os.path.exists(output_video_path):
+        if os.path.exists(output_video_path):
             try:
                 os.remove(output_video_path)
             except OSError:

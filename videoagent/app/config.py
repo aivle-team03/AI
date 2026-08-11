@@ -27,3 +27,11 @@ FRONTEND_ORIGINS = _parse_csv_env(
     "FRONTEND_ORIGINS",
     "http://127.0.0.1:5173,http://localhost:5173",
 )
+
+# 생성된 영상을 올릴 S3 버킷. 백엔드의 이미지 버킷과 같은 것을 쓴다.
+AWS_S3_MEDIA_BUCKET = os.getenv("AWS_S3_MEDIA_BUCKET")
+AWS_REGION = os.getenv("AWS_REGION", "ap-northeast-2")
+
+# 재생 URL 의 접두사(CloudFront 주소). 백엔드가 이 URL 을 education 테이블에
+# 그대로 저장하므로 절대 주소여야 한다.
+MEDIA_BASE_URL = os.getenv("MEDIA_BASE_URL", "").rstrip("/")
