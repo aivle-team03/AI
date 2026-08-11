@@ -216,7 +216,7 @@ def build_risk_assessment_form_graph():
     graph.add_node("retry", retry_node)
     graph.add_node("fill_csv_form", risk_assessment_form_node)
 
-    graph.add_edge(START, "fetch_backend_data")
+    graph.add_edge(START, "data_correction_agent")
     graph.add_edge("fetch_backend_data", "build_final_history_table_14")
     graph.add_edge("build_final_history_table_14", "data_correction_agent")
     graph.add_edge("data_correction_agent", "data_correction_review_agent")
