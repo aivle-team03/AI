@@ -21,7 +21,31 @@ INPUT_PATH = PROJECT_ROOT / "output" / "risk_assessment_form_graph_response.json
 OUTPUT_DIR = PROJECT_ROOT / "output" / "management_reports"
 RESPONSE_PATH = OUTPUT_DIR / "management_review_order_response.json"
 REPORT_PATH = OUTPUT_DIR / "management_review_order.md"
-DOCX_REPORT_PATH = OUTPUT_DIR / "management_review_order.docx"
+
+
+def _date_for_filename(value: str | None) -> str:
+    return str(value or "unknown").replace("-", "_")
+
+
+def _period_from_response(response: UnifiedReportResponse) -> tuple[str | None, str | None]:
+    payload = response.model_dump(mode="json")
+    period = (
+        (payload.get("aggregated_data") or {})
+        .get("site_context", {})
+        .get("period", {})
+    )
+    report_period = getattr(response.report, "period", None)
+    if isinstance(report_period, str) and "~" in report_period:
+        start, end = [part.strip() for part in report_period.split("~", 1)]
+        return start or None, end or None
+    return period.get("start_date"), period.get("end_date")
+
+
+def _docx_report_path(response: UnifiedReportResponse) -> Path:
+    start_date, end_date = _period_from_response(response)
+    start = _date_for_filename(start_date)
+    end = _date_for_filename(end_date)
+    return OUTPUT_DIR / f"경영책임자검토지시서_{start}_{end}.docx"
 
 
 def _markdown(response: UnifiedReportResponse) -> str:
@@ -86,7 +110,11 @@ async def main() -> None:
     with RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
         json.dump(response.model_dump(mode="json"), file, ensure_ascii=False, indent=2)
     REPORT_PATH.write_text(_markdown(response), encoding="utf-8-sig")
-    docx_report_path = fill_docx_template(response.model_dump(mode="json"), DEFAULT_TEMPLATE_PATH, DOCX_REPORT_PATH)
+    docx_report_path = fill_docx_template(
+        response.model_dump(mode="json"),
+        DEFAULT_TEMPLATE_PATH,
+        _docx_report_path(response),
+    )
 
     print(json.dumps({
         "status": response.status,

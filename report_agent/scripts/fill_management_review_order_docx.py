@@ -18,7 +18,7 @@ from app.management.graph import _management_judgment, _management_risk_label
 
 DEFAULT_TEMPLATE_PATH = PROJECT_ROOT / "report_template" / "management_review_order_form.docx"
 DEFAULT_RESPONSE_PATH = PROJECT_ROOT / "output" / "management_review_order_response.json"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "management_review_order.docx"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "경영책임자검토지시서.docx"
 
 ANOMALY_PREFIX = "aggregated_data.anomaly_candidates."
 DIRECTIVE_PREFIX = "report.sections.MANAGEMENT_DIRECTIVES.items."
