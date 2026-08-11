@@ -158,22 +158,24 @@ async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
                 "retry_count": 0,
                 "max_retry_count": MAX_RETRY_COUNT,
                 "errors": [],
+                "skip_overall_docx": True,
             }
         )
         review_result = result["correction_review"]
-        docx_output_path = result.get("docx_output_path")
         response = RiskAssessmentFormResponse(
-            status="COMPLETED" if review_result.approved and docx_output_path else "FAILED",
+            status="FAILED",
             retry_count=result.get("retry_count", 0),
             correction_batch_size=result.get("correction_batch_size"),
             correction_batch_count=result.get("correction_batch_count"),
             final_history_rows=result.get("final_history_rows", []),
             correction_result=result["correction_result"],
             correction_review=review_result,
-            docx_output_path=docx_output_path,
+            docx_output_path=None,
             s3_output_path=None,
         )
-        response.daily_uploads = write_daily_outputs(response, req.model_dump(mode="json"))
+        daily_uploads = write_daily_outputs(response, req.model_dump(mode="json"))
+        response.status = "COMPLETED" if review_result.approved and daily_uploads else "FAILED"
+        response.daily_uploads = daily_uploads
 
         RISK_ASSESSMENT_FORM_RESPONSE_PATH.parent.mkdir(parents=True, exist_ok=True)
         with RISK_ASSESSMENT_FORM_RESPONSE_PATH.open("w", encoding="utf-8-sig") as file:
