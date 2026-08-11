@@ -1,4 +1,5 @@
 ﻿import json
+import traceback
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -164,6 +165,7 @@ async def generate_risk_assessment_form(req: RiskAssessmentFormRequest):
 
         return response
     except Exception as exc:
+        traceback.print_exc()
         raise HTTPException(
             500,
             f"Failed to generate risk assessment form: {exc}",
@@ -217,6 +219,7 @@ async def generate_risk_assessment_report(req: RiskAssessmentReportRequest):
         response_payload["s3_output_path"] = s3_output_path
         return response_payload
     except Exception as exc:
+        traceback.print_exc()
         raise HTTPException(
             500,
             f"Failed to generate risk assessment report: {exc}",
@@ -265,6 +268,7 @@ async def generate_management_review_order(req: SiteAnomalyReportRequest):
         response_payload["s3_output_path"] = s3_output_path
         return response_payload
     except Exception as exc:
+        traceback.print_exc()
         raise HTTPException(
             500,
             f"Failed to generate management review order: {exc}",
@@ -312,6 +316,7 @@ async def generate_worker_feedback_improvement_report(req: WorkerFeedbackImprove
             s3_output_paths=s3_output_paths,
         )
     except Exception as exc:
+        traceback.print_exc()
         raise HTTPException(
             500,
             f"Failed to generate worker feedback improvement report: {exc}",
