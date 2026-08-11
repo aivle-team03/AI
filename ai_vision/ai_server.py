@@ -22,6 +22,7 @@ from urllib.request import Request as UrlRequest, urlopen
 
 import cv2
 import numpy as np
+import boto3
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, StreamingResponse
@@ -32,6 +33,17 @@ BASE_DIR = Path(__file__).resolve().parent
 SNAPSHOT_DIR = BASE_DIR / "snapshots"
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8001")
+
+
+def upload_snapshot_to_s3(snapshot: bytes, camera_id: str) -> str:
+    bucket = os.getenv("AWS_S3_BUCKET_NAME")
+    if not bucket:
+        raise RuntimeError("AWS_S3_BUCKET_NAME is required for AI snapshots")
+    key = f"ai-snapshots/{camera_id}/{time.strftime('%Y/%m/%d')}/{uuid4().hex}.jpg"
+    boto3.client("s3", region_name=os.getenv("AWS_REGION", "ap-northeast-2")).put_object(
+        Bucket=bucket, Key=key, Body=snapshot, ContentType="image/jpeg"
+    )
+    return key
 
 # 소화장비 탐지 주기
 INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "600"))
@@ -218,9 +230,7 @@ def publish_event(config: CameraConfig, confidence: float, source_time: float, s
         # 아닌 고유 파일명으로 저장한다. /reset은 새 세션만 시작할 뿐 과거
         # 이벤트 캡처를 지우지 않는다.
         snapshot_id = uuid4().hex
-        SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
-        (SNAPSHOT_DIR / f"{snapshot_id}.jpg").write_bytes(snapshot)
-        snapshot_url = f"{PUBLIC_URL}/snapshots/{snapshot_id}"
+        snapshot_url = upload_snapshot_to_s3(snapshot, config.camera_id)
         _events.append({
             "id": event_id,
             "cameraId": config.camera_id,
