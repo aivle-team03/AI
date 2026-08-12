@@ -38,9 +38,9 @@ DB 저장은 기본 300초 쿨다운을 적용합니다. 필요하면 `AI_EVENT_
 환경 변수로 조절할 수 있습니다.
 ## EC2 deployment
 
-When `ai_vision` runs on a separate GPU EC2, add these values to `AI/.env` on
-that instance. Use the CPU EC2 private IP or private DNS; do not use its public
-IP.
+When `ai_vision` runs on a separate GPU EC2, add these values to
+`AI/ai_vision/.env` on that instance. Use the CPU EC2 private IP or private
+DNS; do not use its public IP. `ai_verify` also reads this same `.env` file.
 
 ```env
 AI_BACKEND_URL=http://<cpu-ec2-private-ip-or-dns>:8000
