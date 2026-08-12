@@ -144,7 +144,14 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         row for row in rows
         if row.get("inspection_content")
     ]
-    contexts = [_record_context(row) for row in inspection_rows]
+    review_rows = [
+        row for row in rows
+        if row.get("inspection_content")
+        or row.get("action_name")
+        or row.get("completed_at")
+        or row.get("content")
+    ]
+    contexts = [_record_context(row) for row in review_rows]
 
     grouped_records: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for context in contexts:
@@ -228,19 +235,19 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         reverse=True,
     )
 
-    pending_items = _pending_records(inspection_rows)
+    pending_items = _pending_records(review_rows)
     high_records = [
-        row for row in inspection_rows
+        row for row in review_rows
         if _risk_band(row.get("risk")) in {"CRITICAL", "HIGH"}
     ]
     event_counts_by_day = Counter(
         _date_key(row.get("inspection_date") or row.get("completed_at"))
-        for row in inspection_rows
+        for row in review_rows
     )
-    risk_type_counts = Counter(str(row.get("category_name") or "-") for row in inspection_rows)
+    risk_type_counts = Counter(str(row.get("category_name") or "-") for row in review_rows)
     location_counts = Counter(
         str(row.get("inspection_location") or row.get("action_location") or "-")
-        for row in inspection_rows
+        for row in review_rows
     )
 
     return {
@@ -254,6 +261,7 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         "summary_counts": {
             "total_records": len(rows),
             "inspection_records": len(inspection_rows),
+            "review_records": len(review_rows),
             "high_risk_records": len(high_records),
             "pending_or_unapproved_records": len(pending_items),
             "repeated_risk_groups": len(anomaly_candidates),
@@ -278,7 +286,7 @@ def aggregate_site_anomaly_data(req: SiteAnomalyReportRequest) -> dict[str, Any]
         },
         "source_ids": {
             "record_source_ids": [
-                _source_id(row) for row in inspection_rows
+                _source_id(row) for row in review_rows
             ],
         },
         "constraints": {
