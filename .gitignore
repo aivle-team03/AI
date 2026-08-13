@@ -1,0 +1,48 @@
+# Python bytecode and tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments and local configuration
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Editor-specific local settings
+.vscode/
+.idea/
+
+# Ultralytics runtime settings and inference artifacts
+Ultralytics/
+.ultralytics/
+runs/
+evaluation_result/
+evaluation_dataset/
+ai_vision/runs/
+ai_vision/evaluation_result/
+ai_vision/evaluation_dataset/
+*_result.mp4
+*_result.avi
+
+# Locally generated test results (keep the empty folder itself)
+test/result/*
+!test/result/.gitkeep
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Keep the project README, but do not commit local working notes.
+*.md
+!README.md
+!Vision.md
+!ai_vision/README(CCTV).md
+snapshots/
+ai_vision/snapshots/
+.venv/
+.DS_Store
+.env
+test/

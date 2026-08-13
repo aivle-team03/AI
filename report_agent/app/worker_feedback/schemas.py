@@ -2,8 +2,6 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.schemas import EvidenceContentRequest
-
 
 class WorkerFeedbackRow(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
@@ -69,7 +67,7 @@ class WorkerFeedbackCorrectionReviewResult(BaseModel):
     items_requiring_revision: list[str] = Field(default_factory=list)
 
 
-class WorkerFeedbackImprovementReportRequest(EvidenceContentRequest):
+class WorkerFeedbackImprovementReportRequest(BaseModel):
     word_template_path: str | None = None
     word_output_dir: str | None = None
     worker_feedback_rows: list[WorkerFeedbackRow] = Field(default_factory=list)

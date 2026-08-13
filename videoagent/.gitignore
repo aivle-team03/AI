@@ -1,0 +1,27 @@
+.env
+.env.*
+!.env.example
+
+.venv/
+venv/
+env/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+*.log
+
+.DS_Store
+
+# 생성 산출물
+output/
+*.mp4
+service-account.json
+video_create.json

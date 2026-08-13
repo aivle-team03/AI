@@ -1,0 +1,14 @@
+celery
+fastapi
+uvicorn
+python-multipart
+pydantic
+python-dotenv
+redis
+tenacity
+boto3
+google-auth
+PyMuPDF
+pypdf
+python-pptx
+imageio-ffmpeg

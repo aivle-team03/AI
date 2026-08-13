@@ -15,18 +15,18 @@ FastAPI ?? ?? ??? ?? ???????.
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8001
+uvicorn app.main:app --host 127.0.0.1 --reload --reload-dir app --port 8004
 ```
 
-Swagger: http://127.0.0.1:8001/docs
+Swagger: http://127.0.0.1:8004/docs
 
 `.env`? `OPENAI_API_KEY`? ?????.
 
 ## ?? API
 
 - GET `/health`
-- POST `/api/reports/evidence-content`
-- POST `/api/reports/management-report/generate`
-- POST `/api/reports/risk-assessment-form/generate`
-- POST `/api/reports/risk-assessment-report/generate`
-- POST `/api/reports/unified/generate`
+- POST `/api/report/evidence-content`
+- POST `/api/report/management-report/generate`
+- POST `/api/report/risk-assessment-form/generate`
+- POST `/api/report/risk-assessment-report/generate`
+- POST `/api/report/unified/generate`

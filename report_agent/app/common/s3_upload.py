@@ -13,6 +13,16 @@ DOCX_CONTENT_TYPE = (
 JSON_CONTENT_TYPE = "application/json"
 
 
+def _s3_client():
+    import boto3
+    from botocore.config import Config
+
+    return boto3.client(
+        "s3",
+        config=Config(connect_timeout=10, read_timeout=30, retries={"max_attempts": 2}),
+    )
+
+
 def upload_docx_to_s3(local_path: str | Path, prefix: str) -> str:
     return upload_file_to_s3(local_path, prefix, DOCX_CONTENT_TYPE)
 
@@ -35,10 +45,9 @@ def upload_file_to_s3(
     key = f"{prefix.rstrip('/')}/{path.name}"
     s3_uri = f"s3://{S3_BUCKET}/{key}"
 
-    import boto3
     from botocore.exceptions import ClientError
 
-    client = boto3.client("s3")
+    client = _s3_client()
     if skip_existing:
         try:
             client.head_object(Bucket=S3_BUCKET, Key=key)
@@ -71,9 +80,7 @@ def upload_docx_files_to_s3_if_missing(
 
 
 def load_json_objects_from_s3(prefix: str) -> list[dict]:
-    import boto3
-
-    client = boto3.client("s3")
+    client = _s3_client()
     paginator = client.get_paginator("list_objects_v2")
     payloads = []
     normalized_prefix = prefix.rstrip("/") + "/"
