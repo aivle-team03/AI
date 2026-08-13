@@ -66,7 +66,7 @@ def upload_snapshot_to_s3(snapshot: bytes, camera_id: str) -> str:
         )
     except (BotoCoreError, ClientError) as error:
         raise RuntimeError(f"AI snapshot S3 upload failed: {error}") from error
-    return f"{MEDIA_URL_PREFIX}{object_path}"
+    return f"{SNAPSHOT_S3_PREFIX}/{object_path}"
 
 # 소화장비 탐지 주기
 INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "600"))
