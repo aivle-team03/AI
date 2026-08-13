@@ -17,8 +17,8 @@ from dotenv import load_dotenv
 from fastapi import UploadFile, File, Form, HTTPException, FastAPI
 
 BASE_DIR = Path(__file__).resolve().parent
-# AI 루트의 공유 환경 설정을 읽는다. aiagent/videoagent의 설정 파일은 건드리지 않는다.
-load_dotenv(BASE_DIR.parent / ".env")
+# ai_vision 서비스 공용 설정을 사용한다.
+load_dotenv(BASE_DIR / ".env")
 
 app = FastAPI(title="AI Verification Server")
 

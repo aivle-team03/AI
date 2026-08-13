@@ -36,3 +36,22 @@ DB의 실제 카테고리 ID가 다르면 `ai_server.py`의 `CAMERAS` 값을 맞
 같은 테스트 영상을 재시작해서 이벤트가 반복 저장되는 것을 막기 위해, 카메라별
 DB 저장은 기본 300초 쿨다운을 적용합니다. 필요하면 `AI_EVENT_COOLDOWN_SECONDS`
 환경 변수로 조절할 수 있습니다.
+## EC2 deployment
+
+When `ai_vision` runs on a separate GPU EC2, add these values to
+`AI/ai_vision/.env` on that instance. Use the CPU EC2 private IP or private
+DNS; do not use its public IP. `ai_verify` also reads this same `.env` file.
+
+```env
+AI_BACKEND_URL=http://<cpu-ec2-private-ip-or-dns>:8000
+AI_PUBLIC_URL=https://<public-app-domain>/vision
+```
+
+Run the vision service so the CPU EC2 reverse proxy can reach it:
+
+```bash
+python -m uvicorn ai_server:app --host 0.0.0.0 --port 8002
+```
+
+Allow port 8002 on the GPU EC2 only from the CPU EC2 security group. Browsers
+should use the `/vision` proxy path, not the GPU EC2 address.

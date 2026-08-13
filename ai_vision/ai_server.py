@@ -33,8 +33,8 @@ from ultralytics import YOLO
 
 
 BASE_DIR = Path(__file__).resolve().parent
-# AI 프로젝트 루트의 .env를 사용한다. 실제 비밀값은 절대 커밋하지 않는다.
-load_dotenv(BASE_DIR.parent / ".env")
+# 객체 탐지 서비스 전용 설정을 사용한다. GPU EC2에는 이 파일만 배포한다.
+load_dotenv(BASE_DIR / ".env")
 BACKEND_URL = os.getenv("AI_BACKEND_URL", "http://127.0.0.1:8000")
 PUBLIC_URL = os.getenv("AI_PUBLIC_URL", "http://127.0.0.1:8002")
 MEDIA_URL_PREFIX = "/media/"

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from math import hypot
 from collections import defaultdict
@@ -25,7 +26,7 @@ PERSON_CLASS_ID = 1
 
 CONF_THRESHOLD = 0.4
 
-EVENT_API_URL = "http://127.0.0.1:8000/api/ai/events"
+EVENT_API_URL = f"{os.getenv('AI_BACKEND_URL', 'http://127.0.0.1:8000').rstrip('/')}/api/ai/events"
 
 FORKLIFT_CCTV_ID = 5
 FORKLIFT_CATEGORY_ID = 1000006

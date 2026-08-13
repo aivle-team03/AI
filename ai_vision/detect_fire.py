@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import cv2
@@ -16,7 +17,7 @@ VIDEO_PATH = BASE_DIR / "test3.mp4"
 
 OUTPUT_PATH = BASE_DIR / "fire_detection_result.mp4"
 
-EVENT_API_URL = "http://127.0.0.1:8000/api/ai/events"
+EVENT_API_URL = f"{os.getenv('AI_BACKEND_URL', 'http://127.0.0.1:8000').rstrip('/')}/api/ai/events"
 
 FIRE_CCTV_ID = 3
 SMOKE_CCTV_ID = 4

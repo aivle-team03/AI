@@ -15,10 +15,10 @@ FastAPI ?? ?? ??? ?? ???????.
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app.main:app --reload --reload-dir app --port 8001
+uvicorn app.main:app --host 127.0.0.1 --reload --reload-dir app --port 8004
 ```
 
-Swagger: http://127.0.0.1:8001/docs
+Swagger: http://127.0.0.1:8004/docs
 
 `.env`? `OPENAI_API_KEY`? ?????.
 
