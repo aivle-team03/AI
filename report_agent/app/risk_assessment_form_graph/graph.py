@@ -189,6 +189,9 @@ async def data_correction_review_node(state):
 
 
 def risk_assessment_form_node(state):
+    if state.get("skip_overall_docx"):
+        return {"docx_output_path": None}
+
     request = state["request"]
     source_data = request.model_dump(mode="json")
     form_path = Path(request.form_path) if request.form_path else DEFAULT_FORM_PATH

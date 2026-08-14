@@ -55,10 +55,16 @@ def write_daily_outputs(
     response: RiskAssessmentFormResponse,
     source_data: dict,
     output_dir: Path = DEFAULT_OUTPUT_DIR,
+    target_date: str | None = None,
 ) -> list[dict]:
     rows_by_date = defaultdict(list)
     for row in response.correction_result.corrected_rows:
-        rows_by_date[_row_date(row)].append(row)
+        day = _row_date(row)
+        if target_date and day != target_date:
+            continue
+        rows_by_date[day].append(row)
+    if target_date and target_date not in rows_by_date:
+        rows_by_date[target_date] = []
 
     uploads = []
     for day, rows in sorted(rows_by_date.items()):
