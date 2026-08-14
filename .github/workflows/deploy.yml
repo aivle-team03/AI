@@ -1,0 +1,40 @@
+name: Deploy AI
+
+on:
+  push:
+    branches: [main]   # 서버의 ~/BOSS/AI 가 체크아웃한 브랜치와 같아야 한다
+  workflow_dispatch:
+
+# 서버가 보는 브랜치를 바꾸면 위 branches 와 아래 git pull 을 함께 고칠 것.
+#   git -C ~/BOSS/AI branch --show-current
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+
+    steps:
+      - name: CPU 인스턴스에 배포
+        if: ${{ env.EC2_HOST != '' }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 5m
+          script: |
+            set -e
+            cd ~/BOSS/AI
+            git pull
+
+            # ai_server(탐지)는 GPU 인스턴스에 있어 여기서 재시작하지 않는다.
+            # video-generation-worker 는 백엔드 서비스라 backend 워크플로가 맡는다.
+            sudo systemctl restart boss-chatbot
+            sudo systemctl restart boss-ai-verify
+            sudo systemctl restart boss-report
+            sudo systemctl restart boss-video-api
+            sudo systemctl restart boss-video-worker
+
+            sleep 3
+            systemctl is-active boss-chatbot boss-ai-verify boss-report boss-video-api boss-video-worker
