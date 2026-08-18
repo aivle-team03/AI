@@ -249,10 +249,14 @@ async def synthesize_scene_audio(
 def _replace_audio_sync(clip_path: str, audio_path: str, out_path: str) -> bool:
     """클립의 Veo 오디오를 TTS 로 갈아끼운다.
 
-    apad 로 오디오 뒤를 무음으로 무한 연장한 뒤 -shortest 로 자른다. 그래야 결과 길이가
-    항상 원본 영상과 같아진다. apad 없이 -shortest 만 쓰면 TTS 가 짧을 때 영상까지
-    같이 잘려 장면이 사라진다.
+    apad 로 오디오 뒤를 무음 연장한다. 이게 없으면 TTS 가 짧을 때 영상까지 같이 잘려
+    장면이 사라진다. 대신 apad 는 인자가 없으면 **무한히** 패딩하므로 반드시 끊어야 한다.
+
+    끊는 수단은 -t 다. -shortest 는 filter_complex 출력에는 걸리지 않아서, apad 가
+    만드는 무한 스트림을 멈추지 못하고 ffmpeg 이 CPU 를 태우며 영영 돌아간다.
     """
+    duration = _audio_duration_seconds(clip_path)
+
     command = [
         _get_ffmpeg_executable(), "-y", "-nostdin",
         "-i", clip_path,
@@ -260,9 +264,15 @@ def _replace_audio_sync(clip_path: str, audio_path: str, out_path: str) -> bool:
         "-filter_complex", f"[1:a]adelay={int(_LEAD_IN_SECONDS * 1000)}:all=1,apad[a]",
         "-map", "0:v:0", "-map", "[a]",
         "-c:v", "copy", "-c:a", "aac",
-        "-shortest",
-        out_path,
     ]
+    if duration:
+        # 원본 영상 길이에 정확히 맞춘다. 더빙판과 한국어판의 길이가 같아야
+        # 시청 진도(last_position_seconds)가 두 언어에서 같은 장면을 가리킨다.
+        command += ["-t", f"{duration:.3f}"]
+    else:
+        # 길이를 못 쟀을 때의 차선책. 무한 패딩만은 막는다.
+        command += ["-shortest"]
+    command.append(out_path)
     try:
         result = subprocess.run(
             command, capture_output=True, text=True, errors="ignore",
