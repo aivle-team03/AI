@@ -14,6 +14,7 @@ class VideoStatusResponse(BaseModel):
     status: str
     progress_percent: int
     video_url: Optional[str] = None
+    video_url_en: Optional[str] = None   # 영어 더빙판. 더빙을 못 만들었으면 비어 있다
     company_id: Optional[int] = None
     title: Optional[str] = None
     category: Optional[str] = None

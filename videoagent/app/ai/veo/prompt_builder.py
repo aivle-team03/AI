@@ -127,11 +127,62 @@ def _call_gemini_for_veo_sync(api_key: str, payload: dict, models: List[str]) ->
     return None
 
 
+# 언어별 대사 규칙과 발화 지침.
+# veo_prompt 자체는 어느 언어든 영어로 쓰지만, Veo가 실제로 발화할 언어와
+# 대사 길이 기준(초당 글자 수)이 달라지므로 그 부분만 갈라 둔다.
+_LANGUAGE_SPECS = {
+    "ko": {
+        "script_language": "한국어",
+        "char_range": "공백 포함 12~34자",
+        "max_chars": "34자",
+        "short_range": "12~20자",
+        "half_threshold": "24자 이하",
+        "clip_rule": "16자 이하 4초 / 24자 이하 6초 / 그 외 8초. 도입부 0.5초를 뺀 뒤 초당 약 4자 기준의 실측값입니다.",
+        "speech_instruction": (
+            "speaks fluent Korean with authentic native pronunciation, "
+            "perfectly clear Korean speech articulation, distinct Korean phonemes"
+        ),
+        "lip_sync": "natural Korean lip-sync",
+        "pronunciation_block": """[한국어 발음 오독 방지 지침 (필수)]
+- Veo는 한자어 복합명사와 전문용어를 특히 심하게 오독합니다. 실측 사례: '구내속도' -> '군내 속도', '후사경' -> '후사견', '계획 수립' -> '개운 수리'.
+- **한자어 복합명사와 전문용어를 쓰지 말고, 초등학생도 알아듣는 쉬운 구어체로 풀어 쓰세요.**
+  예: '후사경' -> '뒷거울' / '구내속도' -> '작업장 안 속도' / '제동장치' -> '브레이크' / '적재 용량 준수' -> '짐을 너무 많이 싣지 마세요' / '주지시키고' -> '알려 주고'
+- 한 문장을 통째로 쓰지 말고, 쉼표로 2~3개의 짧은 절로 끊어 쓰세요. 끊어 읽을 지점이 있어야 또박또박 발화됩니다.
+- 띄어쓰기를 표준에 맞춰 명확히 구분하세요.""",
+    },
+    "en": {
+        "script_language": "영어",
+        "char_range": "공백 포함 40~100자",
+        "max_chars": "100자",
+        "short_range": "40~60자",
+        "half_threshold": "78자 이하",
+        "clip_rule": "50자 이하 4초 / 78자 이하 6초 / 그 외 8초. 영어 발화 속도(초당 약 12자) 기준의 추정값입니다.",
+        "speech_instruction": (
+            "speaks fluent English with clear native pronunciation, "
+            "perfectly clear English speech articulation, distinct English phonemes"
+        ),
+        "lip_sync": "natural English lip-sync",
+        "pronunciation_block": """[영어 대사 작성 지침 (필수)]
+- 이 영상을 볼 사람은 **영어가 모국어가 아닌 외국인 노동자**입니다. 원어민용 표현이 아니라 쉬운 영어로 쓰세요.
+- **전문용어와 복합명사를 피하고, 중학교 수준의 쉬운 단어로 풀어 쓰세요.**
+  예: 'rear-view mirror' -> 'the mirror behind you' / 'braking system' -> 'the brakes' / 'comply with load capacity' -> 'do not load too much'
+- 한 문장을 길게 쓰지 말고, 쉼표로 2~3개의 짧은 절로 끊어 쓰세요. 끊어 읽을 지점이 있어야 또박또박 발화됩니다.
+- 명령문(imperative)으로 쓰세요. 'You should pull the pin' 이 아니라 'First, pull the safety pin' 처럼 씁니다.
+- 축약형(don't, it's)보다 풀어 쓴 형태(do not, it is)가 발음이 또렷합니다.""",
+    },
+}
+
+
+def _language_spec(language: Optional[str]) -> Dict[str, str]:
+    return _LANGUAGE_SPECS.get(language or "ko", _LANGUAGE_SPECS["ko"])
+
+
 async def generate_veo_prompts_from_parsed_text(
     parsed_text: str,
     request: Optional[str] = None,
     file_path: Optional[str] = None,
-    target_scenes: Optional[int] = None
+    target_scenes: Optional[int] = None,
+    language: str = "ko"
 ) -> List[Dict]:
     """
     [Track 2 - Scene 분할 모드] parser.py에서 추출된 원문 텍스트(parsed_text)를 직접 입력받아,
@@ -168,19 +219,25 @@ async def generate_veo_prompts_from_parsed_text(
     else:
         target_scenes = max(1, target_scenes)
 
+    spec = _language_spec(language)
+
     user_prompt = f"""
 당신은 베테랑 영상 시나리오 작가이자 안전 교육 총괄 디렉터입니다.
 전달받은 파싱 원문 텍스트를 정밀 분석하여, 전체 영상을 **처음부터 끝까지 하나의 완벽하게 연결된 강연 스토리(시나리오)**로 기획하고 총 {target_scenes}개의 장면(Veo 모션 프롬프트 및 대본)으로 구성하세요.
 
+[대사 언어 (최우선)]
+- 각 장면의 **script 는 반드시 {spec['script_language']}로** 쓰세요. 원문 문서가 다른 언어여도 script 는 {spec['script_language']}입니다.
+- veo_prompt(카메라·동작 묘사)는 언어와 무관하게 항상 영어로 쓰세요.
+
 [대사 길이 규칙 (핵심)]
-- 각 장면의 script는 **공백 포함 12~34자**로 쓰되, **가능한 한 짧게** 쓰세요. 34자는 절대 넘기지 마세요.
+- 각 장면의 script는 **{spec['char_range']}**로 쓰되, **가능한 한 짧게** 쓰세요. {spec['max_chars']}는 절대 넘기지 마세요.
 - 한 장면에 한 가지만 말하세요. 두 가지를 한 문장에 담지 말고 장면을 나누세요.
   예: "안전핀을 뽑고 손잡이를 눌러 불에 뿌리세요"(X, 두 동작) -> "먼저 안전핀을 뽑으세요"(O) + "손잡이를 눌러 뿌리세요"(O)
-- 12~20자로 충분히 전달되는 내용을 굳이 늘리지 마세요. 짧은 문장이 발음도 정확하고 전달력도 좋습니다.
-  전체 장면 중 **최소 절반은 24자 이하**가 되도록 구성하세요.
+- {spec['short_range']}로 충분히 전달되는 내용을 굳이 늘리지 마세요. 짧은 문장이 발음도 정확하고 전달력도 좋습니다.
+  전체 장면 중 **최소 절반은 {spec['half_threshold']}**가 되도록 구성하세요.
 - 영상 클립 길이는 시스템이 대사 길이에 맞춰 4초·6초·8초 중에서 자동으로 고릅니다.
   따라서 짧은 대사를 억지로 늘릴 필요가 없습니다. 남는 시간이 생기지 않도록 시스템이 클립을 짧게 잡습니다.
-  (기준: 16자 이하 4초 / 24자 이하 6초 / 그 외 8초. 도입부 0.5초를 뺀 뒤 초당 약 4자 기준의 실측값입니다.)
+  (기준: {spec['clip_rule']})
 - 모든 veo_prompt 안에는 그 장면의 script 원문을 그대로 큰따옴표로 넣으세요. 형식: saying exactly and only this one line: "실제 대사"
 - veo_prompt에는 "he says nothing else and does not improvise any additional words"를 반드시 포함해, Veo가 대사 외의 말을 지어내지 않게 하세요.
 - veo_prompt에는 "begins after a very short half-second pause, then speaks slowly and deliberately, delivering the line clearly from the very first syllable and pacing it so the speech continues all the way to the end of the eight-second clip, never rushing or finishing early"를 반드시 포함하세요.
@@ -189,12 +246,7 @@ async def generate_veo_prompts_from_parsed_text(
   도입부 침묵은 앞 장면 끝의 침묵과 이어져 체감이 두 배가 되므로 0.5초를 넘기지 않게 하고, 끝부분 여유는 1초 이내로 유지하세요.
   veo_prompt에는 일단 "eight-second"로 쓰세요. 시스템이 대사 길이에 맞춰 four/six/eight 중 실제 값으로 자동 치환합니다.
 
-[한국어 발음 오독 방지 지침 (필수)]
-- Veo는 한자어 복합명사와 전문용어를 특히 심하게 오독합니다. 실측 사례: '구내속도' -> '군내 속도', '후사경' -> '후사견', '계획 수립' -> '개운 수리'.
-- **한자어 복합명사와 전문용어를 쓰지 말고, 초등학생도 알아듣는 쉬운 구어체로 풀어 쓰세요.**
-  예: '후사경' -> '뒷거울' / '구내속도' -> '작업장 안 속도' / '제동장치' -> '브레이크' / '적재 용량 준수' -> '짐을 너무 많이 싣지 마세요' / '주지시키고' -> '알려 주고'
-- 한 문장을 통째로 쓰지 말고, 쉼표로 2~3개의 짧은 절로 끊어 쓰세요. 끊어 읽을 지점이 있어야 또박또박 발화됩니다.
-- 띄어쓰기를 표준에 맞춰 명확히 구분하세요.
+{spec['pronunciation_block']}
 
 [내용 연결성 및 스토리텔링 지침]
 1. 단편 수칙 개별 나열 금지: 파싱 문서 항목들을 단순 분할하여 따로 놀게 하지 마세요.
@@ -203,7 +255,7 @@ async def generate_veo_prompts_from_parsed_text(
    나쁜 예: "소화기는 정말 중요합니다" / 좋은 예: "먼저 안전핀을 힘껏 잡아당겨 뽑으세요"
 3. 짧은 접속어 문맥 연결: 각 장면 대사(script) 시작 부분에 짧은 연결어('먼저, ...', '다음은, ...', '이어서, ...', '그다음, ...', '끝으로, ...')를 사용하여 순서가 드러나게 하세요.
 4. 손과 배경의 일관성: 모든 동작 장면은 동일한 작업 장갑과 동일한 작업 환경에서 촬영된 것처럼 묘사하세요.
-5. 명확한 발화 지침 (한국어 강제 튜닝): 구글 Veo가 외국어나 외계어를 발음하지 않도록 모든 veo_prompt 내에 "speaks fluent Korean with authentic native pronunciation, perfectly clear Korean speech articulation, distinct Korean phonemes" 지침을 반드시 포함하세요. 인물이 나오는 장면에는 "natural Korean lip-sync"도 추가하세요.
+5. 명확한 발화 지침 (발화 언어 강제 튜닝): 구글 Veo가 엉뚱한 언어나 외계어를 발음하지 않도록 모든 veo_prompt 내에 "{spec['speech_instruction']}" 지침을 반드시 포함하세요. 인물이 나오는 장면에는 "{spec['lip_sync']}"도 추가하세요.
 6. 화면 텍스트 금지: 모든 veo_prompt 끝에 "no on-screen text, no captions, no subtitles, no readable signage or labels of any kind"를 반드시 포함하세요.
 
 [동작 시연 중심 구성 (가장 중요)]
@@ -348,8 +400,9 @@ async def generate_json_response(instruction: str) -> Optional[Dict[str, Any]]:
 
 
 async def generate_storyboard_scenes(
-    planning_context: str, request: Optional[str], target_scenes: Optional[int]
+    planning_context: str, request: Optional[str], target_scenes: Optional[int],
+    language: str = "ko"
 ) -> List[Dict[str, Any]]:
     return await generate_veo_prompts_from_parsed_text(
-        planning_context, request, target_scenes=target_scenes
+        planning_context, request, target_scenes=target_scenes, language=language
     )

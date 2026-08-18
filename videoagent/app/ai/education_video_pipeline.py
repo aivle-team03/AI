@@ -127,16 +127,26 @@ async def extract_learning_objectives(analysis: Dict[str, Any]) -> List[str]:
 
 
 # 대사 길이별 클립 길이 매핑. Veo는 4/6/8초만 지원한다.
-# 기준은 도입부 0.5초를 뺀 뒤 초당 약 4자이며, 실측으로 13자→4초, 22자→6초 모두 유사도 1.0이었다.
 # 남는 시간이 없어야 Veo가 그 구간을 의미 없는 소리로 채우지 않는다.
-_SCRIPT_LENGTH_TO_CLIP_SECONDS = ((16, 4), (24, 6))
+#
+# ko: 도입부 0.5초를 뺀 뒤 초당 약 4자. 실측으로 13자→4초, 22자→6초 모두 유사도 1.0이었다.
+# en: 초당 약 12자로 잡은 추정값. 한국어처럼 실측으로 보정할 것.
+#     영어는 같은 글자 수의 발화 시간이 한국어의 1/3 수준이라 표를 그대로 쓰면 클립이 비고,
+#     그 빈 구간을 Veo가 옹알이로 채워 오디오 QA가 불합격 처리한다.
+_SCRIPT_LENGTH_TO_CLIP_SECONDS = {
+    "ko": ((16, 4), (24, 6)),
+    "en": ((50, 4), (78, 6)),
+}
 _DURATION_WORDS = {4: "four", 6: "six", 8: "eight"}
 
 
-def _clip_seconds_for_script(script: str) -> int:
+def _clip_seconds_for_script(script: str, language: str = "ko") -> int:
     """대사 길이에 맞는 Veo 클립 길이(4/6/8초)를 고른다."""
     length = len(script or "")
-    for max_chars, secs in _SCRIPT_LENGTH_TO_CLIP_SECONDS:
+    thresholds = _SCRIPT_LENGTH_TO_CLIP_SECONDS.get(
+        language, _SCRIPT_LENGTH_TO_CLIP_SECONDS["ko"]
+    )
+    for max_chars, secs in thresholds:
         if length <= max_chars:
             return secs
     return MAX_CLIP_SECONDS
@@ -148,6 +158,7 @@ async def create_storyboard(
     learning_objectives: List[str],
     request: Optional[str],
     target_duration_seconds: Optional[int],
+    language: str = "ko",
 ) -> List[Dict[str, Any]]:
     """[스토리보드 Agent] 학습 목표와 매핑된 장면별 대본 및 Veo 카메라 지침을 작성한다."""
     planning_context = (
@@ -158,11 +169,12 @@ async def create_storyboard(
     scenes = await generate_storyboard_scenes(
         planning_context, request, target_scenes=(
             max(1, -(-target_duration_seconds // MAX_CLIP_SECONDS)) if target_duration_seconds else None
-        )
+        ),
+        language=language
     )
     for index, scene in enumerate(scenes):
         scene["learning_objective"] = learning_objectives[index % len(learning_objectives)]
-        secs = _clip_seconds_for_script(scene.get("script", ""))
+        secs = _clip_seconds_for_script(scene.get("script", ""), language)
         scene["duration_seconds"] = secs
         # 대사 길이에 맞춰 클립 길이를 정한 뒤, veo_prompt 안의 재생 시간 언급도 같은 값으로 맞춘다.
         scene["veo_prompt"] = re.sub(

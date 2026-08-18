@@ -17,6 +17,7 @@ from app.ai.education_video_pipeline import (
     create_storyboard,
     inspect_video_quality_async,
 )
+from app.ai.dubbing import build_dubbed_video
 
 
 def calculate_veo_usage_and_cost(
@@ -37,7 +38,7 @@ def calculate_veo_usage_and_cost(
     veo_total_cost = total_seconds * veo_cost_per_sec
 
     total_usd = llm_total_cost + veo_total_cost
-    total_krw = total_usd * 1350  # 환율 1,350원 기준
+    total_krw = total_usd * 1450  # 환율 1,450원 기준
 
     summary = {
         "llm_model": "gemini-2.5-flash",
@@ -90,7 +91,8 @@ async def process_veo_summary_video_pipeline(
     category: Optional[str] = "공통",
     type: Optional[str] = "필수",
     request: Optional[str] = None,
-    target_duration_seconds: Optional[int] = None
+    target_duration_seconds: Optional[int] = None,
+    language: str = "ko"
 ):
     """
     [Veo 동영상 생성 파이프라인]
@@ -131,7 +133,7 @@ async def process_veo_summary_video_pipeline(
         objectives = await extract_learning_objectives(analysis)
         update_task(task_id, learning_objectives=objectives, progress_percent=45)
         storyboard = await create_storyboard(
-            parsed_text, analysis, objectives, request, target_duration_seconds
+            parsed_text, analysis, objectives, request, target_duration_seconds, language
         )
         # Gemini 호출 실패로 고정 Fallback 대본이 쓰이면 문서 내용이 전혀 반영되지 않은 영상이 나온다.
         # 제목·카테고리는 사용자 입력 그대로라 결과만 보고는 구분할 수 없으므로 저장하지 않고 실패 처리한다.
@@ -147,6 +149,14 @@ async def process_veo_summary_video_pipeline(
             storyboard, render_result["video_clips"], output_video_path
         )
         update_task(task_id, quality_report=quality_report)
+
+        # 한국어 클립을 그대로 쓰고 오디오만 번역·TTS 로 갈아끼워 더빙판을 만든다.
+        # Veo 로 언어판을 다시 뽑으면 클립 비용이 그대로 두 배가 되고, 화면이 같으니
+        # 시각 검수도 다시 할 이유가 없다. 클립 정리 전에 해야 원본을 쓸 수 있다.
+        # 더빙 실패는 부가 기능 실패이므로 한국어판 저장까지 막지 않는다.
+        dubbed_local_path = await build_dubbed_video(
+            storyboard, render_result["video_clips"], f"{OUTPUT_DIR}/{task_id}_en.mp4"
+        )
 
         # 품질 검수가 개별 클립 파일 존재 여부를 확인한 뒤에 임시 클립을 정리한다.
         _cleanup_temp_clips(render_result["clip_dir"])
@@ -166,6 +176,19 @@ async def process_veo_summary_video_pipeline(
         # 교육 자료로 등록되어 재생되지 않는다.
         video_url = await upload_video_to_s3(output_video_path, task_id)
 
+        # 더빙판은 별도 키로 올린다. 실패해도 한국어판은 이미 올라갔으므로 작업은 성공이다.
+        video_url_en = None
+        if dubbed_local_path:
+            try:
+                video_url_en = await upload_video_to_s3(dubbed_local_path, f"{task_id}_en")
+            except Exception as error:
+                print(f"[Dubbing] 더빙판 업로드 실패 (한국어판은 정상): {error}")
+            if os.path.exists(dubbed_local_path):
+                try:
+                    os.remove(dubbed_local_path)
+                except OSError:
+                    pass
+
         # 휴지통 비우기: 업로드 성공 시 로컬 비디오 파일 삭제
         if os.path.exists(output_video_path):
             try:
@@ -178,6 +201,7 @@ async def process_veo_summary_video_pipeline(
             status="COMPLETED",
             progress_percent=100,
             video_url=video_url,
+            video_url_en=video_url_en,
             title=title,
             category=category,
             type=type,
@@ -207,6 +231,7 @@ def process_veo_pipeline_task(
     type: Optional[str] = "필수",
     request: Optional[str] = None,
     target_duration_seconds: Optional[int] = None,
+    language: str = "ko",
 ):
     """Celery 워커가 실행할 동기 래퍼.
 
@@ -224,5 +249,6 @@ def process_veo_pipeline_task(
             type=type,
             request=request,
             target_duration_seconds=target_duration_seconds,
+            language=language,
         )
     )

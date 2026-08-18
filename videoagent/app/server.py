@@ -48,8 +48,13 @@ async def generate_video(
     category: Optional[str] = Form("공통"),
     type: Optional[str] = Form("필수"),
     request: Optional[str] = Form(None),
+    language: Optional[str] = Form("ko"),
 ):
-    """문서(PDF/PPTX/TXT) 또는 텍스트로 Veo 안전 교육 영상 생성을 시작하고 task_id를 반환한다."""
+    """문서(PDF/PPTX/TXT) 또는 텍스트로 Veo 안전 교육 영상 생성을 시작하고 task_id를 반환한다.
+
+    language 는 Veo 가 발화할 언어다(ko/en). 관리자가 만들 언어판을 고르는 값이라
+    보는 사람의 화면 언어와는 별개다.
+    """
     if not file and not text_content:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -79,6 +84,7 @@ async def generate_video(
         category=category,
         type=type,
         request=request,
+        language=language,
     )
 
     return {
