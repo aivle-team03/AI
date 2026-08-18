@@ -4,22 +4,32 @@ import copy
 import io
 from datetime import date
 from pathlib import Path
+import ssl
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
 from docx import Document
+from docx.image.exceptions import UnrecognizedImageError
 from docx.oxml.ns import qn
 from docx.shared import Emu
 from docx.table import Table, _Cell
 
 from app.common.Report_data import BACKEND_BASE_URL
-from app.risk_assessment_form_graph.schemas import FinalHistoryRow, RiskDataCorrectionResult
+from app.risk_assessment_form_graph.schemas import (
+    FinalHistoryRow,
+    RiskDataCorrectionResult,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_FORM_PATH =  PROJECT_ROOT / "report_template" / "위험성평가표.docx"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT/"output"/"risk_assessment_form"/"risk_assessment_form_filled.docx"
+DEFAULT_FORM_PATH = PROJECT_ROOT / "report_template" / "위험성평가표.docx"
+DEFAULT_OUTPUT_PATH = (
+    PROJECT_ROOT
+    / "output"
+    / "risk_assessment_form"
+    / "risk_assessment_form_filled.docx"
+)
 
 META_ROW_INDEX = 2
 COMPANY_NAME_TC_INDEX = 1
@@ -113,11 +123,22 @@ def _download_image(url: str | None) -> bytes | None:
     resolved_url = _resolve_image_url(url)
     if not resolved_url:
         return None
+
     try:
-        request = Request(resolved_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urlopen(request, timeout=15) as response:
-            return response.read()
-    except (HTTPError, URLError, ValueError, TimeoutError):
+        ssl_context = ssl._create_unverified_context()
+        request = Request(
+            resolved_url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            },
+        )
+
+        with urlopen(request, context=ssl_context, timeout=15) as response:
+            if response.status == 200:
+                return response.read()
+            return None
+
+    except Exception as e:
         return None
 
 
@@ -126,8 +147,6 @@ def _row_tcs(table: Table, row_index: int):
 
 
 def _paragraph_mark_rpr(paragraph):
-    # Some template cells hold an empty paragraph whose formatting (font size etc.)
-    # lives only on the paragraph-mark rPr, with no actual <w:r> run underneath.
     p_pr = paragraph._p.find(qn("w:pPr"))
     if p_pr is None:
         return None
@@ -145,9 +164,6 @@ def _new_run_with_paragraph_formatting(paragraph, text: str = ""):
 
 
 def _set_tc_text(tc, table: Table, value: str) -> None:
-    # Write through the first existing run so template formatting (font/color) survives;
-    # cell.text = value would replace the paragraph and drop that formatting. New runs
-    # (for cells with no run at all) borrow the paragraph-mark's rPr for the same reason.
     cell = _Cell(tc, table)
     paragraphs = cell.paragraphs
     if not paragraphs:
@@ -188,12 +204,15 @@ def _set_tc_image_or_text(tc, table: Table, value: str) -> None:
         if first_paragraph.runs
         else _new_run_with_paragraph_formatting(first_paragraph)
     )
-    run.add_picture(io.BytesIO(image_bytes), width=Emu(IMAGE_WIDTH_EMU))
+
+    try:
+        run.add_picture(io.BytesIO(image_bytes), width=Emu(IMAGE_WIDTH_EMU))
+    except (UnrecognizedImageError, Exception):
+        # 유효하지 않은 이미지 파일이거나 다운로드 에러 시 텍스트로 안전하게 대체
+        _set_tc_text(tc, table, value)
 
 
 def _ensure_row_pair(table: Table, pair_index: int) -> int:
-    # Each data row is a vertically merged "restart" + "continue" <w:tr> pair. The
-    # template pre-builds a handful of blank pairs; clone the last one for overflow.
     restart_index = DATA_START_ROW_INDEX + pair_index * 2
     while len(table.rows) <= restart_index + 1:
         last_restart = table.rows[-2]._tr
@@ -203,7 +222,9 @@ def _ensure_row_pair(table: Table, pair_index: int) -> int:
     return restart_index
 
 
-def _write_data_row(table: Table, restart_index: int, values: list[str]) -> None:
+def _write_data_row(
+    table: Table, restart_index: int, values: list[str]
+) -> None:
     tcs = _row_tcs(table, restart_index)
     for column_index, value in enumerate(values[:DATA_COLUMN_COUNT]):
         if column_index >= len(tcs):
@@ -232,7 +253,9 @@ def fill_risk_assessment_form_docx(
     if company_name and COMPANY_NAME_TC_INDEX < len(meta_tcs):
         _set_tc_text(meta_tcs[COMPANY_NAME_TC_INDEX], table, company_name)
     if GENERATED_DATE_TC_INDEX < len(meta_tcs):
-        _set_tc_text(meta_tcs[GENERATED_DATE_TC_INDEX], table, date.today().isoformat())
+        _set_tc_text(
+            meta_tcs[GENERATED_DATE_TC_INDEX], table, date.today().isoformat()
+        )
 
     for pair_index, row in enumerate(correction_result.corrected_rows):
         restart_index = _ensure_row_pair(table, pair_index)
@@ -243,6 +266,8 @@ def fill_risk_assessment_form_docx(
         document.save(str(output_path))
         return str(output_path)
     except PermissionError:
-        fallback_path = output_path.with_name(f"{output_path.stem}_new{output_path.suffix}")
+        fallback_path = output_path.with_name(
+            f"{output_path.stem}_new{output_path.suffix}"
+        )
         document.save(str(fallback_path))
         return str(fallback_path)
