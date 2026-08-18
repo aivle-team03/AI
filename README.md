@@ -10,12 +10,12 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
   <a href="videoagent/README.md"><img src="https://img.shields.io/badge/VideoAgent-교육%20영상-ED6C02?style=for-the-badge&logo=google&logoColor=white" alt="VideoAgent 문서"></a>
 </p>
 
-| 바로가기 | 담당 기능 | 상세 문서 |
+| 바로가기 | 담당 기능 | README |
 | --- | --- | --- |
-| 🤖 **AI Agent** | 안전 관리·교육·법령 질의 응답 | [열기](aiagent/README.md) |
-| 👁️ **AI Vision** | CCTV 위험 감지 및 AI 사진 검증 | [열기](ai_vision/Vision.md) |
-| 📝 **Report Agent** | 안전 관리 문서 생성 | [열기](report_agent/README.md) |
-| 🎬 **VideoAgent** | 교육 영상 비동기 생성 | [열기](videoagent/README.md) |
+| **AI Agent** | 안전 관리·교육·법령 질의 응답 | [바로가기](aiagent/README.md) |
+| **AI Vision** | CCTV 위험 감지 및 AI 사진 검증 | [바로가기](ai_vision/Vision.md) |
+| **Report Agent** | 안전 관리 문서 생성 | [바로가기](report_agent/README.md) |
+| **VideoAgent** | 교육 영상 비동기 생성 | [바로가기](videoagent/README.md) |
 
 ## 기술 스택
 
@@ -48,9 +48,21 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 
 ## AI 기능
 
-### AI Agent — `aiagent`
+| 번호 | 기능 | 설명 |
+| --- | --- | --- |
+| 1 | [AI Agent](#1-ai-agent--aiagent) | 안전 관리·교육·법령 질의 응답 |
+| 2 | [CCTV Vision](#2-cctv-vision--ai_visionai_serverpy) | CCTV 위험 감지와 이벤트 전송 |
+| 3 | [Action Photo Verify](#3-action-photo-verify--ai_visionai_verifypy) | 조치 전후 사진 검증 |
+| 4 | [Report Agent](#4-report-agent--report_agent) | 안전 관리 문서 생성 |
+| 5 | [VideoAgent](#5-videoagent--videoagent) | 교육 영상 비동기 생성 |
+
+### 1. AI Agent — `aiagent`
+
+#### 1-1. 개요
 
 안전·조치 이력, 교육 현황, 산업안전 법령 정보를 기반으로 질문에 답하는 챗봇 API입니다. JWT로 사용자와 회사를 확인한 뒤, 질문의 의도를 분석하여 조치 관리·교육 관리·법령 정보 영역으로 분류하고 관련 데이터를 조회해 답변을 생성합니다.
+
+#### 1-2. API 및 특징
 
 - `POST /api/agent/query`
 - `GET /health`
@@ -58,7 +70,7 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 - 안전 관리 데이터는 backend 및 읽기 전용 AI DB에서 조회하고, 법령 관련 질의는 국가법령정보 Open API를 활용합니다.
 - 조회 결과에 없는 수치나 상태를 임의로 만들지 않고, 사용자 권한과 회사 범위 안의 데이터에 기반해 응답하는 것을 원칙으로 합니다.
 
-**처리 흐름**
+#### 1-3. 처리 흐름
 
 ```text
 사용자 질문 → JWT/회사 범위 확인 → 대화 문맥 조회 → Router Agent
@@ -67,9 +79,15 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 
 조치 관리 영역에서는 위험 이벤트, 조치 진행 상태, 승인·반려 현황, 관련 조치 이력을 확인합니다. 교육 관리 영역에서는 교육 과정, 대상자, 이수·미이수 현황, 과정별 진행 정보를 다룹니다. 법령 정보 영역에서는 관련 조문을 조회하고 출처와 함께 안내합니다. 서비스는 업무 데이터를 직접 수정하지 않는 조회·응답 계층으로 동작합니다.
 
-### CCTV Vision — `ai_vision/ai_server.py`
+---
+
+### 2. CCTV Vision — `ai_vision/ai_server.py`
+
+#### 2-1. 개요
 
 YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV 영상과 장비 점검 영상을 분석합니다. 화재·연기, 지게차-작업자 근접 위험, 소화장비 상태를 감지하고 MJPEG 스트림과 분석 프레임을 제공합니다. 감지 시 스냅샷을 S3에 저장하고 backend의 `POST /api/ai/events`로 이벤트를 전송합니다.
+
+#### 2-2. API 및 특징
 
 - `GET /health`, `GET /streams/{camera_id}`, `GET /frames/{camera_id}`
 - `GET /equipment/status`, `GET /events`, `POST /reset`
@@ -80,7 +98,7 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 - 위험 감지 시 스냅샷을 저장하고, backend에 이벤트를 등록합니다.
 - 등록된 이벤트는 모니터링·조치 이력·조치 전후 사진 검증 흐름으로 연결됩니다.
 
-#### 화재·연기 모델 학습 및 개선 방향
+#### 2-3. 화재·연기 모델 학습 및 개선 방향
 
 화재·연기 감지 모델은 기존 화재·연기 객체 탐지 모델을 기반으로, Roboflow에서 수집·관리한 데이터셋을 통합하여 추가 파인튜닝한 모델입니다. 목적은 단순한 Fire/Smoke 탐지 데이터의 확대뿐 아니라, 실제 물류창고 CCTV 환경에서 발생하던 False Positive를 줄이는 것이었습니다.
 
@@ -94,7 +112,7 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 
 학습용 데이터셋과 평가 산출물은 `ai_vision/evaluation_dataset` 및 `ai_vision/runs/detect/evaluation_result`에 보관되어 있습니다. 운영 서비스가 참조하는 가중치 변경은 별도의 성능 검증과 `CameraConfig` 설정 변경을 통해서만 반영합니다.
 
-#### Vision 처리 흐름
+#### 2-4. Vision 처리 흐름
 
 1. 서비스 시작 시 추론 모델을 로드하고 워밍업합니다.
 2. 동적 CCTV 스트림은 프레임을 분석하여 화재·연기 또는 지게차-작업자 근접 위험을 판단합니다.
@@ -104,9 +122,15 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 
 이 구조로 실시간 모니터링 화면과 업무 이력이 분리됩니다. 영상 분석 자체는 Vision 서비스가 담당하지만, 이벤트·조치·검증 결과의 영속화와 사용자 권한 관리는 backend가 담당합니다. 따라서 감지 결과는 단순 알림으로 끝나지 않고 조치 이력과 후속 검증으로 이어질 수 있습니다.
 
-### Action Photo Verify — `ai_vision/ai_verify.py`
+---
+
+### 3. Action Photo Verify — `ai_vision/ai_verify.py`
+
+#### 3-1. 개요
 
 조치 전·후 사진을 OpenAI로 비교하여 조치 수행 여부를 판단하는 서비스입니다. 조치 내용과 이미지 쌍을 함께 분석하여 실제로 위험 요인이 개선되었는지 판별하고, 검증 여부·신뢰도·요약을 반환합니다.
+
+#### 3-2. API 및 특징
 
 - `POST /api/ai/verify-action`
 - backend가 이 API를 호출하고, 응답을 조치 이력의 AI 검증 결과로 저장합니다.
@@ -115,9 +139,15 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 
 AI Verify는 CCTV 감지 이후의 **조치 완료 확인** 단계에 사용됩니다. 사용자가 현장 조치 후 사진을 등록하면 backend가 조치 전 이미지·조치 후 이미지·조치 설명을 준비해 검증 API에 전달하고, 반환된 분석 결과를 조치 이력에 연결합니다. 이를 통해 단순 사진 첨부가 아니라 위험 요소가 실제로 개선되었는지 확인하는 보조 근거를 제공합니다.
 
-### Report Agent — `report_agent`
+---
+
+### 4. Report Agent — `report_agent`
+
+#### 4-1. 개요
 
 backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 평가서, 관리 검토 보고서, 근로자 의견서 등을 생성합니다. 보고서별 요청 API가 분리되어 있어 필요한 문서 유형을 선택해 생성할 수 있습니다.
+
+#### 4-2. API 및 특징
 
 - `GET /health`
 - `/api/report/...`
@@ -127,9 +157,15 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 
 보고서 서비스는 데이터 원천과 문서 생성 책임을 분리합니다. backend에 축적된 사고·점검·조치·위험성 정보를 필요한 양식에 맞게 정리하고, 생성 요청별로 위험성 평가, 관리 검토, 작업자 의견 반영 문서 등 서로 다른 산출물을 제공합니다. 생성된 문서는 사용자가 검토할 수 있는 초안 성격이며, 기준 데이터의 최신성은 backend 데이터에 의해 결정됩니다.
 
-### VideoAgent — `videoagent`
+---
+
+### 5. VideoAgent — `videoagent`
+
+#### 5-1. 개요
 
 교육 문서(PDF/PPTX/TXT) 또는 텍스트에서 학습 목표와 스토리보드를 만들고, Veo 기반 교육 영상을 생성합니다. API는 요청을 접수하고 Celery worker가 실제 생성 파이프라인을 처리합니다. 생성 결과는 S3에 저장되고 `MEDIA_BASE_URL`을 통해 재생 URL을 구성합니다.
+
+#### 5-2. API 및 특징
 
 - `POST /video/generate`
 - `GET /video/generate/{task_id}/status`
@@ -139,7 +175,7 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 - 요청 즉시 생성 결과를 기다리지 않고 `task_id`를 반환하므로, frontend 또는 backend는 상태 API를 폴링해 진행 상황과 최종 결과를 확인합니다.
 - 최종 publish와 교육 데이터 등록은 backend의 별도 완료 처리 흐름에서 관리하므로, 사용자가 화면을 이동하거나 새로고침해도 작업 상태를 복구할 수 있습니다.
 
-**비동기 처리 흐름**
+#### 5-3. 비동기 처리 흐름
 
 ```text
 문서/텍스트 요청 → VideoAgent API → Redis 작업 등록 → Celery worker
