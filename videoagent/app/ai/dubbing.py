@@ -162,6 +162,29 @@ def _audio_duration_seconds(path: str) -> Optional[float]:
     return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
 
 
+def _tts_client():
+    """Veo 와 같은 서비스 계정 키로 TTS 클라이언트를 만든다.
+
+    기본 ADC 를 쓰면 이 서버에서는 자격 증명을 찾지 못한다(Veo 는 키 파일을 직접 지정해
+    동작 중이다). veo/client.py 와 같은 경로 규칙을 따라 인증을 일치시킨다.
+
+    transport 는 REST 로 고정한다. 기본값인 gRPC 는 Celery prefork 워커에서 fork 이후
+    데드락에 빠져 예외도 로그도 없이 멈추는 사례가 있다. 호출량이 영상당 몇 회뿐이라
+    gRPC 의 성능 이점보다 fork 안전성이 중요하다.
+    """
+    from google.cloud import texttospeech
+    from google.oauth2 import service_account
+
+    key_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS") or "video_create.json"
+    if not os.path.exists(key_file):
+        raise FileNotFoundError(f"서비스 계정 키를 찾을 수 없습니다: {key_file}")
+
+    credentials = service_account.Credentials.from_service_account_file(
+        key_file, scopes=["https://www.googleapis.com/auth/cloud-platform"]
+    )
+    return texttospeech.TextToSpeechClient(credentials=credentials, transport="rest")
+
+
 def _synthesize_sync(text: str, language: str, speaking_rate: float, out_path: str) -> bool:
     try:
         from google.cloud import texttospeech
@@ -171,7 +194,7 @@ def _synthesize_sync(text: str, language: str, speaking_rate: float, out_path: s
 
     language_code, voice_name = _TTS_VOICES.get(language, _TTS_VOICES["en"])
     try:
-        client = texttospeech.TextToSpeechClient()
+        client = _tts_client()
         response = client.synthesize_speech(
             input=texttospeech.SynthesisInput(text=text),
             voice=texttospeech.VoiceSelectionParams(
@@ -181,6 +204,8 @@ def _synthesize_sync(text: str, language: str, speaking_rate: float, out_path: s
                 audio_encoding=texttospeech.AudioEncoding.MP3,
                 speaking_rate=speaking_rate,
             ),
+            # 값이 없으면 무한정 기다린다. 더빙은 부가 기능이라 막히면 포기하는 편이 낫다.
+            timeout=30,
         )
     except Exception as error:
         print(f"[Dubbing] TTS 합성 실패: {error}")
