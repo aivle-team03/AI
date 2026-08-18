@@ -148,9 +148,12 @@ _MAX_SPEAKING_RATE = 1.25
 def _audio_duration_seconds(path: str) -> Optional[float]:
     """ffmpeg 로 오디오 길이를 잰다. imageio-ffmpeg 에 ffprobe 는 없어서 stderr 를 읽는다."""
     try:
+        # -nostdin 과 stdin 차단이 둘 다 필요하다. ffmpeg 는 기본적으로 stdin 을 대화형으로
+        # 읽어서, 워커처럼 stdin 이 닫히지 않는 환경에서는 출력 파일 없이 -i 만 줘도 대기한다.
         result = subprocess.run(
-            [_get_ffmpeg_executable(), "-i", path],
+            [_get_ffmpeg_executable(), "-nostdin", "-i", path],
             capture_output=True, text=True, errors="ignore",
+            stdin=subprocess.DEVNULL, timeout=15,
         )
     except Exception:
         return None
@@ -251,7 +254,7 @@ def _replace_audio_sync(clip_path: str, audio_path: str, out_path: str) -> bool:
     같이 잘려 장면이 사라진다.
     """
     command = [
-        _get_ffmpeg_executable(), "-y",
+        _get_ffmpeg_executable(), "-y", "-nostdin",
         "-i", clip_path,
         "-i", audio_path,
         "-filter_complex", f"[1:a]adelay={int(_LEAD_IN_SECONDS * 1000)}:all=1,apad[a]",
@@ -261,7 +264,10 @@ def _replace_audio_sync(clip_path: str, audio_path: str, out_path: str) -> bool:
         out_path,
     ]
     try:
-        result = subprocess.run(command, capture_output=True, text=True, errors="ignore")
+        result = subprocess.run(
+            command, capture_output=True, text=True, errors="ignore",
+            stdin=subprocess.DEVNULL, timeout=120,
+        )
     except Exception as error:
         print(f"[Dubbing] 오디오 교체 실행 실패: {error}")
         return False
