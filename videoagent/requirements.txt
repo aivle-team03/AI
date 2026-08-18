@@ -8,6 +8,7 @@ redis
 tenacity
 boto3
 google-auth
+google-cloud-texttospeech
 PyMuPDF
 pypdf
 python-pptx
