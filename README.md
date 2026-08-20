@@ -152,10 +152,6 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 - 실제 물류창고 환경의 선반, 박스, 벽, 시설물 이미지를 negative 데이터로 추가했습니다. 화재나 연기가 없는 창고 장면에서는 아무것도 탐지하지 않도록 학습하기 위한 구성입니다.
 - 기존 모델이 화재로 잘못 판단하기 쉬웠던 소화기, 소화전·소화전함 이미지를 Fire/Smoke 라벨 없이 negative 데이터로 추가했습니다.
 
-이는 실제 서비스에서 자주 발생한 오탐 대상에 집중한 **Hard Negative 학습** 방식입니다. 즉, 소화기·소화전·빨간색 시설물처럼 화재와 시각적으로 혼동될 수 있는 물체가 보이더라도 화재로 탐지하지 않도록 모델을 보완했습니다. 결과적으로 이번 파인튜닝은 화재·연기 탐지 성능을 보강하는 동시에, 물류창고 CCTV 환경에 맞춘 오탐 감소를 목표로 합니다.
-
-학습용 데이터셋과 평가 산출물은 `ai_vision/evaluation_dataset` 및 `ai_vision/runs/detect/evaluation_result`에 보관되어 있습니다. 운영 서비스가 참조하는 가중치 변경은 별도의 성능 검증과 `CameraConfig` 설정 변경을 통해서만 반영합니다.
-
 ### **2-4. Vision 처리 흐름**
 
 1. 서비스 시작 시 추론 모델을 로드하고 워밍업합니다.
@@ -245,8 +241,9 @@ VideoAgent는 인증과 교육 DB의 직접 저장을 담당하지 않습니다.
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
 ```
+
+각 서비스 디렉터리에서 해당 서비스의 `requirements.txt`를 설치합니다.
 
 ### **AI Agent**
 

@@ -1,8 +1,0 @@
-C:\Users\User\Desktop\에이블스쿨\빅프로젝트\AI\report_agent\.venv\Lib\site-packages\langgraph\cache\base\__init__.py:8: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
-  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
-INFO:     Started server process [39012]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8002): [winerror 10048] 각 소켓 주소(프로토콜/네트워크 주소/포트)는 하나만 사용할 수 있습니다
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
