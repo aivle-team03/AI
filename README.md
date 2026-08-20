@@ -1,14 +1,14 @@
-# BOSS AI
+# <img src="public/favicon.png" width="32" alt="BOSS" style="vertical-align: -0.12em;"> **BOSS AI**
 
-BOSS의 AI 기능 저장소입니다. 
-AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 영상 생성을 각각 독립 서비스로 제공합니다.
-
-<p align="center">
+<p align="left">
   <a href="aiagent/README.md"><img src="https://img.shields.io/badge/AI%20Agent-질의%20응답-5B5BD6?style=for-the-badge&logo=openai&logoColor=white" alt="AI Agent 문서"></a>
   <a href="ai_vision/Vision.md"><img src="https://img.shields.io/badge/AI%20Vision-CCTV%20분석-00897B?style=for-the-badge&logo=opencv&logoColor=white" alt="AI Vision 문서"></a>
   <a href="report_agent/README.md"><img src="https://img.shields.io/badge/Report%20Agent-보고서%20생성-7B1FA2?style=for-the-badge&logo=files&logoColor=white" alt="Report Agent 문서"></a>
   <a href="videoagent/README.md"><img src="https://img.shields.io/badge/VideoAgent-교육%20영상-ED6C02?style=for-the-badge&logo=google&logoColor=white" alt="VideoAgent 문서"></a>
 </p>
+
+> BOSS의 AI 기능 저장소입니다. 
+> AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 영상 생성을 각각 독립 서비스로 제공합니다.
 
 | 바로가기 | 담당 기능 | README |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 | **Report Agent** | 안전 관리 문서 생성 | [바로가기](report_agent/README.md) |
 | **VideoAgent** | 교육 영상 비동기 생성 | [바로가기](videoagent/README.md) |
 
-## 기술 스택
+## 🛠️ **기술 스택**
 
 <p>
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
@@ -46,23 +46,65 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 | 비동기 작업 | Celery, Redis | VideoAgent |
 | 미디어·클라우드 | AWS S3, CloudFront 연동, Google Cloud/Veo | AI Vision, VideoAgent |
 
-## AI 기능
+## 🔎 **AI 서비스 구성**
+
+```text
+Frontend / Backend
+  ├─ AI Agent :8001
+  │   └─ 안전 관리·교육·법령 질의 응답
+  ├─ AI Vision :8002
+  │   ├─ CCTV 분석 스트림·장비 상태·실시간 감지 이벤트
+  │   └─ 감지 스냅샷 저장 → Backend /api/ai/events 전송
+  ├─ AI Verify :8003
+  │   └─ 조치 전·후 사진 비교 및 검증 결과 제공
+  ├─ Report Agent :8004
+  │   └─ Backend 안전 데이터를 기반으로 문서 생성
+  └─ VideoAgent :8100
+      └─ Redis·Celery 기반 교육 영상 비동기 생성
+```
+
+| 서비스 | 역할 | 로컬 기본 포트 |
+| --- | --- | ---: |
+| `aiagent` | 자연어 안전 관리 챗봇 API | 8001 |
+| `ai_vision/ai_server.py` | CCTV 객체·위험 감지, 스트림, 이벤트 전송 | 8002 |
+| `ai_vision/ai_verify.py` | 조치 전/후 사진 AI 검증 | 8003 |
+| `report_agent` | 안전 보고서 생성 API | 8004 |
+| `videoagent` | 교육 영상 생성 API 및 Celery worker | 8100 |
+
+AI 서비스는 분석·생성·검증을 담당하고, 사용자 인증과 업무 데이터의 영속화는 Backend가 담당합니다. Vision의 감지 이벤트와 S3 스냅샷은 Backend API를 통해 이후 점검·조치 이력으로 연결됩니다.
+
+## 📁 **디렉터리 구조**
+
+```text
+AI/
+├─ .github/workflows/      # GitHub Actions 배포 자동화
+├─ aiagent/                # 안전 관리·교육·법령 질의 AI Agent
+├─ ai_vision/              # CCTV Vision·사진 검증·모델 및 평가 산출물
+├─ report_agent/           # 안전 관리 문서 생성 Agent
+├─ videoagent/             # 교육 영상 API·Celery worker
+├─ public/                 # README 파비콘 등 공용 정적 자산
+└─ README.md               # AI 서비스 통합 안내
+```
+
+## 💡 **AI 주요 기능**
 
 | 번호 | 기능 | 설명 |
 | --- | --- | --- |
-| 1 | [AI Agent](#1-ai-agent--aiagent) | 안전 관리·교육·법령 질의 응답 |
-| 2 | [CCTV Vision](#2-cctv-vision--ai_visionai_serverpy) | CCTV 위험 감지와 이벤트 전송 |
-| 3 | [Action Photo Verify](#3-action-photo-verify--ai_visionai_verifypy) | 조치 전후 사진 검증 |
-| 4 | [Report Agent](#4-report-agent--report_agent) | 안전 관리 문서 생성 |
-| 5 | [VideoAgent](#5-videoagent--videoagent) | 교육 영상 비동기 생성 |
+| 1 | [AI Agent](#ai-agent) | 안전 관리·교육·법령 질의 응답 |
+| 2 | [CCTV Vision](#cctv-vision) | CCTV 위험 감지와 이벤트 전송 |
+| 3 | [AI Verify](#action-photo-verify) | 조치 전후 사진 검증 |
+| 4 | [Report Agent](#report-agent) | 안전 관리 문서 생성 |
+| 5 | [VideoAgent](#videoagent) | 교육 영상 비동기 생성 |
 
-### 1. AI Agent — `aiagent`
+<a id="ai-agent"></a>
 
-#### 1-1. 개요
+## 💻 **1. AI Agent** — `aiagent`
+
+### **1-1. 개요**
 
 안전·조치 이력, 교육 현황, 산업안전 법령 정보를 기반으로 질문에 답하는 챗봇 API입니다. JWT로 사용자와 회사를 확인한 뒤, 질문의 의도를 분석하여 조치 관리·교육 관리·법령 정보 영역으로 분류하고 관련 데이터를 조회해 답변을 생성합니다.
 
-#### 1-2. API 및 특징
+### **1-2. API 및 특징**
 
 - `POST /api/agent/query`
 - `GET /health`
@@ -70,7 +112,7 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 - 안전 관리 데이터는 backend 및 읽기 전용 AI DB에서 조회하고, 법령 관련 질의는 국가법령정보 Open API를 활용합니다.
 - 조회 결과에 없는 수치나 상태를 임의로 만들지 않고, 사용자 권한과 회사 범위 안의 데이터에 기반해 응답하는 것을 원칙으로 합니다.
 
-#### 1-3. 처리 흐름
+### **1-3. 처리 흐름**
 
 ```text
 사용자 질문 → JWT/회사 범위 확인 → 대화 문맥 조회 → Router Agent
@@ -81,13 +123,15 @@ AI 비서, CCTV 위험 감지, 조치 사진 검증, 안전 보고서, 교육 �
 
 ---
 
-### 2. CCTV Vision — `ai_vision/ai_server.py`
+<a id="cctv-vision"></a>
 
-#### 2-1. 개요
+## 📹 **2. CCTV Vision** — `ai_vision/ai_server.py`
+
+### **2-1. 개요**
 
 YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV 영상과 장비 점검 영상을 분석합니다. 화재·연기, 지게차-작업자 근접 위험, 소화장비 상태를 감지하고 MJPEG 스트림과 분석 프레임을 제공합니다. 감지 시 스냅샷을 S3에 저장하고 backend의 `POST /api/ai/events`로 이벤트를 전송합니다.
 
-#### 2-2. API 및 특징
+### **2-2. API 및 특징**
 
 - `GET /health`, `GET /streams/{camera_id}`, `GET /frames/{camera_id}`
 - `GET /equipment/status`, `GET /events`, `POST /reset`
@@ -98,7 +142,7 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 - 위험 감지 시 스냅샷을 저장하고, backend에 이벤트를 등록합니다.
 - 등록된 이벤트는 모니터링·조치 이력·조치 전후 사진 검증 흐름으로 연결됩니다.
 
-#### 2-3. 화재·연기 모델 학습 및 개선 방향
+### **2-3. 화재·연기 모델 학습 및 개선 방향**
 
 화재·연기 감지 모델은 기존 화재·연기 객체 탐지 모델을 기반으로, Roboflow에서 수집·관리한 데이터셋을 통합하여 추가 파인튜닝한 모델입니다. 목적은 단순한 Fire/Smoke 탐지 데이터의 확대뿐 아니라, 실제 물류창고 CCTV 환경에서 발생하던 False Positive를 줄이는 것이었습니다.
 
@@ -112,7 +156,7 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 
 학습용 데이터셋과 평가 산출물은 `ai_vision/evaluation_dataset` 및 `ai_vision/runs/detect/evaluation_result`에 보관되어 있습니다. 운영 서비스가 참조하는 가중치 변경은 별도의 성능 검증과 `CameraConfig` 설정 변경을 통해서만 반영합니다.
 
-#### 2-4. Vision 처리 흐름
+### **2-4. Vision 처리 흐름**
 
 1. 서비스 시작 시 추론 모델을 로드하고 워밍업합니다.
 2. 동적 CCTV 스트림은 프레임을 분석하여 화재·연기 또는 지게차-작업자 근접 위험을 판단합니다.
@@ -124,13 +168,15 @@ YOLO 기반 모델을 산업안전 영상 데이터로 파인튜닝하여 CCTV �
 
 ---
 
-### 3. Action Photo Verify — `ai_vision/ai_verify.py`
+<a id="action-photo-verify"></a>
 
-#### 3-1. 개요
+## 🖼️ **3. AI Verify** — `ai_vision/ai_verify.py`
+
+### **3-1. 개요**
 
 조치 전·후 사진을 OpenAI로 비교하여 조치 수행 여부를 판단하는 서비스입니다. 조치 내용과 이미지 쌍을 함께 분석하여 실제로 위험 요인이 개선되었는지 판별하고, 검증 여부·신뢰도·요약을 반환합니다.
 
-#### 3-2. API 및 특징
+### **3-2. API 및 특징**
 
 - `POST /api/ai/verify-action`
 - backend가 이 API를 호출하고, 응답을 조치 이력의 AI 검증 결과로 저장합니다.
@@ -141,13 +187,15 @@ AI Verify는 CCTV 감지 이후의 **조치 완료 확인** 단계에 사용됩�
 
 ---
 
-### 4. Report Agent — `report_agent`
+<a id="report-agent"></a>
 
-#### 4-1. 개요
+## 📄 **4. Report Agent** — `report_agent`
+
+### **4-1. 개요**
 
 backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 평가서, 관리 검토 보고서, 근로자 의견서 등을 생성합니다. 보고서별 요청 API가 분리되어 있어 필요한 문서 유형을 선택해 생성할 수 있습니다.
 
-#### 4-2. API 및 특징
+### **4-2. API 및 특징**
 
 - `GET /health`
 - `/api/report/...`
@@ -159,13 +207,15 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 
 ---
 
-### 5. VideoAgent — `videoagent`
+<a id="videoagent"></a>
 
-#### 5-1. 개요
+## 🎬 **5. VideoAgent** — `videoagent`
+
+### **5-1. 개요**
 
 교육 문서(PDF/PPTX/TXT) 또는 텍스트에서 학습 목표와 스토리보드를 만들고, Veo 기반 교육 영상을 생성합니다. API는 요청을 접수하고 Celery worker가 실제 생성 파이프라인을 처리합니다. 생성 결과는 S3에 저장되고 `MEDIA_BASE_URL`을 통해 재생 URL을 구성합니다.
 
-#### 5-2. API 및 특징
+### **5-2. API 및 특징**
 
 - `POST /video/generate`
 - `GET /video/generate/{task_id}/status`
@@ -175,7 +225,7 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 - 요청 즉시 생성 결과를 기다리지 않고 `task_id`를 반환하므로, frontend 또는 backend는 상태 API를 폴링해 진행 상황과 최종 결과를 확인합니다.
 - 최종 publish와 교육 데이터 등록은 backend의 별도 완료 처리 흐름에서 관리하므로, 사용자가 화면을 이동하거나 새로고침해도 작업 상태를 복구할 수 있습니다.
 
-#### 5-3. 비동기 처리 흐름
+### **5-3. 비동기 처리 흐름**
 
 ```text
 문서/텍스트 요청 → VideoAgent API → Redis 작업 등록 → Celery worker
@@ -185,21 +235,11 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 
 VideoAgent는 인증과 교육 DB의 직접 저장을 담당하지 않습니다. backend가 사용자 권한, 회사 구분, 최종 교육 콘텐츠 등록과 공개 여부를 관리하고, VideoAgent는 영상 생성과 작업 상태 제공에 집중합니다. 이 분리 덕분에 긴 영상 생성 작업도 웹 화면의 이동·새로고침과 무관하게 서버 측에서 이어집니다.
 
-## 서비스 구성
-
-| 디렉터리 | 역할 | 로컬 기본 포트 |
-| --- | --- | ---: |
-| `aiagent` | 자연어 안전 관리 챗봇 API | 8001 |
-| `ai_vision/ai_server.py` | CCTV 객체·위험 감지, 스트림, 이벤트 전송 | 8002 |
-| `ai_vision/ai_verify.py` | 조치 전/후 사진 AI 검증 | 8003 |
-| `report_agent` | 안전 보고서 생성 API | 8004 |
-| `videoagent` | 교육 영상 생성 API 및 Celery worker | 8100 |
-
-## 로컬 개발 실행
+## 💻 **로컬 개발 실행**
 
 운영 서버에서는 아래 명령으로 직접 실행하지 않고 마지막의 systemd 절차를 사용합니다.
 
-### 공통 준비
+### **공통 준비**
 
 ```powershell
 python -m venv .venv
@@ -208,7 +248,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-### AI Agent
+### **AI Agent**
 
 ```powershell
 cd aiagent
@@ -216,7 +256,7 @@ Copy-Item .env.example .env
 python -m uvicorn app.server:app --reload --port 8001
 ```
 
-### CCTV Vision과 사진 검증
+### **CCTV Vision과 사진 검증**
 
 로컬에서는 backend를 먼저 `127.0.0.1:8000`에서 실행하고 `ai_vision/.env`의 `AI_BACKEND_URL`을 그 주소로 설정합니다.
 
@@ -240,7 +280,7 @@ python -m uvicorn ai_vision.ai_server:app --host 127.0.0.1 --port 8002
 python -m uvicorn ai_vision.ai_verify:app --host 127.0.0.1 --port 8003
 ```
 
-### Report Agent
+### **Report Agent**
 
 ```powershell
 cd report_agent
@@ -252,7 +292,7 @@ python -m uvicorn app.main:app --host 127.0.0.1 --reload --reload-dir app --port
 
 Swagger: `http://127.0.0.1:8004/docs`
 
-### VideoAgent
+### **VideoAgent**
 
 VideoAgent는 Redis, API, Celery worker를 모두 실행해야 합니다.
 
@@ -276,7 +316,7 @@ celery -A app.celery_app worker --loglevel=info --pool=solo
 
 Windows에서는 `--pool=solo`가 필요합니다. API만 실행하면 요청은 접수되어도 worker가 없어 영상 생성은 진행되지 않습니다. API와 worker는 임시 파일을 공유하므로 같은 머신에서 실행해야 합니다.
 
-## AI 이벤트와 S3 미디어
+## 🖼️ **AI 이벤트와 S3 미디어**
 
 `ai_server`는 스냅샷을 다음 S3 key에 저장합니다.
 
@@ -292,11 +332,11 @@ backend와 DB에는 S3 URL 전체가 아닌 아래 경로를 전달합니다.
 
 backend가 `MEDIA_BASE_URL`(CloudFront 또는 미디어 도메인)을 붙여 브라우저 URL을 만듭니다. 따라서 스냅샷 URL에 `/vision`이나 `VITE_VISION_API_URL`을 덧붙이지 않습니다. 올바른 미디어 경로는 `/media/ai-snapshots/...`입니다.
 
-## 환경 변수
+## ⚙️ **환경 변수**
 
 비밀값은 Git에 커밋하지 않습니다. 각 서비스의 `.env`는 서버 또는 개발 PC에서 관리하고, `.env.example`이 있으면 복사하여 채웁니다.
 
-### `ai_vision/.env`
+### **`ai_vision/.env`**
 
 `ai_server.py`와 `ai_verify.py`는 같은 `ai_vision/.env`를 읽습니다.
 
@@ -315,14 +355,14 @@ AI_INSPECTION_INTERVAL_SECONDS="600"
 | `report_agent` | `OPENAI_API_KEY`, `OPENAI_MODEL`, `MAX_RETRY_COUNT` |
 | `videoagent` | `REDIS_URL`, GCP/Veo·Gemini 인증값, `BACKEND_API_URL`, `AWS_S3_MEDIA_BUCKET`, `AWS_REGION`, `MEDIA_BASE_URL` |
 
-## 점검 순서
+## 🔎 **점검 순서**
 
 1. 각 서비스의 health endpoint를 확인합니다.
 2. CCTV 감지를 발생시켜 S3 object, backend 이벤트 응답, DB의 `/media/...` 값, frontend 이미지 표시까지 확인합니다.
 3. VideoAgent는 API, Redis, Celery worker가 모두 실행 중인지 확인합니다.
 4. backend finalizer를 사용하는 환경에서는 영상 생성의 최종 DB publish 상태도 확인합니다.
 
-## 하위 서비스 문서
+## 📚 **하위 서비스 문서**
 
 - [AI Agent](aiagent/README.md)
 - [CCTV Vision](ai_vision/Vision.md)
@@ -331,11 +371,11 @@ AI_INSPECTION_INTERVAL_SECONDS="600"
 
 하위 README는 각 기능의 상세 로컬 개발 문서입니다. 기존 VideoAgent 문서에는 Cloudinary 기반 설명이 남아 있을 수 있으나, 현재 코드의 미디어 저장 설정은 S3 bucket과 `MEDIA_BASE_URL`을 사용합니다.
 
-## 운영 배포
+## 🚀 **운영 배포**
 
 운영에서는 `uvicorn`이나 `celery`를 터미널에서 직접 실행하지 않습니다. `systemd`가 프로세스 실행, 재시작, 부팅 시 시작을 관리하며, CPU EC2의 코드 반영과 서비스 재시작은 GitHub Actions로 자동화되어 있습니다.
 
-### GitHub Actions 자동 배포
+### **GitHub Actions 자동 배포**
 
 AI 저장소의 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)은 `main` 브랜치 push 또는 GitHub Actions의 수동 실행(`workflow_dispatch`)을 트리거로 동작합니다. GitHub-hosted runner가 SSH로 CPU EC2에 접속한 뒤 다음 순서로 배포합니다.
 
@@ -352,7 +392,7 @@ main push 또는 수동 실행
 
 GitHub Actions는 명령을 전달하는 역할을 하고, 실제 코드 pull과 systemd 서비스 재시작은 EC2에서 수행됩니다. 따라서 배포가 성공하려면 서버의 배포 경로·체크아웃 브랜치·systemd unit 이름이 워크플로 설정과 일치해야 합니다. 현재 워크플로는 CPU EC2만 자동 배포하며, GPU Vision 서비스는 아래 수동 반영 절차를 사용합니다.
 
-### 운영 아키텍처
+### **운영 아키텍처**
 
 ```text
 Browser
@@ -384,7 +424,7 @@ location /vision/ {
 
 GPU 보안 그룹의 8002는 CPU EC2 보안 그룹만 접근하도록 제한합니다. GPU가 backend로 이벤트를 전송하므로 CPU backend의 8000도 GPU 보안 그룹에서 접근할 수 있어야 합니다. 운영 GPU의 `AI_PUBLIC_URL`은 `https://<app-domain>/vision`이고, `AI_BACKEND_URL`은 CPU EC2 private IP 또는 private DNS를 사용합니다.
 
-### CPU EC2 수동 반영 및 복구
+### **CPU EC2 수동 반영 및 복구**
 
 일반적인 CPU 배포는 GitHub Actions가 처리합니다. 아래 명령은 Actions 실패, 서버 상태 복구, 또는 서버에서 직접 점검해야 할 때 사용합니다.
 
@@ -401,7 +441,7 @@ sudo systemctl status boss-chatbot boss-ai-verify boss-report boss-video-api bos
 
 VideoAgent worker는 작업 실행 중 재시작하지 않습니다. backend의 영상 생성 완료 처리 worker(`boss-video-generation-worker`)는 VideoAgent worker와 별도 Celery 앱/큐로 운영될 수 있으며, backend가 상태 폴링과 DB publish를 마무리합니다.
 
-### GPU EC2 Vision 서비스 반영
+### **GPU EC2 Vision 서비스 반영**
 
 현재 GitHub Actions 워크플로에는 GPU EC2 배포 단계가 없으므로, Vision 코드 변경은 GPU 서버에서 아래 절차로 수동 반영합니다.
 
