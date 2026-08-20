@@ -66,7 +66,9 @@ def upload_snapshot_to_s3(snapshot: bytes, camera_id: str) -> str:
         )
     except (BotoCoreError, ClientError) as error:
         raise RuntimeError(f"AI snapshot S3 upload failed: {error}") from error
-    return f"{SNAPSHOT_S3_PREFIX}/{object_path}"
+    # DB/백엔드는 `/media/...` 형식의 경로만 공개 S3 URL로 변환한다.
+    # S3 키에는 `media/` 접두사를 쓰되, DB에는 URL 경로 형식으로 저장한다.
+    return f"{MEDIA_URL_PREFIX}ai-snapshots/{object_path}"
 
 # 소화장비 탐지 주기
 INSPECTION_INTERVAL_SECONDS = int(os.getenv("AI_INSPECTION_INTERVAL_SECONDS", "600"))
