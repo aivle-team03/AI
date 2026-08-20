@@ -29,7 +29,7 @@ CONF_THRESHOLD = 0.4
 EVENT_API_URL = f"{os.getenv('AI_BACKEND_URL', 'http://127.0.0.1:8000').rstrip('/')}/api/ai/events"
 
 FORKLIFT_CCTV_ID = 5
-FORKLIFT_CATEGORY_ID = 1000006
+FORKLIFT_CATEGORY_ID = 20
 
 # =========================================================
 # 거리 및 위험 기준
