@@ -47,3 +47,4 @@ ai_vision/snapshots/
 .DS_Store
 .env
 test/
+report_agent/output/
