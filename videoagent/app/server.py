@@ -48,12 +48,11 @@ async def generate_video(
     category: Optional[str] = Form("공통"),
     type: Optional[str] = Form("필수"),
     request: Optional[str] = Form(None),
-    language: Optional[str] = Form("ko"),
 ):
     """문서(PDF/PPTX/TXT) 또는 텍스트로 Veo 안전 교육 영상 생성을 시작하고 task_id를 반환한다.
 
-    language 는 Veo 가 발화할 언어다(ko/en). 관리자가 만들 언어판을 고르는 값이라
-    보는 사람의 화면 언어와는 별개다.
+    영상은 항상 한국어로 만들고, 같은 클립에 번역·TTS 를 얹은 영어 더빙판을 함께 생성한다.
+    Veo 로 언어판을 따로 뽑으면 클립 비용이 그대로 두 배가 되기 때문이다.
     """
     if not file and not text_content:
         raise HTTPException(
@@ -84,7 +83,6 @@ async def generate_video(
         category=category,
         type=type,
         request=request,
-        language=language,
     )
 
     return {

@@ -127,9 +127,8 @@ def _call_gemini_for_veo_sync(api_key: str, payload: dict, models: List[str]) ->
     return None
 
 
-# 언어별 대사 규칙과 발화 지침.
-# veo_prompt 자체는 어느 언어든 영어로 쓰지만, Veo가 실제로 발화할 언어와
-# 대사 길이 기준(초당 글자 수)이 달라지므로 그 부분만 갈라 둔다.
+# 대사 규칙과 발화 지침. Veo 는 항상 한국어로 발화한다.
+# 다른 언어판은 같은 클립에 번역·TTS 를 얹는 더빙(app/ai/dubbing.py)이 만든다.
 _LANGUAGE_SPECS = {
     "ko": {
         "script_language": "한국어",
@@ -150,39 +149,14 @@ _LANGUAGE_SPECS = {
 - 한 문장을 통째로 쓰지 말고, 쉼표로 2~3개의 짧은 절로 끊어 쓰세요. 끊어 읽을 지점이 있어야 또박또박 발화됩니다.
 - 띄어쓰기를 표준에 맞춰 명확히 구분하세요.""",
     },
-    "en": {
-        "script_language": "영어",
-        "char_range": "공백 포함 40~100자",
-        "max_chars": "100자",
-        "short_range": "40~60자",
-        "half_threshold": "78자 이하",
-        "clip_rule": "50자 이하 4초 / 78자 이하 6초 / 그 외 8초. 영어 발화 속도(초당 약 12자) 기준의 추정값입니다.",
-        "speech_instruction": (
-            "speaks fluent English with clear native pronunciation, "
-            "perfectly clear English speech articulation, distinct English phonemes"
-        ),
-        "lip_sync": "natural English lip-sync",
-        "pronunciation_block": """[영어 대사 작성 지침 (필수)]
-- 이 영상을 볼 사람은 **영어가 모국어가 아닌 외국인 노동자**입니다. 원어민용 표현이 아니라 쉬운 영어로 쓰세요.
-- **전문용어와 복합명사를 피하고, 중학교 수준의 쉬운 단어로 풀어 쓰세요.**
-  예: 'rear-view mirror' -> 'the mirror behind you' / 'braking system' -> 'the brakes' / 'comply with load capacity' -> 'do not load too much'
-- 한 문장을 길게 쓰지 말고, 쉼표로 2~3개의 짧은 절로 끊어 쓰세요. 끊어 읽을 지점이 있어야 또박또박 발화됩니다.
-- 명령문(imperative)으로 쓰세요. 'You should pull the pin' 이 아니라 'First, pull the safety pin' 처럼 씁니다.
-- 축약형(don't, it's)보다 풀어 쓴 형태(do not, it is)가 발음이 또렷합니다.""",
-    },
 }
-
-
-def _language_spec(language: Optional[str]) -> Dict[str, str]:
-    return _LANGUAGE_SPECS.get(language or "ko", _LANGUAGE_SPECS["ko"])
 
 
 async def generate_veo_prompts_from_parsed_text(
     parsed_text: str,
     request: Optional[str] = None,
     file_path: Optional[str] = None,
-    target_scenes: Optional[int] = None,
-    language: str = "ko"
+    target_scenes: Optional[int] = None
 ) -> List[Dict]:
     """
     [Track 2 - Scene 분할 모드] parser.py에서 추출된 원문 텍스트(parsed_text)를 직접 입력받아,
@@ -219,7 +193,7 @@ async def generate_veo_prompts_from_parsed_text(
     else:
         target_scenes = max(1, target_scenes)
 
-    spec = _language_spec(language)
+    spec = _LANGUAGE_SPECS["ko"]
 
     user_prompt = f"""
 당신은 베테랑 영상 시나리오 작가이자 안전 교육 총괄 디렉터입니다.
@@ -400,9 +374,8 @@ async def generate_json_response(instruction: str) -> Optional[Dict[str, Any]]:
 
 
 async def generate_storyboard_scenes(
-    planning_context: str, request: Optional[str], target_scenes: Optional[int],
-    language: str = "ko"
+    planning_context: str, request: Optional[str], target_scenes: Optional[int]
 ) -> List[Dict[str, Any]]:
     return await generate_veo_prompts_from_parsed_text(
-        planning_context, request, target_scenes=target_scenes, language=language
+        planning_context, request, target_scenes=target_scenes
     )

@@ -158,7 +158,6 @@ async def create_storyboard(
     learning_objectives: List[str],
     request: Optional[str],
     target_duration_seconds: Optional[int],
-    language: str = "ko",
 ) -> List[Dict[str, Any]]:
     """[스토리보드 Agent] 학습 목표와 매핑된 장면별 대본 및 Veo 카메라 지침을 작성한다."""
     planning_context = (
@@ -169,12 +168,11 @@ async def create_storyboard(
     scenes = await generate_storyboard_scenes(
         planning_context, request, target_scenes=(
             max(1, -(-target_duration_seconds // MAX_CLIP_SECONDS)) if target_duration_seconds else None
-        ),
-        language=language
+        )
     )
     for index, scene in enumerate(scenes):
         scene["learning_objective"] = learning_objectives[index % len(learning_objectives)]
-        secs = _clip_seconds_for_script(scene.get("script", ""), language)
+        secs = _clip_seconds_for_script(scene.get("script", ""))
         scene["duration_seconds"] = secs
         # 대사 길이에 맞춰 클립 길이를 정한 뒤, veo_prompt 안의 재생 시간 언급도 같은 값으로 맞춘다.
         scene["veo_prompt"] = re.sub(
