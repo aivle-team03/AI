@@ -211,13 +211,15 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 
 교육 문서(PDF/PPTX/TXT) 또는 텍스트에서 학습 목표와 스토리보드를 만들고, Veo 기반 교육 영상을 생성합니다. API는 요청을 접수하고 Celery worker가 실제 생성 파이프라인을 처리합니다. 생성 결과는 S3에 저장되고 `MEDIA_BASE_URL`을 통해 재생 URL을 구성합니다.
 
+영상은 한국어로 만들고, **같은 클립에 대본 번역과 TTS를 얹은 영어 더빙판을 함께 생성**합니다. Veo로 언어판을 따로 뽑으면 클립 비용이 두 배가 되지만, 영상 트랙은 언어와 무관하므로 오디오만 교체하면 추가 비용이 거의 없습니다. 상태 응답은 `video_url`(한국어)과 `video_url_en`(영어)을 함께 돌려주며, 더빙에 실패해도 한국어판 저장은 막지 않습니다.
+
 ### **5-2. API 및 특징**
 
 - `POST /video/generate`
 - `GET /video/generate/{task_id}/status`
 - `GET /health`
 - Redis, API, Celery worker가 모두 필요합니다.
-- 문서 분석 → 학습 목표·스토리보드 생성 → 영상 클립 생성/병합 → 품질 검사 → 업로드 순서로 처리합니다.
+- 문서 분석 → 학습 목표·스토리보드 생성 → 영상 클립 생성/병합 → 품질 검사 → 번역·TTS 더빙 → 업로드(한국어·영어) 순서로 처리합니다.
 - 요청 즉시 생성 결과를 기다리지 않고 `task_id`를 반환하므로, frontend 또는 backend는 상태 API를 폴링해 진행 상황과 최종 결과를 확인합니다.
 - 최종 publish와 교육 데이터 등록은 backend의 별도 완료 처리 흐름에서 관리하므로, 사용자가 화면을 이동하거나 새로고침해도 작업 상태를 복구할 수 있습니다.
 
@@ -225,7 +227,7 @@ backend의 안전·점검·조치 데이터를 수집·정리하여 위험성 �
 
 ```text
 문서/텍스트 요청 → VideoAgent API → Redis 작업 등록 → Celery worker
-→ 문서 분석·스토리보드·영상 생성·병합·검수 → S3 업로드 → 상태 조회
+→ 문서 분석·스토리보드·영상 생성·병합·검수 → 번역·TTS 더빙 → S3 업로드(한국어·영어) → 상태 조회
 → backend 완료 처리 → 교육 콘텐츠 등록 또는 검토 대기
 ```
 
@@ -350,7 +352,7 @@ AI_INSPECTION_INTERVAL_SECONDS="600"
 | --- | --- |
 | `aiagent` | `OPENAI_API_KEY`, `BACKEND_API_URL`, `AGENT_READ_DATABASE_URL`, `LAW_API_OC`, `FRONTEND_ORIGINS` |
 | `report_agent` | `OPENAI_API_KEY`, `OPENAI_MODEL`, `MAX_RETRY_COUNT` |
-| `videoagent` | `REDIS_URL`, GCP/Veo·Gemini 인증값, `BACKEND_API_URL`, `AWS_S3_MEDIA_BUCKET`, `AWS_REGION`, `MEDIA_BASE_URL` |
+| `videoagent` | `REDIS_URL`, GCP/Veo·Gemini 인증값, `GOOGLE_APPLICATION_CREDENTIALS`(TTS 더빙용, 폴백 없음), `BACKEND_API_URL`, `AWS_S3_MEDIA_BUCKET`, `AWS_REGION`, `MEDIA_BASE_URL` |
 
 ## 🔎 **점검 순서**
 
@@ -366,7 +368,7 @@ AI_INSPECTION_INTERVAL_SECONDS="600"
 - [Report Agent](report_agent/README.md)
 - [VideoAgent](videoagent/README.md)
 
-하위 README는 각 기능의 상세 로컬 개발 문서입니다. 기존 VideoAgent 문서에는 Cloudinary 기반 설명이 남아 있을 수 있으나, 현재 코드의 미디어 저장 설정은 S3 bucket과 `MEDIA_BASE_URL`을 사용합니다.
+하위 README는 각 기능의 상세 로컬 개발 문서입니다.
 
 ## 🚀 **운영 배포**
 
