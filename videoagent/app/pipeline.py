@@ -91,15 +91,14 @@ async def process_veo_summary_video_pipeline(
     category: Optional[str] = "공통",
     type: Optional[str] = "필수",
     request: Optional[str] = None,
-    target_duration_seconds: Optional[int] = None,
-    language: str = "ko"
+    target_duration_seconds: Optional[int] = None
 ):
     """
     [Veo 동영상 생성 파이프라인]
     1. parser 문서 원문 정밀 추출
     2. 장면별 Veo 8초 전용 비디오 모션 프롬프트 및 대본 생성
     3. Vertex AI Veo 8초 동영상 생성 ➔ FFmpeg 자동 병합
-    4. 품질 검수 후 Cloudinary 업로드 및 작업 상태 기록
+    4. 품질 검수 → 영어 더빙판 생성 → S3 업로드 및 작업 상태 기록
 
     DB 영속화(Education 테이블 적재)는 이 서비스가 하지 않는다.
     백엔드가 상태를 폴링해 결과를 저장한다.
@@ -133,7 +132,7 @@ async def process_veo_summary_video_pipeline(
         objectives = await extract_learning_objectives(analysis)
         update_task(task_id, learning_objectives=objectives, progress_percent=45)
         storyboard = await create_storyboard(
-            parsed_text, analysis, objectives, request, target_duration_seconds, language
+            parsed_text, analysis, objectives, request, target_duration_seconds
         )
         # Gemini 호출 실패로 고정 Fallback 대본이 쓰이면 문서 내용이 전혀 반영되지 않은 영상이 나온다.
         # 제목·카테고리는 사용자 입력 그대로라 결과만 보고는 구분할 수 없으므로 저장하지 않고 실패 처리한다.
@@ -231,7 +230,6 @@ def process_veo_pipeline_task(
     type: Optional[str] = "필수",
     request: Optional[str] = None,
     target_duration_seconds: Optional[int] = None,
-    language: str = "ko",
 ):
     """Celery 워커가 실행할 동기 래퍼.
 
@@ -249,6 +247,5 @@ def process_veo_pipeline_task(
             type=type,
             request=request,
             target_duration_seconds=target_duration_seconds,
-            language=language,
         )
     )
